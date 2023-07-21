@@ -4,7 +4,7 @@ import java.awt.event.ActionEvent;
 
 import model.VendingMachineModel;
 import states.CreateMachineMenuState;
-// import states.TestMachineMenuState;
+import states.TestMachineMenuState;
 import util.Controller;
 import views.MainMenuView;
 
@@ -30,7 +30,7 @@ public class MainMenuController extends Controller {
         });
 
         view.setTestButtonListener((ActionEvent e) -> {
-            // changeState(new TestMachineMenuState());
+            changeState(new TestMachineMenuState());
         });
     }
 }
