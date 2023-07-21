@@ -1,29 +1,30 @@
 import model.VendingMachineModel;
+import util.MainWindow;
 import util.State;
 
 public class VendingMachineSimulator {
     private VendingMachineModel model;
     
     private State currentState;
-    // private MainWindow mainWindow;
+    private MainWindow mainWindow;
     
     public VendingMachineSimulator() {
         model = new VendingMachineModel();
 
         currentState = null;
-        // mainWindow = new MainWindow();
+        mainWindow = new MainWindow();
     }
 
     public void setCurrentState(State state) {
         currentState = state;
 
         if (state == null) {
-            // mainWindow.close();
+            mainWindow.close();
             return;
         }
 
         currentState.initialize(model);
-        // mainWindow.setCurrentView(currentState.getView());
+        mainWindow.setCurrentView(currentState.getView());
 
         currentState.setChangeListener(nextState -> {
             setCurrentState(nextState);
