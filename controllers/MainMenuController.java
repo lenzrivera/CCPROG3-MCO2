@@ -3,7 +3,7 @@ package controllers;
 import java.awt.event.ActionEvent;
 
 import model.VendingMachineModel;
-// import states.CreateMachineMenuState;
+import states.CreateMachineMenuState;
 // import states.TestMachineMenuState;
 import util.Controller;
 import views.MainMenuView;
@@ -22,7 +22,7 @@ public class MainMenuController extends Controller {
         }
 
         view.setCreateButtonListener((ActionEvent e) -> {
-            // changeState(new CreateMachineMenuState());
+            changeState(new CreateMachineMenuState());
         });
 
         view.setExitButtonListener((ActionEvent e) -> {
