@@ -1,4 +1,5 @@
 import model.VendingMachineModel;
+import states.MainMenuState;
 import util.MainWindow;
 import util.State;
 
@@ -33,6 +34,6 @@ public class VendingMachineSimulator {
 
     public static void main(String[] args) {
         VendingMachineSimulator vms = new VendingMachineSimulator();
-        vms.setCurrentState(null);
+        vms.setCurrentState(new MainMenuState());
     }
 }
