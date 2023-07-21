@@ -1,7 +1,5 @@
 package controllers;
 
-import java.awt.event.ActionEvent;
-
 import model.VendingMachineModel;
 import states.CreateMachineMenuState;
 import states.TestMachineMenuState;
@@ -21,15 +19,15 @@ public class MainMenuController extends Controller {
             view.setTestButtonToolTip("No vending machine to test yet.");
         }
 
-        view.setCreateButtonListener((ActionEvent e) -> {
+        view.setCreateButtonListener(e -> {
             changeState(new CreateMachineMenuState());
         });
 
-        view.setExitButtonListener((ActionEvent e) -> {
+        view.setExitButtonListener(e -> {
             changeState(null);
         });
 
-        view.setTestButtonListener((ActionEvent e) -> {
+        view.setTestButtonListener(e -> {
             changeState(new TestMachineMenuState());
         });
     }

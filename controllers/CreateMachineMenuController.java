@@ -1,7 +1,5 @@
 package controllers;
 
-import java.awt.event.ActionEvent;
-
 // import states.CreateRegularMachineState;
 // import states.CreateSpecialMachineState;
 import states.MainMenuState;
@@ -14,15 +12,15 @@ public class CreateMachineMenuController extends Controller {
     public CreateMachineMenuController(CreateMachineMenuView v) {
         view = v;
 
-        view.setBackButtonListener((ActionEvent e) -> {
+        view.setBackButtonListener(e -> {
             changeState(new MainMenuState());
         });
 
-        view.setCreateRegularButtonListener((ActionEvent e) -> {
+        view.setCreateRegularButtonListener(e -> {
             // changeState(new CreateRegularMachineState());
         });
 
-        view.setCreateSpecialButtonListener((ActionEvent e) -> {
+        view.setCreateSpecialButtonListener(e -> {
             // changeState(new CreateSpecialMachineState());
         });
     }
