@@ -21,10 +21,13 @@ public class SpecialSlot extends Slot {
     public void assignToItem(
         String name, 
         double price, 
-        double calories,
+        double calories, 
         String imagePath
     ) {
-        assignToItem(name, price, calories, imagePath, true, null);
+        sampleItem = new Item(name, calories, imagePath);
+        this.unitPrice = price;
+        this.standalone = true;
+        this.itemOperation = null;
     }
 
     public void assignToItem(
