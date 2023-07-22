@@ -139,7 +139,7 @@ public class CreateRegularMachineController extends CreateMachineController {
     }
 
     @Override
-    protected VendingMachine getMachine() {
+    protected VendingMachine<? extends Slot> getMachine() {
         return machine;
     }
 

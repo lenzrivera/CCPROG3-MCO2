@@ -21,7 +21,7 @@ public abstract class CreateMachineController extends Controller {
         model = m;
     }
 
-    protected abstract VendingMachine getMachine();
+    protected abstract VendingMachine<? extends Slot> getMachine();
     protected abstract CreateMachineView getView();
 
     protected void setConstants() {
@@ -53,7 +53,7 @@ public abstract class CreateMachineController extends Controller {
         }
     }
 
-    protected void updateSlotTable(List<Slot> slots) {
+    protected void updateSlotTable(List<? extends Slot> slots) {
         for (int i = 0; i < slots.size(); i++) {
             String name = (slots.get(i).getSampleItem() == null) 
                 ? "[empty]" 

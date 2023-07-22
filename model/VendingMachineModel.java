@@ -1,17 +1,17 @@
 package model;
 
 public class VendingMachineModel {
-    private VendingMachine machine;
+    private VendingMachine<? extends Slot> machine;
 
     public VendingMachineModel() {
         machine = null;
     }
 
-    public VendingMachine getVendingMachine() {
+    public VendingMachine<? extends Slot> getVendingMachine() {
         return machine;
     }
 
-    public void setVendingMachine(VendingMachine v) {
+    public void setVendingMachine(VendingMachine<? extends Slot> v) {
         machine = v;
     }
 }
