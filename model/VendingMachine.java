@@ -206,7 +206,8 @@ public abstract class VendingMachine {
         int slotNo, 
         String name, 
         double price, 
-        double calories
+        double calories,
+        String imagePath
     ) {
         Slot slot = slots.get(slotNo - 1);
 
@@ -214,7 +215,7 @@ public abstract class VendingMachine {
             return false;
         }
 
-        slot.assignToItem(name, price, calories);
+        slot.assignToItem(name, price, calories, imagePath);
         return true;
     }
 

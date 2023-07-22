@@ -216,6 +216,7 @@ public class SpecialVendingMachine extends VendingMachine {
         String name, 
         double price, 
         double calories,
+        String imagePath,
         boolean standalone,
         List<ItemOperation> operations
     ) {
@@ -225,7 +226,8 @@ public class SpecialVendingMachine extends VendingMachine {
             return false;
         }
 
-        slot.assignToItem(name, price, calories, standalone, operations);
+        slot.assignToItem(
+            name, price, calories, imagePath, standalone, operations);
         return true;
     }
 

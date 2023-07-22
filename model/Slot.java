@@ -46,8 +46,13 @@ public class Slot {
 
     // Main Methods //
 
-    public void assignToItem(String name, double price, double calories) {
-        this.sampleItem = new Item(name, calories);
+    public void assignToItem(
+        String name, 
+        double price, 
+        double calories, 
+        String imagePath
+    ) {
+        this.sampleItem = new Item(name, calories, imagePath);
         this.unitPrice = price;
     }
 

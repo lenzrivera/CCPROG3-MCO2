@@ -21,18 +21,24 @@ public class SpecialSlot extends Slot {
     }
 
     @Override
-    public void assignToItem(String name, double price, double calories) {
-        assignToItem(name, price, calories, true, null);
+    public void assignToItem(
+        String name, 
+        double price, 
+        double calories,
+        String imagePath
+    ) {
+        assignToItem(name, price, calories, imagePath, true, null);
     }
 
     public void assignToItem(
         String name,
         double price,
         double calories,
+        String imagePath,
         boolean standalone,
         List<ItemOperation> operations
     ) {
-        assignToItem(name, price, calories);
+        assignToItem(name, price, calories, imagePath);
 
         this.standalone = standalone;
         this.itemOperations = new ArrayList<>(operations);
