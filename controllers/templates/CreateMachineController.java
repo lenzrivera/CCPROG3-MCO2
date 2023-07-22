@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 import model.DenominationMap;
 import model.Slot;
 import model.VendingMachine;
@@ -27,6 +29,11 @@ public abstract class CreateMachineController extends Controller {
                  .setMinSlotCount(VendingMachine.MIN_SLOT_COUNT);
         getView().getBasicInfoPanel()
                  .setMinSlotCapacity(Slot.MIN_MAX_CAPACITY);
+
+        // TODO: actually disallow non-image files as this can be circumvented
+        FileNameExtensionFilter filter = 
+            new FileNameExtensionFilter("Image Files", "jpg", "png");
+        getView().getStockItemsPanel().setFileFilter(filter);
 
         getView().getStockChangePanel().setDenominations(
             Arrays.stream(DenominationMap.VALID_DENOMINATIONS).boxed().toList());

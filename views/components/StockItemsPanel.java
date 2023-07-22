@@ -2,8 +2,10 @@ package views.components;
 
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.nio.file.Paths;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -11,10 +13,12 @@ import javax.swing.JSpinner;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 
 public abstract class StockItemsPanel extends JPanel {
     protected int selectedSlotNo;
+    protected String imageFullPath;
 
     protected JScrollPane tableScrollPane;
     protected DefaultTableModel tableModel;
@@ -34,6 +38,11 @@ public abstract class StockItemsPanel extends JPanel {
     
     protected JLabel stockLabel;
     protected JSpinner stockInput;
+
+    protected JLabel imageLabel;
+    protected JLabel imagePath;
+    protected JButton imageInput;
+    protected JFileChooser imageFileChooser;
 
     protected JButton addItemButton;
     protected JButton removeItemButton;
@@ -93,9 +102,25 @@ public abstract class StockItemsPanel extends JPanel {
         stockInputModel.setValue(0);
         stockInput = new JSpinner(stockInputModel);
 
+        imageLabel = new JLabel("Image:");
+        imagePath = new JLabel("");
+        imageInput = new JButton("Select");
+        imageFileChooser = new JFileChooser();
+
         addItemButton = new JButton("Add Item");
         removeItemButton = new JButton("Remove Item");
         nextButton = new JButton("Next");
+
+        imageInput.addActionListener(e -> {
+            int returnVal = imageFileChooser.showOpenDialog(this);
+
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                String filepath =
+                    imageFileChooser.getSelectedFile().getAbsolutePath();
+                
+                setImagePathValue(filepath);
+            }
+        });
     }
 
     protected abstract void setupInputComponents();
@@ -104,6 +129,20 @@ public abstract class StockItemsPanel extends JPanel {
 
     public void setCaloriesInputValue(double value) {
         caloriesInput.setValue(value);
+    }
+
+    public void setFileFilter(FileNameExtensionFilter filter) {
+        imageFileChooser.setFileFilter(filter);
+    }
+
+    public void setImagePathValue(String value) {
+        imageFullPath = value;
+
+        if (value == null) {
+            imagePath.setText("[none]");
+        } else {
+            imagePath.setText(Paths.get(value).getFileName().toString());
+        }
     }
 
     public void setItemNameCell(int rowNo, String value) {

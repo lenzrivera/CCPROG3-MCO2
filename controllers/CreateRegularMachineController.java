@@ -54,6 +54,7 @@ public class CreateRegularMachineController extends CreateMachineController {
             String name,
             double price,
             double calories,
+            String imagePath,
             int stock
         ) -> {
             if (name.isBlank()) {
@@ -71,10 +72,15 @@ public class CreateRegularMachineController extends CreateMachineController {
                 }
             }
 
+            if (imagePath == null) {
+                view.showErrorDialog("Please select an item image.");
+                return;                
+            }
+
             // In case an item is already in the slot.
             machine.removeItem(slotNo);
 
-            machine.addItem(slotNo, name, price, calories);
+            machine.addItem(slotNo, name, price, calories, imagePath);
             machine.stockItem(slotNo, stock);
             
             updateSlotTable(machine.getSlots());
@@ -106,11 +112,13 @@ public class CreateRegularMachineController extends CreateMachineController {
                 itemsPanel.setCaloriesInputValue(0.0);
                 itemsPanel.setPriceInputValue(0.0);
                 itemsPanel.setStockInputValue(0);
+                itemsPanel.setImagePathValue(null);
             } else {
                 itemsPanel.setNameInputValue(sampleItem.getName());
                 itemsPanel.setCaloriesInputValue(sampleItem.getCalories());
                 itemsPanel.setPriceInputValue(selectedSlot.getUnitPrice());
                 itemsPanel.setStockInputValue(selectedSlot.getStock());
+                itemsPanel.setImagePathValue(sampleItem.getImagePath());
             }
         });
 
