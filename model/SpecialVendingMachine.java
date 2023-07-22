@@ -85,9 +85,8 @@ public class SpecialVendingMachine extends VendingMachine<SpecialSlot> {
                 result.addItem(itemSlot.dispenseItem());
             }
 
-            for (ItemOperation io : itemSlot.getItemOperations()) {
-                result.addProcessMessage(io.getProcessMessage(itemName));
-            }
+            result.addProcessMessage(
+                itemSlot.getItemOperation().getProcessMessage(itemName));
 
             currentSummary.addTransaction(
                 itemName, qtyToDispense, itemSlot.getUnitPrice());
@@ -216,7 +215,7 @@ public class SpecialVendingMachine extends VendingMachine<SpecialSlot> {
         double calories,
         String imagePath,
         boolean standalone,
-        List<ItemOperation> operations
+        ItemOperation operation
     ) {
         SpecialSlot slot = slots.get(slotNo - 1);
 
@@ -224,8 +223,7 @@ public class SpecialVendingMachine extends VendingMachine<SpecialSlot> {
             return false;
         }
 
-        slot.assignToItem(
-            name, price, calories, imagePath, standalone, operations);
+        slot.assignToItem(name, price, calories, imagePath, standalone, operation);
         return true;
     }
 

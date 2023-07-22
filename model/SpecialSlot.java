@@ -1,10 +1,7 @@
 package model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class SpecialSlot extends Slot {
-    private ArrayList<ItemOperation> itemOperations;
+    private ItemOperation itemOperation;
 
     private boolean standalone;
 
@@ -12,8 +9,8 @@ public class SpecialSlot extends Slot {
         super(capacity);
     }
 
-    public List<ItemOperation> getItemOperations() {
-        return itemOperations;
+    public ItemOperation getItemOperation() {
+        return itemOperation;
     }
 
     public boolean isStandalone() {
@@ -36,11 +33,11 @@ public class SpecialSlot extends Slot {
         double calories,
         String imagePath,
         boolean standalone,
-        List<ItemOperation> operations
+        ItemOperation operation
     ) {
         assignToItem(name, price, calories, imagePath);
 
         this.standalone = standalone;
-        this.itemOperations = new ArrayList<>(operations);
+        this.itemOperation = operation;
     }
 }
