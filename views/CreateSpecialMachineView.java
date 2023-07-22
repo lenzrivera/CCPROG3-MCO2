@@ -1,5 +1,6 @@
 package views;
 
+import views.components.SetupPresetsPanel;
 import views.components.StockItemsPanel;
 import views.components.StockSpecialItemsPanel;
 import views.templates.CreateMachineView;
