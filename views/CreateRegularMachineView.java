@@ -2,15 +2,28 @@ package views;
 
 import java.awt.Container;
 
-import util.View;
+import views.components.StockRegularItemsPanel;
+import views.templates.CreateMachineView;
 
-// TODO
-public class CreateRegularMachineView extends View {
+public class CreateRegularMachineView extends CreateMachineView {
+    private StockRegularItemsPanel stockItemsPanel;
+
+    public CreateRegularMachineView() {
+        super("Create a Regular Vending Machine");
+        
+        stockItemsPanel = new StockRegularItemsPanel();
+
+        setupPane.addTab("Basic Information", basicInfoPanel);
+        setupPane.addTab("Stock Items", stockItemsPanel);
+        setupPane.addTab("Stock Change", stockChangePanel);
+    }
 
     @Override
     public Container getContainer() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getContainer'");
+        return mainContainer;
     }
 
+    public StockRegularItemsPanel getStockItemsPanel() {
+        return stockItemsPanel;
+    }
 }
