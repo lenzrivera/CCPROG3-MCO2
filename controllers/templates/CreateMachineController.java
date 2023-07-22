@@ -14,28 +14,34 @@ import model.VendingMachineModel;
 import util.Controller;
 import views.templates.CreateMachineView;
 
-public abstract class CreateMachineController extends Controller {
+public abstract class CreateMachineController<
+    T extends CreateMachineView<?>, 
+    U extends VendingMachine<?>> extends Controller
+{
     protected VendingMachineModel model;
+    protected T view;
+    protected U machine;
 
-    public CreateMachineController(VendingMachineModel m) {
+    public CreateMachineController(VendingMachineModel m, T v) {
         model = m;
+        view = v;
+        machine = null;
+
+        setConstants();
     }
 
-    protected abstract VendingMachine<? extends Slot> getMachine();
-    protected abstract CreateMachineView getView();
-
     protected void setConstants() {
-        getView().getBasicInfoPanel()
-                 .setMinSlotCount(VendingMachine.MIN_SLOT_COUNT);
-        getView().getBasicInfoPanel()
-                 .setMinSlotCapacity(Slot.MIN_MAX_CAPACITY);
+        view.getBasicInfoPanel()
+            .setMinSlotCount(VendingMachine.MIN_SLOT_COUNT);
+        view.getBasicInfoPanel()
+            .setMinSlotCapacity(Slot.MIN_MAX_CAPACITY);
 
         // TODO: actually disallow non-image files as this can be circumvented
         FileNameExtensionFilter filter = 
             new FileNameExtensionFilter("Image Files", "jpg", "png");
-        getView().getStockItemsPanel().setFileFilter(filter);
+        view.getStockItemsPanel().setFileFilter(filter);
 
-        getView().getStockChangePanel().setDenominations(
+        view.getStockChangePanel().setDenominations(
             Arrays.stream(DenominationMap.VALID_DENOMINATIONS).boxed().toList());
     }
 
@@ -46,10 +52,10 @@ public abstract class CreateMachineController extends Controller {
         ArrayList<Integer> quantities = new ArrayList<>(rawMap.values());
 
         for (int i = 0; i < rawMap.size(); i++) {
-            getView().getStockChangePanel()
-                     .setDenominationCell(i + 1, denominations.get(i));
-            getView().getStockChangePanel()
-                     .setQuantityCell(i + 1, quantities.get(i));
+            view.getStockChangePanel()
+                .setDenominationCell(i + 1, denominations.get(i));
+            view.getStockChangePanel()
+                .setQuantityCell(i + 1, quantities.get(i));
         }
     }
 
@@ -59,8 +65,8 @@ public abstract class CreateMachineController extends Controller {
                 ? "[empty]" 
                 : slots.get(i).getSampleItem().getName();
 
-            getView().getStockItemsPanel().setSlotNumberCell(i + 1, i + 1);
-            getView().getStockItemsPanel().setItemNameCell(i + 1, name);
+            view.getStockItemsPanel().setSlotNumberCell(i + 1, i + 1);
+            view.getStockItemsPanel().setItemNameCell(i + 1, name);
         }
     }
 }

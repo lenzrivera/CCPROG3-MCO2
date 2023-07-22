@@ -1,13 +1,10 @@
 package views;
 
 import views.components.SetupPresetsPanel;
-import views.components.StockItemsPanel;
 import views.components.StockSpecialItemsPanel;
 import views.templates.CreateMachineView;
 
-public class CreateSpecialMachineView extends CreateMachineView {
-    private StockSpecialItemsPanel stockItemsPanel;
-
+public class CreateSpecialMachineView extends CreateMachineView<StockSpecialItemsPanel> {
     private SetupPresetsPanel setupPresetsPanel;
 
     public CreateSpecialMachineView() {
@@ -20,11 +17,6 @@ public class CreateSpecialMachineView extends CreateMachineView {
         setupPane.addTab("Stock Items", stockItemsPanel);
         setupPane.addTab("Setup Presets", setupPresetsPanel);
         setupPane.addTab("Stock Change", stockChangePanel);
-    }
-
-    @Override
-    public StockItemsPanel getStockItemsPanel() {
-        return stockItemsPanel;
     }
 
     public SetupPresetsPanel getSetupPresetsPanel() {

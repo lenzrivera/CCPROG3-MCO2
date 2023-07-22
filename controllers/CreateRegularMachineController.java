@@ -4,28 +4,19 @@ import controllers.templates.CreateMachineController;
 import model.Item;
 import model.RegularVendingMachine;
 import model.Slot;
-import model.VendingMachine;
 import model.VendingMachineModel;
 import states.MainMenuState;
 import views.CreateRegularMachineView;
 import views.components.StockItemsPanel;
-import views.templates.CreateMachineView;
 
-public class CreateRegularMachineController extends CreateMachineController {
-    private CreateRegularMachineView view;
-
-    private RegularVendingMachine machine;
-    
+public class CreateRegularMachineController 
+    extends CreateMachineController<CreateRegularMachineView, RegularVendingMachine> 
+{
     public CreateRegularMachineController(
         VendingMachineModel m, 
         CreateRegularMachineView v
     ) {
-        super(m);
-
-        view = v;
-        machine = null;
-
-        setConstants();
+        super(m, v);
 
         /* 1 - BASIC INFORMATION */
 
@@ -136,15 +127,5 @@ public class CreateRegularMachineController extends CreateMachineController {
             model.setVendingMachine(machine);
             changeState(new MainMenuState());
         });
-    }
-
-    @Override
-    protected VendingMachine<? extends Slot> getMachine() {
-        return machine;
-    }
-
-    @Override
-    protected CreateMachineView getView() {
-        return view;
     }
 }

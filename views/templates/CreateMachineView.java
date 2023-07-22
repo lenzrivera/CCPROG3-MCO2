@@ -13,13 +13,14 @@ import views.components.SetupPane;
 import views.components.StockChangePanel;
 import views.components.StockItemsPanel;
 
-public abstract class CreateMachineView extends View {
+public abstract class CreateMachineView<T extends StockItemsPanel> extends View {
     protected SectionContainer mainContainer;
 
     protected JPanel setupPaneContainer;
     protected SetupPane setupPane;
 
     protected BasicInfoPanel basicInfoPanel;
+    protected T stockItemsPanel;
     protected StockChangePanel stockChangePanel;
 
     public CreateMachineView(String heading) {
@@ -53,7 +54,9 @@ public abstract class CreateMachineView extends View {
         return setupPane;
     }
 
-    public abstract StockItemsPanel getStockItemsPanel();
+    public T getStockItemsPanel() {
+        return stockItemsPanel;
+    }
 
     public StockChangePanel getStockChangePanel() {
         return stockChangePanel;
