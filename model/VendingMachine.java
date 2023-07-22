@@ -5,7 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class VendingMachine {
+public abstract class VendingMachine<T extends Slot> {
     public static final int MIN_SLOT_COUNT = 8;
 
     private static double matchTransfer(
@@ -36,7 +36,7 @@ public abstract class VendingMachine {
 
     protected String name;
 
-    protected ArrayList<Slot> slots;
+    protected ArrayList<T> slots;
 
     protected DenominationMap changeToGive;
 
@@ -46,7 +46,7 @@ public abstract class VendingMachine {
 
     protected DenominationMap payments;
 
-    protected Summary currentSummary;
+    protected Summary<T> currentSummary;
 
     public VendingMachine(String name) {
         this.name = name;
@@ -59,7 +59,7 @@ public abstract class VendingMachine {
         changeStock = new DenominationMap();
         payments = new DenominationMap();
 
-        currentSummary = new Summary(slots);
+        currentSummary = new Summary<>(slots);
     }
 
     // Accessors //
@@ -68,11 +68,11 @@ public abstract class VendingMachine {
         return changeStock;
     }
     
-    public Slot getSlot(int slotNo) {
+    public T getSlot(int slotNo) {
         return slots.get(slotNo - 1);
     }
 
-    public List<Slot> getSlots() {
+    public List<T> getSlots() {
         return slots;
     }
 
@@ -84,7 +84,7 @@ public abstract class VendingMachine {
         return slots.get(0).getCapacity();
     }
 
-    public Summary getSummary() {
+    public Summary<T> getSummary() {
         return currentSummary;
     }
 

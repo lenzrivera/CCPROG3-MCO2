@@ -10,9 +10,7 @@ import model.exceptions.InsufficientCreditException;
 import model.exceptions.InsufficientStockException;
 import model.exceptions.SelectedStandaloneException;
 
-public class SpecialVendingMachine extends VendingMachine {
-    private ArrayList<SpecialSlot> slots;
-
+public class SpecialVendingMachine extends VendingMachine<SpecialSlot> {
     private ArrayList<Preset> presets;
 
     private HashMap<String, Integer> itemsToDispense;

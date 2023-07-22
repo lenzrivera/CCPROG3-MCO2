@@ -4,7 +4,7 @@ import model.exceptions.InsufficientChangeException;
 import model.exceptions.InsufficientCreditException;
 import model.exceptions.InsufficientStockException;
 
-public class RegularVendingMachine extends VendingMachine {
+public class RegularVendingMachine extends VendingMachine<Slot> {
     private Slot selectedSlot;
 
     public RegularVendingMachine(String name, int slotCount, int slotCapacity) {

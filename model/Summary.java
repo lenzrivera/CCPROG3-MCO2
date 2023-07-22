@@ -5,13 +5,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class Summary {
+public class Summary<T extends Slot> {
     
     private HashMap<String, ItemSummary> stockChanges;
     
     private double totalPayments;    
 
-    public Summary(List<Slot> currentSlots) {
+    public Summary(List<T> currentSlots) {
         stockChanges = new HashMap<>();
         totalPayments = 0.0;
 
@@ -42,7 +42,7 @@ public class Summary {
         totalPayments += quantity * unitPrice;
     }
 
-    public void reset(List<Slot> currentSlots) {
+    public void reset(List<T> currentSlots) {
         totalPayments = 0;
         stockChanges.clear();
         
