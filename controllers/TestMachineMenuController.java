@@ -1,6 +1,6 @@
 package controllers;
 
-// import model.RegularVendingMachine;
+import model.RegularVendingMachine;
 import model.VendingMachineModel;
 import states.MainMenuState;
 // import states.TestRegularVendingState;
@@ -21,19 +21,19 @@ public class TestMachineMenuController extends Controller {
         });
 
         view.setTestVendingButtonListener(e -> {
-            // if (model.getVendingMachine() instanceof RegularVendingMachine) {
-            //     changeState(new TestRegularVendingState());
-            // } else {
-            //     changeState(new TestSpecialVendingState());
-            // }
+            if (model.getVendingMachine() instanceof RegularVendingMachine) {
+                // changeState(new TestRegularVendingState());
+            } else {
+                // changeState(new TestSpecialVendingState());
+            }
     });
 
         view.setTestMaintenanceButtonListener(e -> {
-            // if (model.getVendingMachine() instanceof RegularVendingMachine) {
-            //     changeState(new TestRegularMaintenanceState());
-            // } else {
-            //     changeState(new TestSpecialMaintenanceState());
-            // } 
+            if (model.getVendingMachine() instanceof RegularVendingMachine) {
+                // changeState(new TestRegularMaintenanceState());
+            } else {
+                // changeState(new TestSpecialMaintenanceState());
+            } 
         });
     }
 }
