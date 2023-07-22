@@ -118,6 +118,10 @@ public class StockChangePanel extends JPanel {
     }
 
     public void setDenominationCell(int rowNo, double value) {
+        if (tableModel.getRowCount() < rowNo) {
+            tableModel.addRow(new Object[]{});
+        }
+    
         tableModel.setValueAt(value, rowNo - 1, 0);
     }
 
@@ -136,6 +140,10 @@ public class StockChangePanel extends JPanel {
     }
 
     public void setQuantityCell(int rowNo, int value) {
+        if (tableModel.getRowCount() < rowNo) {
+            tableModel.addRow(new Object[]{});
+        }
+
         tableModel.setValueAt(value, rowNo - 1, 1);
     }
 }
