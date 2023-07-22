@@ -2,7 +2,7 @@ package model;
 
 // TODO: title case toString()
 
-public enum ItemOperation {
+public enum Operation {
     BASE,
     COOKABLE,
     HEATABLE,

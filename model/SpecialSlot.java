@@ -1,7 +1,7 @@
 package model;
 
 public class SpecialSlot extends Slot {
-    private ItemOperation itemOperation;
+    private Operation itemOperation;
 
     private boolean standalone;
 
@@ -9,7 +9,7 @@ public class SpecialSlot extends Slot {
         super(capacity);
     }
 
-    public ItemOperation getItemOperation() {
+    public Operation getItemOperation() {
         return itemOperation;
     }
 
@@ -33,7 +33,7 @@ public class SpecialSlot extends Slot {
         double calories,
         String imagePath,
         boolean standalone,
-        ItemOperation operation
+        Operation operation
     ) {
         assignToItem(name, price, calories, imagePath);
 

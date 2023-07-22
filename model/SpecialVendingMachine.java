@@ -112,7 +112,9 @@ public class SpecialVendingMachine extends VendingMachine<SpecialSlot> {
             result.setName(name);
         }
 
-        result.addProcessMessage("Heating pizza...");
+        Operation presetOp = selectedPreset.getOperation();
+        result.addProcessMessage(
+            presetOp.getProcessMessage(selectedPreset.getName()));
         result.addProcessMessage("Done!");
 
         result.setTotalPayment(totalPayment);
@@ -215,7 +217,7 @@ public class SpecialVendingMachine extends VendingMachine<SpecialSlot> {
         double calories,
         String imagePath,
         boolean standalone,
-        ItemOperation operation
+        Operation operation
     ) {
         SpecialSlot slot = slots.get(slotNo - 1);
 

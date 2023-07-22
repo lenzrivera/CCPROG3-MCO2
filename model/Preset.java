@@ -6,12 +6,13 @@ import java.util.Set;
 
 public class Preset {
     private String name;
-
     private HashMap<String, Integer> items;
+    private Operation operation;
 
-    public Preset(String name) {
+    public Preset(String name, Operation operation) {
         this.name = name;
         items = new HashMap<>();
+        this.operation = operation;
     }
 
     public String getName() {
@@ -22,6 +23,10 @@ public class Preset {
         return items.entrySet();
     }
     
+    public Operation getOperation() {
+        return operation;
+    }
+
     public void addItem(String itemName, int quantity) {
         items.put(itemName, quantity);
     }
