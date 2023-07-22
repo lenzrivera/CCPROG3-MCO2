@@ -1,8 +1,8 @@
 package controllers;
 
-import util.Controller;
+import controllers.templates.CreateMachineController;
 
 // TODO
-public class CreateRegularMachineController extends Controller {
+public class CreateRegularMachineController extends CreateMachineController {
 
 }
