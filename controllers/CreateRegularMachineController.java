@@ -53,10 +53,14 @@ public class CreateRegularMachineController
                 return;
             }
 
-            for (Slot slot : machine.getSlots()) {
+            for (int i = 0; i < machine.getSlotCount(); i++) {
+                Slot slot = machine.getSlots().get(i);
+
                 if (
+                    i != slotNo && // Allow editing of selected existing slot    
                     slot.getSampleItem() != null && 
                     slot.getSampleItem().getName().equalsIgnoreCase(name)
+                    
                 ) {
                     view.showErrorDialog("Please enter an unused item name.");
                     return;
