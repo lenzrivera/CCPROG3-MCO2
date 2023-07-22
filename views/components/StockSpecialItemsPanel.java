@@ -2,7 +2,9 @@ package views.components;
 
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.util.List;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -164,6 +166,14 @@ public class StockSpecialItemsPanel extends StockItemsPanel {
 
     public void setStandaloneChecked(boolean isChecked) {
         standaloneInput.setSelected(isChecked);
+    }
+
+    public void setOperations(List<String> operations) {
+        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+        model.addAll(operations);
+        
+        operationInput.setModel(model);
+        operationInput.setSelectedIndex(0);
     }
 
     public void setOperationValue(int index) {

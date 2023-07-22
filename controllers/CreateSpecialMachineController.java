@@ -1,37 +1,29 @@
 package controllers;
 
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import controllers.templates.CreateMachineController;
 import model.Item;
-import model.ItemOperation;
-import model.Preset;
+import model.Operation;
 import model.Slot;
+import model.SpecialSlot;
 import model.SpecialVendingMachine;
-import model.VendingMachine;
 import model.VendingMachineModel;
 import states.MainMenuState;
 import views.CreateSpecialMachineView;
-import views.components.StockItemsPanel;
-import views.templates.CreateMachineView;
+import views.components.StockSpecialItemsPanel;
 
-public class CreateSpecialMachineController extends CreateMachineController {
-    private CreateSpecialMachineView view;
-
-    private SpecialVendingMachine machine;
-    
+public class CreateSpecialMachineController 
+    extends CreateMachineController<CreateSpecialMachineView, SpecialVendingMachine> 
+{
     public CreateSpecialMachineController(
         VendingMachineModel m, 
         CreateSpecialMachineView v
     ) {
-        super(m);
+        super(m, v);
         
-        view = v;
-        machine = null;
-
-        setConstants();
-
         /* 1 - BASIC INFORMATION */
 
         view.getBasicInfoPanel().setNextButtonListener((
@@ -46,9 +38,10 @@ public class CreateSpecialMachineController extends CreateMachineController {
 
             machine = new SpecialVendingMachine(name, slotCount, slotCapacity);
             view.getSetupPane().setActiveTab(1);
-            
-            updateSlotTable(machine.getSlots());
+
             view.getStockItemsPanel().setMaxStock(slotCapacity);
+            view.getStockItemsPanel().setSlotCount(slotCount);
+            updateSlotTable(machine.getSlots());
         });
 
         /* 2 - ITEM STOCK */ 
@@ -60,7 +53,7 @@ public class CreateSpecialMachineController extends CreateMachineController {
             double calories,
             String imagePath,
             boolean standalone,
-            List<ItemOperation> operations,
+            String operation,
             int stock
         ) -> {
             if (name.isBlank()) {
@@ -87,7 +80,14 @@ public class CreateSpecialMachineController extends CreateMachineController {
             machine.removeItem(slotNo);
 
             machine.addItem(
-                slotNo, name, price, calories, imagePath, standalone, operations);
+                slotNo, 
+                name,
+                price, 
+                calories, 
+                imagePath, 
+                standalone, 
+                Operation.valueOf(operation)
+            );
             machine.stockItem(slotNo, stock);
             
             updateSlotTable(machine.getSlots());
@@ -109,12 +109,10 @@ public class CreateSpecialMachineController extends CreateMachineController {
         view.getStockItemsPanel().setSlotSelectListener((
             int selectedSlotNo
         ) -> {
-            StockItemsPanel itemsPanel = view.getStockItemsPanel();
+            StockSpecialItemsPanel itemsPanel = view.getStockItemsPanel();
 
-            Slot selectedSlot = machine.getSlot(selectedSlotNo);
+            SpecialSlot selectedSlot = machine.getSlot(selectedSlotNo);
             Item sampleItem = selectedSlot.getSampleItem();
-            
-            // TODO: missing components
             
             if (sampleItem == null) {
                 itemsPanel.setNameInputValue("");
@@ -122,44 +120,49 @@ public class CreateSpecialMachineController extends CreateMachineController {
                 itemsPanel.setPriceInputValue(0.0);
                 itemsPanel.setStockInputValue(0);
                 itemsPanel.setImagePathValue(null);
+                itemsPanel.setStandaloneChecked(false);
+                itemsPanel.setOperationValue(0);
             } else {
                 itemsPanel.setNameInputValue(sampleItem.getName());
                 itemsPanel.setCaloriesInputValue(sampleItem.getCalories());
                 itemsPanel.setPriceInputValue(selectedSlot.getUnitPrice());
                 itemsPanel.setStockInputValue(selectedSlot.getStock());
                 itemsPanel.setImagePathValue(sampleItem.getImagePath());
+                itemsPanel.setStandaloneChecked(selectedSlot.isStandalone());
+                itemsPanel.setOperationValue(
+                    selectedSlot.getItemOperation().toString());
             }
         });
 
         /* 3 - SETUP PRESETS */
 
-        // TODO: very many things
+        // // TODO: very many things
 
-        view.getSetupPresetsPanel().setNextButtonListener(() -> {
-            // at least one default preset should be added
+        // view.getSetupPresetsPanel().setNextButtonListener(() -> {
+        //     // at least one default preset should be added
             
-            view.getSetupPane().setActiveTab(3);
-        });
+        //     view.getSetupPane().setActiveTab(3);
+        // });
 
-        view.getSetupPresetsPanel().setPresetAddListener((
-            String name,
-            Map<String, Integer> items
-        ) -> {
-            // name and items should not be empty
+        // view.getSetupPresetsPanel().setPresetAddListener((
+        //     String name,
+        //     Map<String, Integer> items
+        // ) -> {
+        //     // name and items should not be empty
 
-            machine.addPreset(new Preset(name, items));
-        });
+        //     machine.addPreset(new Preset(name, items));
+        // });
 
-        view.getSetupPresetsPanel().setPresetRemoveListener((
-            int presetNo
-        ) -> {
-            if (!machine.removePreset(presetNo)) {
-                view.showErrorDialog("Cannot remove a non-existent preset.");
-                return;
-            }
+        // view.getSetupPresetsPanel().setPresetRemoveListener((
+        //     int presetNo
+        // ) -> {
+        //     if (!machine.removePreset(presetNo)) {
+        //         view.showErrorDialog("Cannot remove a non-existent preset.");
+        //         return;
+        //     }
 
-            updatePresetList(machine.getPresets());
-        });
+        //     updatePresetList(machine.getPresets());
+        // });
 
         /* 4 - CHANGE STOCK */
 
@@ -178,12 +181,14 @@ public class CreateSpecialMachineController extends CreateMachineController {
     }
 
     @Override
-    protected VendingMachine getMachine() {
-        return machine;
-    }
+    protected void setConstants() {
+        super.setConstants();
+        
+        List<String> opStrings = 
+            Stream.of(Operation.values())
+                  .map(Operation::toString)
+                  .collect(Collectors.toList());
 
-    @Override
-    protected CreateMachineView getView() {
-        return view;
+        view.getStockItemsPanel().setOperations(opStrings);
     }
 }
