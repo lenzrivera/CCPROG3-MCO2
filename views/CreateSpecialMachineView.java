@@ -1,17 +1,32 @@
 package views;
 
 import views.components.StockItemsPanel;
+import views.components.StockSpecialItemsPanel;
 import views.templates.CreateMachineView;
 
 public class CreateSpecialMachineView extends CreateMachineView {
+    private StockSpecialItemsPanel stockItemsPanel;
+
+    private SetupPresetsPanel setupPresetsPanel;
+
     public CreateSpecialMachineView() {
-        super("");
-        //TODO Auto-generated constructor stub
+        super("Create a Special Vending Machine");
+
+        stockItemsPanel = new StockSpecialItemsPanel();
+        setupPresetsPanel = new SetupPresetsPanel();
+
+        setupPane.addTab("Basic Information", basicInfoPanel);
+        setupPane.addTab("Stock Items", stockItemsPanel);
+        setupPane.addTab("Setup Presets", setupPresetsPanel);
+        setupPane.addTab("Stock Change", stockChangePanel);
     }
 
     @Override
     public StockItemsPanel getStockItemsPanel() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getStockItemsPanel'");
+        return stockItemsPanel;
+    }
+
+    public SetupPresetsPanel getSetupPresetsPanel() {
+        return setupPresetsPanel;
     }
 }

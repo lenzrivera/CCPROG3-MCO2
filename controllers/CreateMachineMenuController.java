@@ -1,7 +1,7 @@
 package controllers;
 
 import states.CreateRegularMachineState;
-// import states.CreateSpecialMachineState;
+import states.CreateSpecialMachineState;
 import states.MainMenuState;
 import util.Controller;
 import views.CreateMachineMenuView;
@@ -21,7 +21,7 @@ public class CreateMachineMenuController extends Controller {
         });
 
         view.setCreateSpecialButtonListener(e -> {
-            // changeState(new CreateSpecialMachineState());
+            changeState(new CreateSpecialMachineState());
         });
     }
 }
