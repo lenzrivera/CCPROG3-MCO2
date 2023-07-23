@@ -241,15 +241,12 @@ public class SpecialVendingMachine extends VendingMachine<SpecialSlot> {
     }
 
     public boolean addPreset(Preset preset) {
-        for (
-            Map.Entry<String, Integer> entry : 
-                selectedPreset.getItems().entrySet()
-        ) {
-            if (findSlotByItemName(entry.getKey()) == null) {
+        for (Preset p : presets) {
+            if (p.getName().equalsIgnoreCase(preset.getName())) {
                 return false;
             }
         }
-        
+
         return presets.add(preset);
     }
 
