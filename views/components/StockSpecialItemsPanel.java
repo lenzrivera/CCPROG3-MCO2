@@ -54,19 +54,18 @@ public class StockSpecialItemsPanel extends StockItemsPanel {
         gbc.gridy = 0;
 
         gbc.gridx = 0;
-        gbc.gridwidth = 3;
+        gbc.gridwidth = 2;
         inputPanel.add(inputHeading, gbc);
 
         /* Row 2 */
 
         gbc.gridy = 1;
+        gbc.gridwidth = 1;
         
         gbc.gridx = 0;
-        gbc.gridwidth = 1;
         inputPanel.add(nameLabel, gbc);
         
         gbc.gridx = 1;
-        gbc.gridwidth = 2;
         inputPanel.add(nameInput, gbc);
 
         /* Row 3 */
@@ -74,11 +73,9 @@ public class StockSpecialItemsPanel extends StockItemsPanel {
         gbc.gridy = 2;
 
         gbc.gridx = 0;
-        gbc.gridwidth = 1;
         inputPanel.add(priceLabel, gbc);
 
         gbc.gridx = 1;
-        gbc.gridwidth = 2;
         inputPanel.add(priceInput, gbc);
 
         /* Row 4 */ 
@@ -86,11 +83,9 @@ public class StockSpecialItemsPanel extends StockItemsPanel {
         gbc.gridy = 3;
 
         gbc.gridx = 0;
-        gbc.gridwidth = 1;
         inputPanel.add(caloriesLabel, gbc);
 
         gbc.gridx = 1;
-        gbc.gridwidth = 2;
         inputPanel.add(caloriesInput, gbc);
 
         /* Row 5 */
@@ -98,37 +93,28 @@ public class StockSpecialItemsPanel extends StockItemsPanel {
         gbc.gridy = 4;
 
         gbc.gridx = 0;
-        gbc.gridwidth = 1;
         inputPanel.add(stockLabel, gbc);
 
         gbc.gridx = 1;
-        gbc.gridwidth = 2;
         inputPanel.add(stockInput, gbc);
 
         /* Row 6 */
 
         gbc.gridy = 5;
-        gbc.gridwidth = 1;
-
+        gbc.gridwidth = 2;
+        
         gbc.gridx = 0;
-        inputPanel.add(imageLabel, gbc);
-
-        gbc.gridx = 1;
-        inputPanel.add(imagePath, gbc);
-
-        gbc.gridx = 2;
-        inputPanel.add(imageInput, gbc);
+        inputPanel.add(imageChooser, gbc);
 
         /* Row 7 */
 
         gbc.gridy = 6;
-        
-        gbc.gridx = 0;
         gbc.gridwidth = 1;
+
+        gbc.gridx = 0;
         inputPanel.add(standaloneLabel, gbc);
 
         gbc.gridx = 1;
-        gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.CENTER;
         inputPanel.add(standaloneInput, gbc);
 
@@ -138,18 +124,16 @@ public class StockSpecialItemsPanel extends StockItemsPanel {
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
         gbc.gridx = 0;
-        gbc.gridwidth = 1;
         inputPanel.add(operationLabel, gbc);
 
         gbc.gridx = 1;
-        gbc.gridwidth = 2;
         inputPanel.add(operationInput, gbc);
 
         /* Row 9 */
 
         gbc.gridy = 8;
         gbc.gridx = 0;
-        gbc.gridwidth = 3;
+        gbc.gridwidth = 2;
 
         inputPanel.add(addItemButton, gbc);
     
@@ -192,7 +176,7 @@ public class StockSpecialItemsPanel extends StockItemsPanel {
                 nameInput.getText(),
                 (double) priceInput.getValue(),
                 (double) caloriesInput.getValue(),
-                imageFullPath,
+                imageChooser.getFilePath(),
                 standaloneInput.isSelected(),
                 (String) operationInput.getSelectedItem(),
                 (int) stockInput.getValue()
