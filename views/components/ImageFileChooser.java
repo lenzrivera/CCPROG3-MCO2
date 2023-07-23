@@ -55,7 +55,7 @@ public class ImageFileChooser extends JPanel {
     public void setFilePath(String value) {
         fileFullPath = value;
 
-        if (value == null) {
+        if (value == null || value.isBlank()) {
             filepathLabel.setText("[none]");
         } else {
             filepathLabel.setText(Paths.get(value).getFileName().toString());
