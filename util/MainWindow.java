@@ -14,7 +14,7 @@ public class MainWindow {
         frame.setLayout(new CardLayout());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false);
-        frame.setSize(700, 500);
+        frame.setSize(850, 550);
         
         currentView = null;
 
