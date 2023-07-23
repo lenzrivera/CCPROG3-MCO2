@@ -9,7 +9,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-public class FileChooser extends JPanel {
+public class ImageFileChooser extends JPanel {
     private String fileFullPath;
     
     private JLabel mainLabel;
@@ -17,7 +17,7 @@ public class FileChooser extends JPanel {
     private JButton chooseButton;
     private JFileChooser fileChooser;
     
-    public FileChooser(String mainLabel) {
+    public ImageFileChooser(String mainLabel) {
         super(new GridLayout(1, 3));
 
         fileFullPath = "";
@@ -31,8 +31,13 @@ public class FileChooser extends JPanel {
         chooseButton = new JButton("Select");
         add(chooseButton);
 
+        // TODO: actually disallow non-image files as this can be circumvented
+        FileNameExtensionFilter filter = 
+            new FileNameExtensionFilter("Image Files", "jpg", "png");
+
         fileChooser = new JFileChooser(); 
-        
+        fileChooser.setFileFilter(filter);
+
         chooseButton.addActionListener(e -> {
             int returnVal = fileChooser.showOpenDialog(this);
 
@@ -55,9 +60,5 @@ public class FileChooser extends JPanel {
         } else {
             filepathLabel.setText(Paths.get(value).getFileName().toString());
         }
-    }
-
-    public void setFileFilter(FileNameExtensionFilter filter) {
-        fileChooser.setFileFilter(filter);
     }
 }

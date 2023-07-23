@@ -11,7 +11,6 @@ import javax.swing.JSpinner;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 
 public abstract class StockItemsPanel extends JPanel {
@@ -36,7 +35,7 @@ public abstract class StockItemsPanel extends JPanel {
     protected JLabel stockLabel;
     protected JSpinner stockInput;
 
-    protected FileChooser imageChooser;
+    protected ImageFileChooser imageChooser;
 
     protected JButton addItemButton;
     protected JButton removeItemButton;
@@ -96,7 +95,7 @@ public abstract class StockItemsPanel extends JPanel {
         stockInputModel.setValue(0);
         stockInput = new JSpinner(stockInputModel);
 
-        imageChooser = new FileChooser("Image:");
+        imageChooser = new ImageFileChooser("Image:");
 
         addItemButton = new JButton("Add Item");
         removeItemButton = new JButton("Remove Item");
@@ -109,10 +108,6 @@ public abstract class StockItemsPanel extends JPanel {
 
     public void setCaloriesInputValue(double value) {
         caloriesInput.setValue(value);
-    }
-
-    public void setFileFilter(FileNameExtensionFilter filter) {
-        imageChooser.setFileFilter(filter);
     }
 
     public void setImagePathValue(String value) {
