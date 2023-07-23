@@ -2,36 +2,38 @@ package model;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 public class Preset {
     private String name;
-    private HashMap<String, Integer> items;
+    private Map<String, Integer> items;
     private Operation operation;
+    private String imagePath;
 
-    public Preset(String name, Operation operation) {
+    public Preset(
+        String name, 
+        Map<String, Integer> itemMap, 
+        Operation operation, 
+        String imagePath
+    ) {
         this.name = name;
-        items = new HashMap<>();
+        items = new HashMap<>(itemMap);
         this.operation = operation;
+        this.imagePath = imagePath;
+    }
+    
+    public String getImagePath() {
+        return imagePath;
     }
 
     public String getName() {
         return name;
     }
 
-    public Set<Map.Entry<String, Integer>> getItems() {
-        return items.entrySet();
+    public Map<String, Integer> getItems() {
+        return items;
     }
     
     public Operation getOperation() {
         return operation;
-    }
-
-    public void addItem(String itemName, int quantity) {
-        items.put(itemName, quantity);
-    }
-
-    public void removeItem(String itemName) {
-        items.remove(itemName);
     }
 }

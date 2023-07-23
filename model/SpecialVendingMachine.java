@@ -52,6 +52,16 @@ public class SpecialVendingMachine extends VendingMachine<SpecialSlot> {
         return total;
     }
 
+    public Preset getPreset(String name) {
+        for (Preset preset : presets) {
+            if (preset.getName().equalsIgnoreCase(name)) {
+                return preset;
+            }
+        }
+        
+        return null;
+    }
+
     public List<Preset> getPresets() {
         return presets;
     }
@@ -183,7 +193,8 @@ public class SpecialVendingMachine extends VendingMachine<SpecialSlot> {
         double totalSoFar = 0;
 
         for (
-            Map.Entry<String, Integer> entry : selectedPreset.getItems()
+            Map.Entry<String, Integer> entry : 
+                selectedPreset.getItems().entrySet()
         ) {
             String itemName = entry.getKey();
             int itemQuantity = entry.getValue();
@@ -231,7 +242,8 @@ public class SpecialVendingMachine extends VendingMachine<SpecialSlot> {
 
     public boolean addPreset(Preset preset) {
         for (
-            Map.Entry<String, Integer> entry : selectedPreset.getItems()
+            Map.Entry<String, Integer> entry : 
+                selectedPreset.getItems().entrySet()
         ) {
             if (findSlotByItemName(entry.getKey()) == null) {
                 return false;

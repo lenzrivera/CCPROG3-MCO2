@@ -1,18 +1,21 @@
 package controllers;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import controllers.templates.CreateMachineController;
 import model.Item;
 import model.Operation;
+import model.Preset;
 import model.Slot;
 import model.SpecialSlot;
 import model.SpecialVendingMachine;
 import model.VendingMachineModel;
 import states.MainMenuState;
 import views.CreateSpecialMachineView;
+import views.components.SetupPresetsPanel;
 import views.components.StockSpecialItemsPanel;
 
 public class CreateSpecialMachineController 
@@ -107,6 +110,7 @@ public class CreateSpecialMachineController
         });
 
         view.getStockItemsPanel().setNextButtonListener(() -> {
+            setItemList(machine.getSlots());
             view.getSetupPane().setActiveTab(2);
         });
 
@@ -140,33 +144,59 @@ public class CreateSpecialMachineController
 
         /* 3 - SETUP PRESETS */
 
-        // // TODO: very many things
-
-        // view.getSetupPresetsPanel().setNextButtonListener(() -> {
-        //     // at least one default preset should be added
+        view.getSetupPresetsPanel().setNextButtonListener(() -> {
+            if (machine.getPresets().size() == 0) {
+                view.showErrorDialog("At least one default preset should exist.");
+                return;                
+            }
             
-        //     view.getSetupPane().setActiveTab(3);
-        // });
+            view.getSetupPane().setActiveTab(3);
+        });
 
-        // view.getSetupPresetsPanel().setPresetAddListener((
-        //     String name,
-        //     Map<String, Integer> items
-        // ) -> {
-        //     // name and items should not be empty
+        view.getSetupPresetsPanel().setPresetAddListener((
+            String name,
+            Map<String, Integer> items,
+            String operation,
+            String imagePath
+        ) -> {
+            // TODO: handle duplicate preset names
+            // TODO: perhaps look into invalid presets (e.g. only toppings) 
 
-        //     machine.addPreset(new Preset(name, items));
-        // });
+            if (name.isBlank()) {
+                view.showErrorDialog("Please enter a valid preset name.");
+                return;
+            }
 
-        // view.getSetupPresetsPanel().setPresetRemoveListener((
-        //     int presetNo
-        // ) -> {
-        //     if (!machine.removePreset(presetNo)) {
-        //         view.showErrorDialog("Cannot remove a non-existent preset.");
-        //         return;
-        //     }
+            if (items.size() == 0) {
+                view.showErrorDialog("A preset cannot be empty.");
+                return;                
+            }
 
-        //     updatePresetList(machine.getPresets());
-        // });
+            machine.addPreset(new Preset(
+                name, items, Operation.valueOf(operation), imagePath));
+            updatePresetList(machine.getPresets());
+        });
+
+        view.getSetupPresetsPanel().setPresetRemoveListener((String name) -> {
+            if (!machine.removePreset(name)) {
+                view.showErrorDialog("Cannot remove a non-existent preset.");
+                return;
+            }
+
+            updatePresetList(machine.getPresets());
+        });
+
+        view.getSetupPresetsPanel().setPresetSelectListener((String name) -> {
+            Preset preset = machine.getPreset(name);
+            assert preset != null;
+
+            SetupPresetsPanel panel = view.getSetupPresetsPanel();
+            panel.setNameInputValue(preset.getName());
+            panel.setImagePathValue(preset.getImagePath());
+            panel.setOperationValue(preset.getOperation().toString());
+
+            view.getSetupPresetsPanel().updateItemMap(preset.getItems());
+        });
 
         /* 4 - CHANGE STOCK */
 
@@ -194,5 +224,26 @@ public class CreateSpecialMachineController
                   .collect(Collectors.toList());
 
         view.getStockItemsPanel().setOperations(opStrings);
+    }
+
+    private void updatePresetList(List<Preset> presets) {
+        view.getSetupPresetsPanel().clearPresetList();
+
+        for (Preset preset : presets) {
+            view.getSetupPresetsPanel().addPreset(preset.getName());
+        }
+    }
+
+    private void setItemList(List<? extends Slot> slots) {
+        view.getSetupPresetsPanel().clearItemQtySelectors();
+
+        for (Slot slot : slots) {
+            if (slot.getSampleItem() == null) {
+                continue;
+            }
+
+            view.getSetupPresetsPanel()
+                .addItemQtySelector(slot.getSampleItem().getName());
+        }
     }
 }
