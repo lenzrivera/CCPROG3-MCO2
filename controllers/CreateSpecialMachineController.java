@@ -1,5 +1,6 @@
 package controllers;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -102,7 +103,7 @@ public class CreateSpecialMachineController
 
         view.getStockItemsPanel().setItemRemoveListener((int slotNo) -> {
             if (!machine.removeItem(slotNo)) {
-                view.showErrorDialog("Cannot remove a non-existent item.");
+                view.showErrorDialog("Cannot remove   non-existent item.");
                 return;
             }
 
@@ -110,7 +111,16 @@ public class CreateSpecialMachineController
         });
 
         view.getStockItemsPanel().setNextButtonListener(() -> {
-            if (machine.getSlots().size() > 0) {
+            boolean hasItems = false;
+
+            for (Slot slot : machine.getSlots()) {
+                if (slot.getSampleItem() != null) {
+                    hasItems = true;
+                    break;
+                }
+            }
+
+            if (hasItems) {
                 setItemList(machine.getSlots());
                 view.getSetupPane().setActiveTab(2);
             } else {
@@ -158,6 +168,7 @@ public class CreateSpecialMachineController
         });
 
         view.getSetupPresetsPanel().setPresetAddListener((
+            int presetIndex,
             String name,
             Map<String, Integer> items,
             String operation,
@@ -176,8 +187,20 @@ public class CreateSpecialMachineController
                 return;                
             }
 
-            machine.addPreset(new Preset(
-                name, items, Operation.valueOf(operation), imagePath));
+            if (imagePath == null) {
+                view.showErrorDialog("Please select a preset image.");
+                return;                
+            }
+
+            Preset newPreset = new Preset(
+                name, items, Operation.valueOf(operation), imagePath);
+
+            if (presetIndex < machine.getPresets().size()) {
+                machine.getPresets().set(presetIndex, newPreset);
+            } else {
+                machine.addPreset(newPreset);
+            }
+
             updatePresetList(machine.getPresets());
         });
 
@@ -191,10 +214,19 @@ public class CreateSpecialMachineController
         });
 
         view.getSetupPresetsPanel().setPresetSelectListener((String name) -> {
+            SetupPresetsPanel panel = view.getSetupPresetsPanel();
+
+            if (name == null) {
+                panel.setNameInputValue("");
+                panel.setImagePathValue("");
+                panel.setOperationValue(0);
+                view.getSetupPresetsPanel().updateItemMap(new HashMap<>());
+                return;
+            }
+            
             Preset preset = machine.getPreset(name);
             assert preset != null;
 
-            SetupPresetsPanel panel = view.getSetupPresetsPanel();
             panel.setNameInputValue(preset.getName());
             panel.setImagePathValue(preset.getImagePath());
             panel.setOperationValue(preset.getOperation().toString());
