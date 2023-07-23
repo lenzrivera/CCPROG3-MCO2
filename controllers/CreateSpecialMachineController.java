@@ -110,8 +110,12 @@ public class CreateSpecialMachineController
         });
 
         view.getStockItemsPanel().setNextButtonListener(() -> {
-            setItemList(machine.getSlots());
-            view.getSetupPane().setActiveTab(2);
+            if (machine.getSlots().size() > 0) {
+                setItemList(machine.getSlots());
+                view.getSetupPane().setActiveTab(2);
+            } else {
+                view.getSetupPane().setActiveTab(3);
+            }
         });
 
         view.getStockItemsPanel().setSlotSelectListener((
@@ -168,7 +172,7 @@ public class CreateSpecialMachineController
             }
 
             if (items.size() == 0) {
-                view.showErrorDialog("A preset cannot be empty.");
+                view.showErrorDialog("A preset cannot have no items.");
                 return;                
             }
 
@@ -224,6 +228,7 @@ public class CreateSpecialMachineController
                   .collect(Collectors.toList());
 
         view.getStockItemsPanel().setOperations(opStrings);
+        view.getSetupPresetsPanel().setOperations(opStrings);
     }
 
     private void updatePresetList(List<Preset> presets) {
