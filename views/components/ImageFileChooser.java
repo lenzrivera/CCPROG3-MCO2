@@ -1,12 +1,14 @@
 package views.components;
 
-import java.awt.GridLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.nio.file.Paths;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class ImageFileChooser extends JPanel {
@@ -18,18 +20,25 @@ public class ImageFileChooser extends JPanel {
     private JFileChooser fileChooser;
     
     public ImageFileChooser(String mainLabel) {
-        super(new GridLayout(1, 3));
+        super(new GridBagLayout());
 
         fileFullPath = "";
 
+        GridBagConstraints gbc = new GridBagConstraints();
         this.mainLabel = new JLabel(mainLabel);
-        add(this.mainLabel);
+        gbc.gridx = 0;
+        add(this.mainLabel, gbc);
 
         filepathLabel = new JLabel("");
-        add(filepathLabel);
+        filepathLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        gbc.gridx = 1;
+        gbc.weightx = 1.0;
+        add(filepathLabel, gbc);
 
         chooseButton = new JButton("Select");
-        add(chooseButton);
+        gbc.gridx = 2;
+        gbc.weightx = 0.0;
+        add(chooseButton, gbc);
 
         // TODO: actually disallow non-image files as this can be circumvented
         FileNameExtensionFilter filter = 
@@ -56,7 +65,7 @@ public class ImageFileChooser extends JPanel {
         fileFullPath = value;
 
         if (value == null || value.isBlank()) {
-            filepathLabel.setText("[none]");
+            filepathLabel.setText("[nonaaaaaae]");
         } else {
             filepathLabel.setText(Paths.get(value).getFileName().toString());
         }
