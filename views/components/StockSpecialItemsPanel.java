@@ -141,11 +141,6 @@ public class StockSpecialItemsPanel extends StockItemsPanel {
 
         gbc.gridy = 9;
         inputPanel.add(removeItemButton, gbc);
-
-        /* Row 11 */
-
-        gbc.gridy = 10;
-        inputPanel.add(nextButton, gbc);
     }
 
     public void setStandaloneChecked(boolean isChecked) {

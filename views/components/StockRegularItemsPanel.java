@@ -92,11 +92,6 @@ public class StockRegularItemsPanel extends StockItemsPanel {
 
         gbc.gridy = 7;
         inputPanel.add(removeItemButton, gbc);
-
-        /* Row 9 */
-
-        gbc.gridy = 8;
-        inputPanel.add(nextButton, gbc);
     }
 
     public void setItemAddListener(ItemAddListener listener) {

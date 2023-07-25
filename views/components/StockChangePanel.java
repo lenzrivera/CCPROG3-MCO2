@@ -27,14 +27,9 @@ public class StockChangePanel extends JPanel {
     private JSpinner quantityInput;
 
     private JButton stockButton;
-    private JButton nextButton;
 
     public interface AddDenominationListener {
         public void run(double denom, int quantity);
-    }
-
-    public interface NextButtonListener {
-        public void run();
     }
 
     public StockChangePanel() {
@@ -92,11 +87,6 @@ public class StockChangePanel extends JPanel {
         gbc.gridx = 0;
         gbc.gridwidth = 2;  
         inputPanel.add(stockButton, gbc);
-
-        gbc.gridy = 4;
-
-        nextButton = new JButton("Next");
-        inputPanel.add(nextButton, gbc);
     }
 
     /* */
@@ -121,12 +111,6 @@ public class StockChangePanel extends JPanel {
                 (double) denomInput.getSelectedItem(), 
                 (int) quantityInput.getValue()
             );
-        });
-    }
-
-    public void setNextButtonListener(NextButtonListener listener) {
-        nextButton.addActionListener(e -> {
-            listener.run();
         });
     }
 }

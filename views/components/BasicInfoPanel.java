@@ -4,7 +4,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
-import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
@@ -13,17 +12,15 @@ import javax.swing.SpinnerNumberModel;
 
 public class BasicInfoPanel extends JPanel {
     private JLabel heading;
+
     private JLabel nameLabel;
     private JTextField nameInput;
+
     private JLabel slotCountLabel;
     private JSpinner slotCountInput;
+
     private JLabel slotCapacityLabel;
     private JSpinner slotCapacityInput;
-    private JButton nextButton;
-
-    public interface NextButtonListener {
-        public void run(String name, int slotCount, int slotCapacity);
-    }
 
     public BasicInfoPanel() {
         super(new GridBagLayout());
@@ -72,9 +69,18 @@ public class BasicInfoPanel extends JPanel {
         gbc.gridwidth = 2;
         gbc.gridx = 0;
         gbc.gridy = 4;
+    }
 
-        nextButton = new JButton("Next");
-        add(nextButton, gbc);
+    public String getName() {
+        return nameInput.getText();
+    }
+
+    public int getSlotCount() {
+        return (int) slotCountInput.getValue();
+    }
+
+    public int getSlotCapacity() {
+        return (int) slotCapacityInput.getValue();
     }
 
     public void setMinSlotCount(int minSlotCount) {
@@ -91,15 +97,5 @@ public class BasicInfoPanel extends JPanel {
         model.setValue(minSlotCapacity);
 
         slotCapacityInput.setModel(model);
-    }
-
-    public void setNextButtonListener(NextButtonListener listener) {
-        nextButton.addActionListener(e -> {
-            listener.run(
-                nameInput.getText(), 
-                (int) slotCountInput.getValue(), 
-                (int) slotCapacityInput.getValue()
-            );
-        });
     }
 }

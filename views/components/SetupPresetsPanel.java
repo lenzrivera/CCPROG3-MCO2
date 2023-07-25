@@ -48,11 +48,6 @@ public class SetupPresetsPanel extends JPanel {
     private ImageFileChooser imageChooser;
     private JButton addPresetButton;
     private JButton removePresetButton;
-    private JButton nextButton;
-    
-    public interface NextButtonListener {
-        public void run();
-    }
     
     public interface PresetAddListener {
         public void run(
@@ -154,11 +149,6 @@ public class SetupPresetsPanel extends JPanel {
 
         removePresetButton = new JButton("Remove Preset");
         presetInfoPanel.add(removePresetButton, gbc);
-
-        gbc.gridy = 6;
-
-        nextButton = new JButton("Next");
-        presetInfoPanel.add(nextButton, gbc);
     }
 
     private void initPresetList() {
@@ -260,12 +250,6 @@ public class SetupPresetsPanel extends JPanel {
     }
 
     /* */
-
-    public void setNextButtonListener(NextButtonListener listener) {
-        nextButton.addActionListener(e -> {
-            listener.run();
-        });
-    }
 
     public void setPresetAddListener(PresetAddListener listener) {
         addPresetButton.addActionListener(e -> {       
