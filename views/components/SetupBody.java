@@ -2,7 +2,6 @@ package views.components;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
@@ -17,17 +16,22 @@ public class SetupBody<T extends JComponent> extends JPanel {
         super(new GridBagLayout());
 
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.insets = new Insets(5, 5, 5, 5);
         
         gbc.gridy = 0;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.weightx = 1.0;
         gbc.weighty = 1.0;
 
         this.content = content;
         add(this.content, gbc);
 
         gbc.gridy = 1;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.LINE_END;
+        gbc.ipadx = 100;
+        gbc.weightx = 0.0;
         gbc.weighty = 0.0;
+        gbc.insets.set(5, 5, 5, 5);
 
         nextButton = new JButton("Next");
         add(nextButton, gbc);
