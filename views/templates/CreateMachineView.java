@@ -1,6 +1,7 @@
 package views.templates;
 
 import java.awt.Container;
+import java.awt.event.ActionListener;
 
 import util.View;
 import views.components.BasicInfoPanel;
@@ -47,5 +48,9 @@ public abstract class CreateMachineView<T extends StockItemsPanel> extends View 
 
     public StockChangePanel getStockChangePanel() {
         return stockChangePanel;
+    }
+
+    public void setExitButtonListener(ActionListener listener) {
+        mainContainer.setExitButtonListener(listener);
     }
 }

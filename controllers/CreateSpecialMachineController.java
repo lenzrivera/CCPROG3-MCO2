@@ -28,6 +28,11 @@ public class CreateSpecialMachineController
     ) {
         super(m, v);
         
+        view.setExitButtonListener(e -> {
+            // Exit without saving anything.
+            changeState(new MainMenuState());
+        });
+
         /* 1 - BASIC INFORMATION */
 
         view.getBasicInfoPanel().setNextButtonListener((
