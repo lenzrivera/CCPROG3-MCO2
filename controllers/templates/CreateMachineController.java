@@ -78,8 +78,10 @@ public abstract class CreateMachineController<
 
         for (int i = 0; i < rawMap.size(); i++) {
             view.getStockChangePanel()
+                .getDenomTable()
                 .setDenominationCell(i + 1, denominations.get(i));
             view.getStockChangePanel()
+                .getDenomTable()
                 .setQuantityCell(i + 1, quantities.get(i));
         }
     }

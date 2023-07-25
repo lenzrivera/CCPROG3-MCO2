@@ -11,23 +11,21 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
-import javax.swing.JTable;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.table.DefaultTableModel;
 
 public class StockChangePanel extends JPanel {
-    private JScrollPane tableScrollPane;
-    private JTable table;
-    private DefaultTableModel tableModel;
+    private DenomTable denomTable;
 
     private JPanel inputPanel;
     private JLabel inputHeading;
+
     private JLabel denomLabel;
     private JComboBox<Double> denomInput;
+
     private JLabel quantityLabel;
     private JSpinner quantityInput;
+
     private JButton stockButton;
     private JButton nextButton;
 
@@ -44,15 +42,8 @@ public class StockChangePanel extends JPanel {
 
         /* TABLE */
 
-        tableModel = new DefaultTableModel();
-        tableModel.addColumn("Denomination");
-        tableModel.addColumn("Quantity");
-
-        table = new JTable(tableModel);
-        table.getTableHeader().setReorderingAllowed(false);
-
-        tableScrollPane = new JScrollPane(table);
-        add(tableScrollPane);
+        denomTable = new DenomTable();
+        add(denomTable);
 
         /* INPUT PANEL */
 
@@ -108,21 +99,10 @@ public class StockChangePanel extends JPanel {
         inputPanel.add(nextButton, gbc);
     }
 
-    public void setAddDenominationListener(AddDenominationListener listener) {
-        stockButton.addActionListener(e -> {
-            listener.run(
-                (double) denomInput.getSelectedItem(), 
-                (int) quantityInput.getValue()
-            );
-        });
-    }
+    /* */
 
-    public void setDenominationCell(int rowNo, double value) {
-        if (tableModel.getRowCount() < rowNo) {
-            tableModel.addRow(new Object[]{});
-        }
-    
-        tableModel.setValueAt(value, rowNo - 1, 0);
+    public DenomTable getDenomTable() {
+        return denomTable;
     }
 
     public void setDenominations(List<Double> denominations) {
@@ -133,17 +113,20 @@ public class StockChangePanel extends JPanel {
         denomInput.setSelectedIndex(0);
     }
 
+    /* */
+
+    public void setAddDenominationListener(AddDenominationListener listener) {
+        stockButton.addActionListener(e -> {
+            listener.run(
+                (double) denomInput.getSelectedItem(), 
+                (int) quantityInput.getValue()
+            );
+        });
+    }
+
     public void setNextButtonListener(NextButtonListener listener) {
         nextButton.addActionListener(e -> {
             listener.run();
         });
-    }
-
-    public void setQuantityCell(int rowNo, int value) {
-        if (tableModel.getRowCount() < rowNo) {
-            tableModel.addRow(new Object[]{});
-        }
-
-        tableModel.setValueAt(value, rowNo - 1, 1);
     }
 }
