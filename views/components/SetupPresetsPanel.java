@@ -58,11 +58,7 @@ public class SetupPresetsPanel extends JPanel {
             String imagePath
         );
     }
-
-    public interface PresetRemoveListener {
-        public void run(String name);
-    }
-
+    
     public interface PresetSelectListener {
         public void run(String name);
     }
@@ -273,7 +269,7 @@ public class SetupPresetsPanel extends JPanel {
         });
     }
 
-    public void setPresetRemoveListener(PresetRemoveListener listener) {
+    public void setPresetRemoveListener(PresetSelectListener listener) {
         removePresetButton.addActionListener(e -> {
             listener.run(selectedPresetName);
         });

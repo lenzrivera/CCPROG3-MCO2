@@ -34,7 +34,7 @@ public class ManageMoneyPanel extends JPanel {
         public void run();
     }
 
-    public interface SelectListener {
+    public interface DenomSelectListener {
         public void run(double denom, int quantity);
     }
 
@@ -122,7 +122,7 @@ public class ManageMoneyPanel extends JPanel {
 
     /* */
 
-    public void setCollectListener(SelectListener listener) {
+    public void setCollectListener(DenomSelectListener listener) {
         collectButton.addActionListener(e -> {
             listener.run(
                 (double) denomInput.getSelectedItem(), 
@@ -137,7 +137,7 @@ public class ManageMoneyPanel extends JPanel {
         });
     }
 
-    public void setStockListener(SelectListener listener) {
+    public void setStockListener(DenomSelectListener listener) {
         stockButton.addActionListener(e -> {
             listener.run(
                 (double) denomInput.getSelectedItem(), 

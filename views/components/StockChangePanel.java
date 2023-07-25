@@ -28,7 +28,7 @@ public class StockChangePanel extends JPanel {
 
     private JButton stockButton;
 
-    public interface AddDenominationListener {
+    public interface DenomSelectListener {
         public void run(double denom, int quantity);
     }
 
@@ -105,7 +105,7 @@ public class StockChangePanel extends JPanel {
 
     /* */
 
-    public void setAddDenominationListener(AddDenominationListener listener) {
+    public void setAddDenominationListener(DenomSelectListener listener) {
         stockButton.addActionListener(e -> {
             listener.run(
                 (double) denomInput.getSelectedItem(), 

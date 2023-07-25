@@ -40,10 +40,6 @@ public abstract class StockItemsPanel extends JPanel {
     protected JButton addItemButton;
     protected JButton removeItemButton;
 
-    public interface ItemRemoveListener {
-        public void run(int slotNo);
-    }
-
     public interface SlotSelectListener {
         public void run(int slotNo);
     }
@@ -143,7 +139,7 @@ public abstract class StockItemsPanel extends JPanel {
 
     /* */
 
-    public void setItemRemoveListener(ItemRemoveListener listener) {
+    public void setItemRemoveListener(SlotSelectListener listener) {
         removeItemButton.addActionListener(e -> {
             listener.run(selectedSlotNo);
         });
