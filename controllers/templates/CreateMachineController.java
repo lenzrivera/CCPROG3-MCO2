@@ -57,12 +57,18 @@ public abstract class CreateMachineController<
      */
     protected void setConstants() {
         view.getBasicInfoPanel()
+            .getContent()
             .setMinSlotCount(VendingMachine.MIN_SLOT_COUNT);
         view.getBasicInfoPanel()
+            .getContent()
             .setMinSlotCapacity(Slot.MIN_MAX_CAPACITY);
 
-        view.getStockChangePanel().setDenominations(
-            Arrays.stream(DenominationMap.VALID_DENOMINATIONS).boxed().toList());
+        view.getStockChangePanel()
+            .getContent()    
+            .setDenominations(
+                Arrays.stream(DenominationMap.VALID_DENOMINATIONS)
+                      .boxed()
+                      .toList());
     }
 
     /**
@@ -78,9 +84,11 @@ public abstract class CreateMachineController<
 
         for (int i = 0; i < rawMap.size(); i++) {
             view.getStockChangePanel()
+                .getContent()
                 .getDenomTable()
                 .setDenominationCell(i + 1, denominations.get(i));
             view.getStockChangePanel()
+                .getContent()
                 .getDenomTable()
                 .setQuantityCell(i + 1, quantities.get(i));
         }
@@ -98,8 +106,8 @@ public abstract class CreateMachineController<
                 ? "[empty]" 
                 : slots.get(i).getSampleItem().getName();
 
-            view.getStockItemsPanel().setSlotNumberCell(i + 1, i + 1);
-            view.getStockItemsPanel().setItemNameCell(i + 1, name);
+            view.getStockItemsPanel().getContent().setSlotNumberCell(i + 1, i + 1);
+            view.getStockItemsPanel().getContent().setItemNameCell(i + 1, name);
         }
     }
 }

@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import util.View;
 import views.components.BasicInfoPanel;
 import views.components.SectionContainer;
+import views.components.SetupBody;
 import views.components.SetupPane;
 import views.components.StockChangePanel;
 import views.components.StockItemsPanel;
@@ -15,9 +16,9 @@ public abstract class CreateMachineView<T extends StockItemsPanel> extends View 
 
     protected SetupPane setupPane;
 
-    protected BasicInfoPanel basicInfoPanel;
-    protected T stockItemsPanel;
-    protected StockChangePanel stockChangePanel;
+    protected SetupBody<BasicInfoPanel> basicInfoPanel;
+    protected SetupBody<T> stockItemsPanel;
+    protected SetupBody<StockChangePanel> stockChangePanel;
 
     public CreateMachineView(String heading) {
         mainContainer = new SectionContainer(heading);
@@ -25,8 +26,8 @@ public abstract class CreateMachineView<T extends StockItemsPanel> extends View 
         setupPane = new SetupPane();
         mainContainer.add(setupPane);
 
-        basicInfoPanel = new BasicInfoPanel();
-        stockChangePanel = new StockChangePanel();
+        basicInfoPanel = new SetupBody<>(new BasicInfoPanel());
+        stockChangePanel = new SetupBody<>(new StockChangePanel());
     }
 
     @Override
@@ -34,7 +35,7 @@ public abstract class CreateMachineView<T extends StockItemsPanel> extends View 
         return mainContainer;
     }
 
-    public BasicInfoPanel getBasicInfoPanel() {
+    public SetupBody<BasicInfoPanel> getBasicInfoPanel() {
         return basicInfoPanel;
     }
 
@@ -42,11 +43,11 @@ public abstract class CreateMachineView<T extends StockItemsPanel> extends View 
         return setupPane;
     }
 
-    public T getStockItemsPanel() {
+    public SetupBody<T> getStockItemsPanel() {
         return stockItemsPanel;
     }
 
-    public StockChangePanel getStockChangePanel() {
+    public SetupBody<StockChangePanel> getStockChangePanel() {
         return stockChangePanel;
     }
 

@@ -1,17 +1,18 @@
 package views;
 
+import views.components.SetupBody;
 import views.components.SetupPresetsPanel;
 import views.components.StockSpecialItemsPanel;
 import views.templates.CreateMachineView;
 
 public class CreateSpecialMachineView extends CreateMachineView<StockSpecialItemsPanel> {
-    private SetupPresetsPanel setupPresetsPanel;
+    private SetupBody<SetupPresetsPanel> setupPresetsPanel;
 
     public CreateSpecialMachineView() {
         super("Create a Special Vending Machine");
 
-        stockItemsPanel = new StockSpecialItemsPanel();
-        setupPresetsPanel = new SetupPresetsPanel();
+        stockItemsPanel = new SetupBody<>(new StockSpecialItemsPanel());
+        setupPresetsPanel = new SetupBody<>(new SetupPresetsPanel());
 
         setupPane.addTab("Basic Information", basicInfoPanel);
         setupPane.addTab("Stock Items", stockItemsPanel);
@@ -19,7 +20,7 @@ public class CreateSpecialMachineView extends CreateMachineView<StockSpecialItem
         setupPane.addTab("Stock Change", stockChangePanel);
     }
 
-    public SetupPresetsPanel getSetupPresetsPanel() {
+    public SetupBody<SetupPresetsPanel> getSetupPresetsPanel() {
         return setupPresetsPanel;
     }
 }
