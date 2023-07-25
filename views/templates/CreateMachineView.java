@@ -1,10 +1,6 @@
 package views.templates;
 
-import java.awt.Component;
 import java.awt.Container;
-import java.awt.GridLayout;
-
-import javax.swing.JPanel;
 
 import util.View;
 import views.components.BasicInfoPanel;
@@ -16,7 +12,6 @@ import views.components.StockItemsPanel;
 public abstract class CreateMachineView<T extends StockItemsPanel> extends View {
     protected SectionContainer mainContainer;
 
-    protected JPanel setupPaneContainer;
     protected SetupPane setupPane;
 
     protected BasicInfoPanel basicInfoPanel;
@@ -26,16 +21,8 @@ public abstract class CreateMachineView<T extends StockItemsPanel> extends View 
     public CreateMachineView(String heading) {
         mainContainer = new SectionContainer(heading);
 
-        setupPaneContainer = new JPanel();
-        mainContainer.setBody(setupPaneContainer);
-        
-        // Remove the indentation given to the heading by default.
-        setupPaneContainer.setAlignmentX(Component.LEFT_ALIGNMENT); 
-        // Make the tabbed pane take all the window space.
-        setupPaneContainer.setLayout(new GridLayout());
-
         setupPane = new SetupPane();
-        setupPaneContainer.add(setupPane);
+        mainContainer.add(setupPane);
 
         basicInfoPanel = new BasicInfoPanel();
         stockChangePanel = new StockChangePanel();
