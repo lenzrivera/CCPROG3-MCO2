@@ -143,8 +143,25 @@ public class StockSpecialItemsPanel extends StockItemsPanel {
         inputPanel.add(removeItemButton, gbc);
     }
 
-    public void setStandaloneChecked(boolean isChecked) {
+    public boolean getStandaloneInput() {
+        return standaloneInput.isSelected();
+    }
+
+    public void setStandaloneInput(boolean isChecked) {
         standaloneInput.setSelected(isChecked);
+    }
+
+    public String getOperationInput() {
+        return (String) operationInput.getSelectedItem();
+    }
+    
+    public void setOperationInput(int index) {
+        operationInput.setSelectedIndex(index);
+    }
+
+    public void setOperationInput(String value) {
+        // Assume that `value` is in the JComboBox model.
+        operationInput.setSelectedItem(value);
     }
 
     public void setOperations(List<String> operations) {
@@ -153,29 +170,5 @@ public class StockSpecialItemsPanel extends StockItemsPanel {
         
         operationInput.setModel(model);
         operationInput.setSelectedIndex(0);
-    }
-
-    public void setOperationValue(int index) {
-        operationInput.setSelectedIndex(index);
-    }
-
-    public void setOperationValue(String value) {
-        // Assume that `value` is in the JComboBox model.
-        operationInput.setSelectedItem(value);
-    }
-
-    public void setItemAddListener(ItemAddListener listener) {
-        addItemButton.addActionListener(e -> {
-            listener.run(
-                selectedSlotNo, 
-                nameInput.getText(),
-                (double) priceInput.getValue(),
-                (double) caloriesInput.getValue(),
-                imageChooser.getFilePath(),
-                standaloneInput.isSelected(),
-                (String) operationInput.getSelectedItem(),
-                (int) stockInput.getValue()
-            );
-        });
     }
 }

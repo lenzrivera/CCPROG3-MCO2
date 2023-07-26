@@ -4,6 +4,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.event.ActionListener;
 import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
@@ -120,15 +121,18 @@ public class ManageMoneyPanel extends JPanel {
         denomInput.setSelectedIndex(0);
     }
 
+    public double getSelectedDenom() {
+        return (double) denomInput.getSelectedItem();
+    }
+
+    public int getSelectedValue() {
+        return (int) quantityInput.getValue();
+    }
+
     /* */
 
-    public void setCollectListener(DenomSelectListener listener) {
-        collectButton.addActionListener(e -> {
-            listener.run(
-                (double) denomInput.getSelectedItem(), 
-                (int) quantityInput.getValue()
-            );
-        });
+    public void setCollectListener(ActionListener listener) {
+        collectButton.addActionListener(listener);
     }
 
     public void setCollectAllListener(CollectAllListener listener) {
@@ -137,12 +141,7 @@ public class ManageMoneyPanel extends JPanel {
         });
     }
 
-    public void setStockListener(DenomSelectListener listener) {
-        stockButton.addActionListener(e -> {
-            listener.run(
-                (double) denomInput.getSelectedItem(), 
-                (int) quantityInput.getValue()
-            );            
-        });
+    public void setStockListener(ActionListener listener) {
+        stockButton.addActionListener(listener);
     }
 }

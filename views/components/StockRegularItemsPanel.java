@@ -4,17 +4,6 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 
 public class StockRegularItemsPanel extends StockItemsPanel {
-    public interface ItemAddListener {
-        public void run(
-            int slotNo,
-            String name,
-            double price,
-            double calories,
-            String imagePath,
-            int stock  
-        );
-    }
-
     public StockRegularItemsPanel() {
     }
 
@@ -92,18 +81,5 @@ public class StockRegularItemsPanel extends StockItemsPanel {
 
         gbc.gridy = 7;
         inputPanel.add(removeItemButton, gbc);
-    }
-
-    public void setItemAddListener(ItemAddListener listener) {
-        addItemButton.addActionListener(e -> {
-            listener.run(
-                selectedSlotNo, 
-                nameInput.getText(),
-                (double) priceInput.getValue(),
-                (double) caloriesInput.getValue(),
-                imageChooser.getFilePath(),
-                (int) stockInput.getValue()
-            );
-        });
     }
 }

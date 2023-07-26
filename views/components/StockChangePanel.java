@@ -4,6 +4,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.event.ActionListener;
 import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
@@ -27,10 +28,6 @@ public class StockChangePanel extends JPanel {
     private JSpinner quantityInput;
 
     private JButton stockButton;
-
-    public interface DenomSelectListener {
-        public void run(double denom, int quantity);
-    }
 
     public StockChangePanel() {
         super(new GridLayout(1, 2));
@@ -103,14 +100,17 @@ public class StockChangePanel extends JPanel {
         denomInput.setSelectedIndex(0);
     }
 
+    public double getSelectedDenom() {
+        return (double) denomInput.getSelectedItem();
+    }
+
+    public int getSelectedQuantity() {
+        return (int) quantityInput.getValue();
+    }
+
     /* */
 
-    public void setAddDenominationListener(DenomSelectListener listener) {
-        stockButton.addActionListener(e -> {
-            listener.run(
-                (double) denomInput.getSelectedItem(), 
-                (int) quantityInput.getValue()
-            );
-        });
+    public void setAddDenominationListener(ActionListener listener) {
+        stockButton.addActionListener(listener);
     }
 }

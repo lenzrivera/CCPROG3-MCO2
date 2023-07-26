@@ -9,6 +9,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.event.ActionListener;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -23,12 +24,11 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ListSelectionListener;
 
 public class SetupPresetsPanel extends JPanel {
     private final String ADD_NEW_MSG = "[add new preset]";
-    
-    private String selectedPresetName;
-    
+
     private JPanel presetListPanel;
     private JLabel presetListHeading;
     private DefaultListModel<String> presetListModel;
@@ -48,25 +48,9 @@ public class SetupPresetsPanel extends JPanel {
     private ImageFileChooser imageChooser;
     private JButton addPresetButton;
     private JButton removePresetButton;
-    
-    public interface PresetAddListener {
-        public void run(
-            int presetIndex,
-            String name,
-            Map<String, Integer> items,
-            String operation,
-            String imagePath
-        );
-    }
-    
-    public interface PresetSelectListener {
-        public void run(String name);
-    }
 
     public SetupPresetsPanel() {
         super(new GridLayout(1, 3));
-
-        selectedPresetName = "";
 
         initPresetList();
         initItemSelection();
@@ -177,6 +161,42 @@ public class SetupPresetsPanel extends JPanel {
 
     /* */
 
+    public int getSelectedPresetIndex() {
+        if (presetList.getSelectedValue().equalsIgnoreCase(ADD_NEW_MSG)) {
+            return -1;
+        }
+
+        return presetList.getSelectedIndex();
+    }
+
+    public String getNameInput() {
+        return nameInput.getText();
+    }
+
+    public Map<String, Integer> getItemMapping() {
+        Map<String, Integer> itemMap = new HashMap<>();
+
+        for (ItemQtySelector qtySelector : itemQtySelectors) {
+            if (qtySelector.getQuantity() == 0) {
+                continue;
+            }
+
+            itemMap.put(qtySelector.getName(), qtySelector.getQuantity());
+        }
+
+        return itemMap;
+    }
+
+    public String getOperationInput() {
+        return (String) operationInput.getSelectedItem();
+    }
+
+    public String getImagePath() {
+        return imageChooser.getFilePath();
+    }
+
+    /* */
+
     public void addItemQtySelector(String itemName) {
         ItemQtySelector qtySelector = new ItemQtySelector();
         qtySelector.setItemName(itemName);
@@ -247,35 +267,15 @@ public class SetupPresetsPanel extends JPanel {
 
     /* */
 
-    public void setPresetAddListener(PresetAddListener listener) {
-        addPresetButton.addActionListener(e -> {       
-            Map<String, Integer> itemMap = new HashMap<>();
-
-            for (ItemQtySelector qtySelector : itemQtySelectors) {
-                if (qtySelector.getQuantity() == 0) {
-                    continue;
-                }
-
-                itemMap.put(qtySelector.getName(), qtySelector.getQuantity());
-            }
-                
-            listener.run(
-                presetList.getSelectedIndex(),
-                nameInput.getText(),
-                itemMap,
-                operationInput.getSelectedItem().toString(),
-                imageChooser.getFilePath()
-            );
-        });
+    public void setPresetAddListener(ActionListener listener) {
+        addPresetButton.addActionListener(listener);
     }
 
-    public void setPresetRemoveListener(PresetSelectListener listener) {
-        removePresetButton.addActionListener(e -> {
-            listener.run(selectedPresetName);
-        });
+    public void setPresetRemoveListener(ActionListener listener) {
+        removePresetButton.addActionListener(listener);
     }
 
-    public void setPresetSelectListener(PresetSelectListener listener) {
+    public void setPresetSelectListener(ListSelectionListener listener) {
         presetList.addListSelectionListener(e -> {
             // Don't handle extra invokations of this event: the mouseup part
             // of the selection, and when no selection is actually made.
@@ -286,13 +286,7 @@ public class SetupPresetsPanel extends JPanel {
                 return;
             }
 
-            selectedPresetName = presetList.getSelectedValue();
-
-            if (selectedPresetName.equalsIgnoreCase(ADD_NEW_MSG)) {
-                listener.run(null);
-            } else {
-                listener.run(selectedPresetName);
-            }
+            listener.valueChanged(e);
         });
     }
 }

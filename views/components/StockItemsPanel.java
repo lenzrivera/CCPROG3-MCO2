@@ -2,6 +2,7 @@ package views.components;
 
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -11,6 +12,7 @@ import javax.swing.JSpinner;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 public abstract class StockItemsPanel extends JPanel {
@@ -96,28 +98,58 @@ public abstract class StockItemsPanel extends JPanel {
 
     /* */
 
-    public void setCaloriesInputValue(double value) {
+    public double getCaloriesInput() {
+        return (double) caloriesInput.getValue();
+    }
+
+    public void setCaloriesInput(double value) {
         caloriesInput.setValue(value);
     }
 
-    public void setImagePathValue(String value) {
+    public String getImagePathInput() {
+        return imageChooser.getFilePath();
+    }
+
+    public void setImagePathInput(String value) {
         imageChooser.setFilePath(value);
     }
+
+    public String getItemNameInput() {
+        return nameInput.getText();
+    }
+
+    public void setItemNameInput(String value) {
+        nameInput.setText(value);
+    }
+
+    public double getPriceInput() {
+        return (double) priceInput.getValue();
+    }
+
+    public void setPriceInput(double value) {
+        priceInput.setValue(value);
+    }
+
+    public int getSelectedSlotNo() {
+        return selectedSlotNo;
+    }
+
+    public int getStockInput() {
+        return (int) stockInput.getValue();
+    }
+
+    public void setStockInput(int value) {
+        stockInput.setValue(value);
+    }
+
+    /* */
 
     public void setItemNameCell(int rowNo, String value) {
         tableModel.setValueAt(value, rowNo - 1, 1);
     }
 
-    public void setNameInputValue(String value) {
-        nameInput.setText(value);
-    }
-
     public void setMaxStock(int maxStock) {
         ((SpinnerNumberModel) stockInput.getModel()).setMaximum(maxStock);
-    }
-
-    public void setPriceInputValue(double value) {
-        priceInput.setValue(value);
     }
 
     public void setSlotCount(int slotCount) {
@@ -133,19 +165,17 @@ public abstract class StockItemsPanel extends JPanel {
         tableModel.setValueAt(value, rowNo - 1, 0);
     }
 
-    public void setStockInputValue(int value) {
-        stockInput.setValue(value);
-    }
-
     /* */
 
-    public void setItemRemoveListener(SlotSelectListener listener) {
-        removeItemButton.addActionListener(e -> {
-            listener.run(selectedSlotNo);
-        });
+    public void setItemAddListener(ActionListener listener) {
+        addItemButton.addActionListener(listener);
     }
 
-    public void setSlotSelectListener(SlotSelectListener listener) {
+    public void setItemRemoveListener(ActionListener listener) {
+        removeItemButton.addActionListener(listener);
+    }
+
+    public void setSlotSelectListener(ListSelectionListener listener) {
         table.getSelectionModel().addListSelectionListener(e -> {
             // Don't handle extra invokations of this event: the mouseup part
             // of the selection, and when no selection is actually made.
@@ -153,10 +183,9 @@ public abstract class StockItemsPanel extends JPanel {
                 return;
             }
 
-            int slotNo = table.getSelectedRow() + 1;            
-            selectedSlotNo = slotNo;
+            selectedSlotNo = table.getSelectedRow() + 1;
 
-            listener.run(selectedSlotNo);
+            listener.valueChanged(e);
         });        
     }
 }
