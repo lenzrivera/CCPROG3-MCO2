@@ -2,13 +2,13 @@ package controllers.templates;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
 import model.DenominationMap;
 import model.Slot;
 import model.VendingMachine;
 import model.VendingMachineModel;
+import states.MainMenuState;
 import util.Controller;
 import views.templates.CreateMachineView;
 
@@ -38,6 +38,13 @@ public abstract class CreateMachineController<
     protected U machine;
 
     /**
+     * The controller for the particular stock items section of the creation
+     * menu. The StockItemsController varies depending on whether a regular or
+     * special machine is being created, hence the need for generics.
+     */
+    protected StockItemsController<?, ?> stockItemsController;
+    
+    /**
      * Constructs a new CreateMachineController object, correspondingly
      * initializing its model, view, and machine to be created.
      * @param m the VendingMachineModel associated with this controller.
@@ -48,8 +55,17 @@ public abstract class CreateMachineController<
         view = v;
         machine = null;
 
+        // Can't be initialized immediately as the machine to control does not
+        // exist yet at initialization.
+        stockItemsController = null;
+
         setConstants();
+        setListeners();
     }
+
+    protected abstract void handleBasicInfoNext();
+    
+    protected abstract void handleStockItemsNext();
 
     /**
      * Sets the constants and values for the view which limit the user's 
@@ -72,6 +88,49 @@ public abstract class CreateMachineController<
     }
 
     /**
+     * Sets the listeners to the view which would handle user input and
+     * translate them into data changes that will be reflected back to the 
+     * user.
+     */
+    protected void setListeners() {
+        // Common to both regular and special creation menus:
+        
+        view.setExitButtonListener(e -> {
+            // Exit without saving anything.
+            changeState(new MainMenuState());
+        });
+
+        /* BasicInfoPanel */
+
+        view.getBasicInfoPanel().setNextButtonListener(e -> {
+            handleBasicInfoNext();
+        });
+
+        /* StockItemsPanel */
+
+        view.getStockItemsPanel().setNextButtonListener(e -> {
+            handleStockItemsNext();
+        });
+
+        /* StockChangePanel */
+
+        view.getStockChangePanel().getContent().setAddDenominationListener(e -> {
+            double denom = 
+                view.getStockChangePanel().getContent().getSelectedDenom();
+            int quantity = 
+                view.getStockChangePanel().getContent().getSelectedQuantity();
+
+            machine.stockChange(denom, quantity);
+            updateDenominationTable(machine.getChangeStock());
+        });
+
+        view.getStockChangePanel().setNextButtonListener(e -> {
+            model.setVendingMachine(machine);
+            changeState(new MainMenuState());
+        });
+    }
+
+    /**
      * Updates the stock change panel's denomination table with the provided 
      * DenominationMap.
      * @param denomMap the DenominationMap containing the denominations and quantities.
@@ -91,23 +150,6 @@ public abstract class CreateMachineController<
                 .getContent()
                 .getDenomTable()
                 .setQuantityCell(i + 1, quantities.get(i));
-        }
-    }
-
-    /**
-     * Updates the stock items panel's slot table with the provided list of slots.
-     * Each row in the table represents a slot with its slot number and the item name 
-     * (or [empty] for empty slots).
-     * @param slots the list of slots to be displayed in the stock items panel.
-     */
-    protected void updateSlotTable(List<? extends Slot> slots) {
-        for (int i = 0; i < slots.size(); i++) {
-            String name = (slots.get(i).getSampleItem() == null) 
-                ? "[empty]" 
-                : slots.get(i).getSampleItem().getName();
-
-            view.getStockItemsPanel().getContent().setSlotNumberCell(i + 1, i + 1);
-            view.getStockItemsPanel().getContent().setItemNameCell(i + 1, name);
         }
     }
 }
