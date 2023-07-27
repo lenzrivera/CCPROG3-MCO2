@@ -41,6 +41,18 @@ public class StockRegularItemsController
     }
 
     @Override
+    protected void handleItemRemove() {
+        int slotNo = stockItemsPanel.getSelectedSlotNo();
+            
+        if (!machine.removeItem(slotNo)) {
+            parentView.showErrorDialog("Cannot remove a non-existent item.");
+            return;
+        }
+
+        updateSlotTable();
+    }
+
+    @Override
     protected void handleSlotSelect() {
         int selectedSlotNo = stockItemsPanel.getSelectedSlotNo();
         Slot selectedSlot = machine.getSlot(selectedSlotNo);

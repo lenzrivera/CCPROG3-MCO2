@@ -34,6 +34,8 @@ public abstract class StockItemsController<
     // TODO: proper "simulation"
     protected abstract void handleItemAdd();
 
+    protected abstract void handleItemRemove();
+
     protected abstract void handleSlotSelect();
 
     protected boolean checkFieldValidity() {
@@ -84,14 +86,7 @@ public abstract class StockItemsController<
         });
 
         stockItemsPanel.setItemRemoveListener(e -> {
-            int slotNo = stockItemsPanel.getSelectedSlotNo();
-            
-            if (!machine.removeItem(slotNo)) {
-                parentView.showErrorDialog("Cannot remove a non-existent item.");
-                return;
-            }
-
-            updateSlotTable();
+            handleItemRemove();
         });
     }
 

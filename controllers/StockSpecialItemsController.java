@@ -3,6 +3,7 @@ package controllers;
 import controllers.templates.StockItemsController;
 import model.Item;
 import model.Operation;
+import model.Preset;
 import model.SpecialSlot;
 import model.SpecialVendingMachine;
 import util.View;
@@ -48,6 +49,29 @@ public class StockSpecialItemsController
         );
         machine.stockItem(slotNo, stock);
         
+        updateSlotTable();
+    }
+
+    @Override
+    protected void handleItemRemove() {
+        int slotNo = stockItemsPanel.getSelectedSlotNo();
+
+        if (machine.getSlot(slotNo).getSampleItem() == null) {
+            parentView.showErrorDialog("Cannot remove a non-existent item.");
+            return;
+        }
+
+        String itemName = machine.getSlot(slotNo).getSampleItem().getName();
+
+        for (Preset preset : machine.getPresets()) {
+            if (preset.getItems().containsKey(itemName)) {
+                parentView.showErrorDialog(
+                    "Cannot remove item being used in a preset.");
+                return;
+            }
+        }        
+            
+        machine.removeItem(slotNo);
         updateSlotTable();
     }
 
