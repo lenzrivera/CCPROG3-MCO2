@@ -1,26 +1,39 @@
 package controllers;
 
+import controllers.templates.TestMaintenanceController;
+import model.SpecialVendingMachine;
 import model.VendingMachineModel;
-import util.Controller;
 import views.TestSpecialMaintenanceView;
 
-public class TestSpecialMaintenanceController extends Controller {
-    /**
-     * The VendingMachineModel for the whole simulator.
-     */
-    private VendingMachineModel model;
-
-    /**
-     * The view associated with this controller, particularly 
-     * TestRegularMaintenanceView.
-     */
-    private TestSpecialMaintenanceView view;
+public class TestSpecialMaintenanceController extends 
+    TestMaintenanceController<TestSpecialMaintenanceView, StockSpecialItemsController>  
+{
+    private SetupPresetsController presetsController;
 
     public TestSpecialMaintenanceController(
         VendingMachineModel m, 
         TestSpecialMaintenanceView v
     ) {
-        model = m;
-        view = v;
+        super(m, v);
+    }
+
+    @Override
+    protected StockSpecialItemsController initStockItemsController() {
+        return new StockSpecialItemsController(
+            (SpecialVendingMachine) model.getVendingMachine(), 
+            view.getStockItemsPanel(), 
+            view
+        );
+    }
+
+    @Override
+    protected void setListeners() {
+        super.setListeners();
+
+        presetsController = new SetupPresetsController(
+            (SpecialVendingMachine) model.getVendingMachine(), 
+            view.getSetupPresetsPanel(), 
+            view  
+        );
     }
 }

@@ -20,6 +20,9 @@ public abstract class StockItemsController<
         machine = m;
         stockItemsPanel = p;
 
+        stockItemsPanel.setMaxStock(machine.getSlotCapacity());
+        stockItemsPanel.setSlotCount(machine.getSlotCount());
+
         setListeners();
         updateSlotTable();
 
