@@ -1,5 +1,6 @@
 package controllers.templates;
 
+import model.DenominationMap;
 import model.Slot;
 import model.VendingMachine;
 import util.View;
@@ -38,6 +39,7 @@ public abstract class StockItemsController<
     protected boolean checkFieldValidity() {
         int slotIndex = stockItemsPanel.getSelectedSlotNo() - 1;
         String name = stockItemsPanel.getItemNameInput();
+        double price = stockItemsPanel.getPriceInput();
         String imagePath = stockItemsPanel.getImagePathInput();
 
         if (name.isBlank()) {
@@ -59,6 +61,11 @@ public abstract class StockItemsController<
             }
         }
 
+        if (!DenominationMap.isValidPrice(price)) {
+            parentView.showErrorDialog("Please enter a valid price.");
+            return false;
+        }
+
         if (imagePath == null) {
             parentView.showErrorDialog("Please select an item image.");
             return false;                
@@ -76,7 +83,7 @@ public abstract class StockItemsController<
             handleSlotSelect();
         });
 
-         stockItemsPanel.setItemRemoveListener(e -> {
+        stockItemsPanel.setItemRemoveListener(e -> {
             int slotNo = stockItemsPanel.getSelectedSlotNo();
             
             if (!machine.removeItem(slotNo)) {
