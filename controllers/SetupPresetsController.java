@@ -3,6 +3,8 @@ package controllers;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import model.Operation;
 import model.Preset;
@@ -10,8 +12,6 @@ import model.Slot;
 import model.SpecialVendingMachine;
 import util.View;
 import views.components.SetupPresetsPanel;
-
-// TODO: handle presets with deleted items
 
 public class SetupPresetsController {
     private View parentView;
@@ -31,9 +31,16 @@ public class SetupPresetsController {
 
         setListeners();
         setItemList(this.machine.getSlots());
+        updatePresetList();
     }
 
     private void setListeners() {
+        List<String> opStrings = 
+            Stream.of(Operation.values())
+                  .map(Operation::toString)
+                  .collect(Collectors.toList());
+        setupPresetsPanel.setOperations(opStrings);
+
         setupPresetsPanel.setPresetAddListener(e -> {
             // TODO: perhaps look into invalid presets (e.g. only toppings) 
 
