@@ -181,7 +181,7 @@ public class SetupPresetsPanel extends JPanel {
                 continue;
             }
 
-            itemMap.put(qtySelector.getName(), qtySelector.getQuantity());
+            itemMap.put(qtySelector.getItemName(), qtySelector.getQuantity());
         }
 
         return itemMap;
