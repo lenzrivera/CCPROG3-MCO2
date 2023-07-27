@@ -256,7 +256,7 @@ public class SetupPresetsPanel extends JPanel {
 
     public void updateItemMap(Map<String, Integer> itemMap) {
         for (ItemQtySelector qtySelector : itemQtySelectors) {
-            Integer quantity = itemMap.get(qtySelector.getName());
+            Integer quantity = itemMap.get(qtySelector.getItemName());
 
             if (quantity != null) {
                 qtySelector.setQuantity(quantity);
