@@ -31,20 +31,10 @@ public class SetupPresetsController {
 
         setListeners();
         setItemList(this.machine.getSlots());
-
-        // Preset preset = machine.getPresets().get(0);
-        // assert preset != null;
-
-        // setupPresetsPanel.setNameInputValue(preset.getName());
-        // setupPresetsPanel.setImagePathValue(preset.getImagePath());
-        // setupPresetsPanel.setOperationValue(preset.getOperation().toString());
-
-        // setupPresetsPanel.updateItemMap(preset.getItems());
     }
 
     private void setListeners() {
         setupPresetsPanel.setPresetAddListener(e -> {
-            // TODO: handle duplicate preset names
             // TODO: perhaps look into invalid presets (e.g. only toppings) 
 
             int presetIndex = setupPresetsPanel.getSelectedPresetIndex();
@@ -56,6 +46,20 @@ public class SetupPresetsController {
             if (name.isBlank()) {
                 parentView.showErrorDialog("Please enter a valid preset name.");
                 return;
+            }
+
+            for (int i = 0; i < machine.getPresets().size(); i++) {
+                Preset preset = machine.getPresets().get(i);
+    
+                if (
+                    i != presetIndex && 
+                    preset != null && 
+                    preset.getName().equalsIgnoreCase(name)    
+                ) {
+                    parentView.showErrorDialog(
+                        "Please enter an unused preset name.");
+                    return;
+                }
             }
 
             if (items.size() == 0) {
