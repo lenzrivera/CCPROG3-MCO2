@@ -227,6 +227,7 @@ public class SetupPresetsPanel extends JPanel {
     public void clearPresetList() {
         presetListModel.clear();
         presetListModel.addElement(ADD_NEW_MSG);
+        presetList.setSelectedIndex(0);
     }
 
     public void setImagePathValue(String imagePath) {
