@@ -46,7 +46,7 @@ public class SetupPresetsPanel extends JPanel {
     private JLabel operationLabel;
     private JComboBox<String> operationInput;
     private ImageFileChooser imageChooser;
-    private JButton addPresetButton;
+    private JButton setPresetButton;
     private JButton removePresetButton;
 
     public SetupPresetsPanel() {
@@ -122,8 +122,8 @@ public class SetupPresetsPanel extends JPanel {
 
         gbc.gridy = 4;
 
-        addPresetButton = new JButton("Add Preset");
-        presetInfoPanel.add(addPresetButton, gbc);
+        setPresetButton = new JButton("Set Preset");
+        presetInfoPanel.add(setPresetButton, gbc);
 
         gbc.gridy = 5;
 
@@ -268,7 +268,7 @@ public class SetupPresetsPanel extends JPanel {
     /* */
 
     public void setPresetAddListener(ActionListener listener) {
-        addPresetButton.addActionListener(listener);
+        setPresetButton.addActionListener(listener);
     }
 
     public void setPresetRemoveListener(ActionListener listener) {

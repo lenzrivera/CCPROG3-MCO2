@@ -75,7 +75,7 @@ public class StockRegularItemsPanel extends StockItemsPanel {
         gbc.gridy = 6;
         gbc.gridx = 0;
 
-        inputPanel.add(addItemButton, gbc);
+        inputPanel.add(setItemButton, gbc);
     
         /* Row 8 */
 

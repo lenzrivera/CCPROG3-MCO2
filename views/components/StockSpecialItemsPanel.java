@@ -135,7 +135,7 @@ public class StockSpecialItemsPanel extends StockItemsPanel {
         gbc.gridx = 0;
         gbc.gridwidth = 2;
 
-        inputPanel.add(addItemButton, gbc);
+        inputPanel.add(setItemButton, gbc);
     
         /* Row 10 */
 

@@ -39,7 +39,7 @@ public abstract class StockItemsPanel extends JPanel {
 
     protected ImageFileChooser imageChooser;
 
-    protected JButton addItemButton;
+    protected JButton setItemButton;
     protected JButton removeItemButton;
 
     public interface SlotSelectListener {
@@ -90,7 +90,7 @@ public abstract class StockItemsPanel extends JPanel {
 
         imageChooser = new ImageFileChooser("Image:");
 
-        addItemButton = new JButton("Add Item");
+        setItemButton = new JButton("Set Item");
         removeItemButton = new JButton("Remove Item");
     }
 
@@ -168,7 +168,7 @@ public abstract class StockItemsPanel extends JPanel {
     /* */
 
     public void setItemAddListener(ActionListener listener) {
-        addItemButton.addActionListener(listener);
+        setItemButton.addActionListener(listener);
     }
 
     public void setItemRemoveListener(ActionListener listener) {
