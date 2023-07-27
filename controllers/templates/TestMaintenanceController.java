@@ -23,7 +23,6 @@ public abstract class TestMaintenanceController<
         this.view = view;
 
         setListeners();
-        initStockItemsController();
     }
 
     protected abstract U initStockItemsController();
