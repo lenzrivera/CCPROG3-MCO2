@@ -1,6 +1,8 @@
 package views.templates;
 
 import java.awt.Container;
+import java.awt.event.ActionListener;
+
 import javax.swing.JTabbedPane;
 
 import util.View;
@@ -43,5 +45,9 @@ public class TestMaintenanceView<T extends StockItemsPanel> extends View {
 
     public ManageMoneyPanel getManageMoneyPanel() {
         return manageMoneyPanel;
+    }
+
+    public void setExitButtonListener(ActionListener listener) {
+        mainContainer.setExitButtonListener(listener);
     }
 }
