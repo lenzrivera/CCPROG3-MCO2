@@ -63,7 +63,7 @@ public class StockSpecialItemsController
             stockItemsPanel.setPriceInput(0.0);
             stockItemsPanel.setStockInput(0);
             stockItemsPanel.setImagePathInput(null);
-            stockItemsPanel.setStandaloneInput(false);
+            stockItemsPanel.setStandaloneInput(true);
             stockItemsPanel.setOperationInput(0);
         } else {
             stockItemsPanel.setItemNameInput(sampleItem.getName());
