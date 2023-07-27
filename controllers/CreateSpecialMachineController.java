@@ -29,19 +29,6 @@ public class CreateSpecialMachineController extends CreateMachineController<
     }
 
     @Override
-    protected void setConstants() {
-        super.setConstants();
-        
-        List<String> opStrings = 
-            Stream.of(Operation.values())
-                  .map(Operation::toString)
-                  .collect(Collectors.toList());
-
-        view.getStockItemsPanel().getContent().setOperations(opStrings);
-        view.getSetupPresetsPanel().getContent().setOperations(opStrings);
-    }
-
-    @Override
     protected void setListeners() {
         super.setListeners();
 

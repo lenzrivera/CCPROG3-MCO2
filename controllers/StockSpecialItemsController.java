@@ -1,5 +1,9 @@
 package controllers;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import controllers.templates.StockItemsController;
 import model.Item;
 import model.Operation;
@@ -18,6 +22,17 @@ public class StockSpecialItemsController
         View pv
     ) {
         super(m, p, pv);
+    }
+
+    @Override
+    protected void setListeners() {
+        super.setListeners();
+        
+        List<String> opStrings = 
+            Stream.of(Operation.values())
+                  .map(Operation::toString)
+                  .collect(Collectors.toList());
+        stockItemsPanel.setOperations(opStrings);
     }
 
     @Override
