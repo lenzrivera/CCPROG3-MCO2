@@ -5,252 +5,255 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import model.exceptions.InsufficientChangeException;
-import model.exceptions.InsufficientCreditException;
+import model.exceptions.DuplicateBaseException;
 import model.exceptions.InsufficientStockException;
-import model.exceptions.SelectedStandaloneException;
+import model.exceptions.RemoveLastBaseException;
+import model.exceptions.SelectedNonStandaloneException;
 
 public class SpecialVendingMachine extends VendingMachine<SpecialSlot> {
-    private ArrayList<Preset> presets;
+    private List<Preset> presets;
 
-    private HashMap<String, Integer> itemsToDispense;
-
-    private ArrayList<String> extraSelections;
-
+    private Map<SpecialSlot, Integer> selectedSlots;
     private Preset selectedPreset;
-
+   
     public SpecialVendingMachine(String name, int slotCount, int slotCapacity) {
-        super(name);
-        
-        presets = new ArrayList<>();
-        slots = new ArrayList<>();
+        super(name, slotCount, slotCapacity);
 
-        itemsToDispense = new HashMap<>();
-        extraSelections = new ArrayList<>();
+        presets = new ArrayList<>();
+
+        selectedSlots = new HashMap<>();
         selectedPreset = null;
 
-        int finalSlotCount = Math.max(VendingMachine.MIN_SLOT_COUNT, slotCount);
-        int finalSlotCapacity = Math.max(slotCapacity, Slot.MIN_MAX_CAPACITY);
-
-        for (int i = 0; i < finalSlotCount; i++) {
-            slots.add(new SpecialSlot(finalSlotCapacity));
-        }        
+        for (int i = 0; i < this.slotCount; i++) {
+            slots.add(new SpecialSlot(this.slotCapacity));
+        }
     }
 
-    // Accessors //
+    /* */
 
-    private double getItemSelectionTotal() {
-        double total = 0;
+    public List<Preset> getPresets() {
+        return presets;
+    }
 
-        for (
-            Map.Entry<String, Integer> entry : itemsToDispense.entrySet()
-        ) {
-            SpecialSlot itemSlot = findSlotByItemName(entry.getKey());
+    public boolean hasPreset(String name) {
+        for (Preset preset : presets) {
+            if (preset.getName().equalsIgnoreCase(name)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    
+    public double getTotalCalories() {
+        double total = 0.0;
+
+        for (var entry : selectedSlots.entrySet()) {
+            Slot itemSlot = entry.getKey();
+            total += itemSlot.getSampleItem().getCalories() * entry.getValue();
+        }
+
+        return total;
+    }
+
+    public double getTotalPrice() {
+        double total = 0.0;
+
+        for (var entry : selectedSlots.entrySet()) {
+            Slot itemSlot = entry.getKey();
             total += itemSlot.getUnitPrice() * entry.getValue();
         }
 
         return total;
     }
 
-    public Preset getPreset(String name) {
-        for (Preset preset : presets) {
-            if (preset.getName().equalsIgnoreCase(name)) {
-                return preset;
-            }
-        }
-        
-        return null;
-    }
-
-    public List<Preset> getPresets() {
-        return presets;
-    }
-
-    // Vending Methods //
+    /* */
 
     @Override
-    public DispenseResult dispenseSelected() {
-        // Do nothing if there is nothing to dispense in the first place.
-        if (selectedPreset == null && itemsToDispense.isEmpty()) {
-            return null;
-        }
+    public void addSelection(int slotNo) {
+        SpecialSlot slot = getSlot(slotNo);
 
-        double totalPayment = getItemSelectionTotal();
-
-        if (!computeChangeFor(totalPayment)) {
-            throw new InsufficientChangeException();
-        }
-
-        DispenseResult result = new DispenseResult();
-
-        for (
-           Map.Entry<String, Integer> entry : itemsToDispense.entrySet()
-        ) {
-            String itemName = entry.getKey();
-            int qtyToDispense = entry.getValue();
-
-            SpecialSlot itemSlot = findSlotByItemName(itemName);
-
-            for (int i = 0; i < qtyToDispense; i++) {
-                result.addItem(itemSlot.dispenseItem());
-            }
-
-            result.addProcessMessage(
-                itemSlot.getItemOperation().getProcessMessage(itemName));
-
-            currentSummary.addTransaction(
-                itemName, qtyToDispense, itemSlot.getUnitPrice());
+        if (slot.getStock() == 0) {
+            throw new InsufficientStockException(slot);
         }
 
         if (selectedPreset == null) {
-            result.setName(result.getItems().get(0).getName());
-        } else if (extraSelections.size() == 0) {
-            result.setName(selectedPreset.getName());
+            // Non-standalone items can only be selected w/ a preset, i.e. they
+            // must be selected with at least 1 base item (it is assumed that
+            // each preset has at least 1 base item).
+            if (!slot.isStandalone()) {
+                throw new SelectedNonStandaloneException(slot);
+            }
+
+            // Only 1 item can be selected at a time if no preset is selected.
+            selectedSlots.clear();
+        }
+
+        if (!selectedSlots.containsKey(slot)) {
+            selectedSlots.put(slot, 1);
         } else {
-            String name = selectedPreset.getName() + "(w/ Additional ";
+            // Only 1 of a base item can be added at a time.
+            if (slot.isBase()) {
+                throw new DuplicateBaseException(slot);
+            }
 
-            for (int i = 0; i < extraSelections.size(); i++) {
-                name += extraSelections.get(i);
+            selectedSlots.put(slot, selectedSlots.get(slot) + 1);
+        }
+    }
 
-                if (i != extraSelections.size() - 1) {
-                    name += ", ";
+    public void removeSelection(int slotNo) {
+        SpecialSlot slot = getSlot(slotNo);
+
+        if (!selectedSlots.containsKey(slot)) {
+            throw new IllegalArgumentException();
+        }
+
+        int newQuantity = selectedSlots.get(slot) - 1;
+
+        if (newQuantity == 0) {
+            // When a preset is selected, at least one base item should be left
+            // to allow non-standalone items to be selected (it is assumed that
+            // each preset has at least 1 base item selected).
+            if (selectedPreset != null && slot.isBase()) {
+                boolean isLastStandaloneBase = true;
+
+                for (SpecialSlot selectedSlot : selectedSlots.keySet()) {
+                    if (
+                        selectedSlot.isBase() && 
+                        selectedSlot.isStandalone() && 
+                        selectedSlot != slot
+                    ) {
+                        isLastStandaloneBase = false;
+                        break;
+                    }
+                }
+            
+                if (isLastStandaloneBase) {
+                    throw new RemoveLastBaseException(slot);
                 }
             }
 
-            name += ")";
+            selectedSlots.remove(slot);
+        } else {
+            selectedSlots.put(slot, selectedSlots.get(slot) - 1);
+        }
+    }
 
-            result.setName(name);
+    @Override
+    public DispenseResult dispenseSelection() {
+        if (selectedSlots.isEmpty()) {
+            return null;
         }
 
-        Operation presetOp = selectedPreset.getOperation();
-        result.addProcessMessage(
-            presetOp.getProcessMessage(selectedPreset.getName()));
-        result.addProcessMessage("Done!");
+        // Handle payment
 
-        result.setTotalPayment(totalPayment);
-        resetSelection();
+        double totalPayment = getTotalPrice();
+        DenominationMap change = transact(totalPayment);
+
+        // Handle dispensing and operations
+
+        List<Item> itemsToDispense = new ArrayList<>();
+        List<String> operations = new ArrayList<>();
+
+        for (var entry : selectedSlots.entrySet()) {
+            SpecialSlot itemSlot = entry.getKey();
+            int qtyToDispense = entry.getValue();
+
+            for (int i = 0; i < qtyToDispense; i++) {
+                itemsToDispense.add(itemSlot.dispenseItem());
+            }
+
+            String itemName = itemSlot.getSampleItem().getName();
+
+            operations.add(itemSlot.getOperation().getProcessMessage(itemName));
+
+            currentSummary.addTransaction(
+                itemName, 
+                qtyToDispense, 
+                itemSlot.getUnitPrice()
+            );
+        }
+
+        operations.add(
+            selectedPreset.getOperation()
+                          .getProcessMessage(selectedPreset.getName())
+        );
+        operations.add("Done!");
+
+        // Determine result name
+
+        String resultName = itemsToDispense.get(0).getName();
         
-        return result;
-    }
+        if (selectedPreset != null) {
+            for (var entry : selectedSlots.entrySet()) {
+                SpecialSlot itemSlot = entry.getKey();
 
-    private SpecialSlot findSlotByItemName(String name) {
-        for (SpecialSlot slot : slots) {
-             if (
-                slot.getStock() > 0 && 
-                slot.getSampleItem().getName().equalsIgnoreCase(name)
-            ) {
-                return slot;
-            }           
+                String itemName = itemSlot.getSampleItem().getName();
+                int itemQuantity = entry.getValue();
+
+                // If the select preset has been deviated from:
+                if (
+                    !selectedPreset.getItems().containsKey(itemName) || 
+                    selectedPreset.getItems().get(itemName) != itemQuantity
+                ) {
+                    resultName += " (Customized)";
+                    break;
+                }
+            }
         }
 
-        return null;
-    }
+        // Clear and return
 
-    @Override
-    public void resetSelection() {
-        itemsToDispense.clear();
-        extraSelections.clear();
         selectedPreset = null;
+        selectedSlots.clear();
+
+        return new DispenseResult(
+            resultName,
+            itemsToDispense,
+            operations,
+            change,
+            getTotalCalories(),
+            totalPayment
+        ); 
     }
 
-    @Override
-    public void selectItem(int slotNo) {
-        SpecialSlot itemSlot = slots.get(slotNo - 1);
-
-        if (itemSlot.getStock() == 0) {
-            throw new InsufficientStockException();
-        }
-
-        if (!itemSlot.isStandalone()) {
-            throw new SelectedStandaloneException();
-        }
-
-        if (credit.getTotal() < getItemSelectionTotal()) {
-            throw new InsufficientCreditException();
-        }
-
-        Item sample = itemSlot.getSampleItem();
-
-        // Only one distinct item can be selected/dispensed should it be
-        // selected and not item presets.
-        if (selectedPreset == null) {
-            itemsToDispense.clear();
-        } else {
-            extraSelections.add(sample.getName());
-        }
-
-        if (itemsToDispense.get(sample.getName()) == null) {
-            itemsToDispense.put(
-                sample.getName(), itemsToDispense.get(sample.getName()) + 1);
-        } else {
-            itemsToDispense.put(sample.getName(), 1);
-        }
-    }
-
-    public void selectPreset(int presetNo) {        
+    public void selectPreset(int presetNo) {
         Preset preset = presets.get(presetNo - 1);
 
-        double totalSoFar = 0;
-
-        for (
-            Map.Entry<String, Integer> entry : 
-                selectedPreset.getItems().entrySet()
-        ) {
+        for (var entry : preset.getItems().entrySet()) {
             String itemName = entry.getKey();
             int itemQuantity = entry.getValue();
-
+            
             SpecialSlot itemSlot = findSlotByItemName(itemName);
 
-            if (itemSlot == null || itemSlot.getStock() < itemQuantity) {
-                resetSelection();
-                throw new InsufficientStockException();
+            if (itemSlot.getStock() < itemQuantity) {
+                selectedSlots.clear();
+                throw new InsufficientStockException(itemSlot);
             }
 
-            totalSoFar += itemSlot.getUnitPrice();
-
-            if (credit.getTotal() < totalSoFar) {
-                resetSelection();
-                throw new InsufficientCreditException();
-            }
-
-            itemsToDispense.put(itemName, itemQuantity);
+            selectedSlots.put(itemSlot, itemQuantity);
         }
 
         selectedPreset = preset;
     }
 
-    // Maintenance Methods //
-
-    public boolean addItem(
-        int slotNo, 
-        String name, 
-        double price, 
-        double calories,
-        String imagePath,
-        boolean standalone,
-        Operation operation
-    ) {
-        SpecialSlot slot = slots.get(slotNo - 1);
-
-        if (slot.getSampleItem() != null) {
-            return false;
-        }
-
-        slot.assignToItem(name, price, calories, imagePath, standalone, operation);
-        return true;
+    public void deselectPreset() {
+        selectedPreset = null;
+        selectedSlots.clear();
     }
 
-    public boolean addPreset(Preset preset) {
-        for (Preset p : presets) {
-            if (p.getName().equalsIgnoreCase(preset.getName())) {
-                return false;
+    /* */
+
+    private SpecialSlot findSlotByItemName(String name) {
+        for (SpecialSlot slot : slots) {
+            if (
+                slot.getSampleItem() != null && 
+                slot.getSampleItem().getName().equalsIgnoreCase(name)
+            ) {
+                return slot;
             }
         }
 
-        return presets.add(preset);
-    }
-
-    public boolean removePreset(String presetName) {
-        return presets.removeIf(p -> p.getName().equalsIgnoreCase(presetName));
+        return null;
     }
 }

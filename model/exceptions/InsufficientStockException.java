@@ -1,4 +1,9 @@
 package model.exceptions;
 
-public class InsufficientStockException extends RuntimeException {
+import model.Slot;
+
+public class InsufficientStockException extends SlotException {
+    public InsufficientStockException(Slot forSlot) {
+        super(forSlot);
+    }
 }

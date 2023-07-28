@@ -1,25 +1,27 @@
 package model;
 
-// TODO: title case toString()
-
 public enum Operation {
-    BASE,
-    COOKABLE,
-    HEATABLE,
-    TOPPABLE;
+    COOK,
+    HEAT,
+    PREPARE,
+    SPREAD,
+    TOP;
 
     public String getProcessMessage(String itemName) {
         switch (this) {
-            case BASE:
-                return "Preparing " + itemName + "...";
-
-            case COOKABLE:
+            case COOK:
                 return "Cooking " + itemName + "...";
 
-            case HEATABLE:
+            case HEAT:
                 return "Heating " + itemName + "...";
 
-            case TOPPABLE:
+            case SPREAD:
+                return "Spreading " + itemName + "...";
+
+            case PREPARE:
+                return "Preparing " + itemName + "...";
+
+            case TOP:
                 return "Topping " + itemName + "...";
 
             default:

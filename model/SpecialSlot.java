@@ -1,46 +1,58 @@
 package model;
 
 public class SpecialSlot extends Slot {
-    private Operation itemOperation;
-
+    private boolean base;
     private boolean standalone;
+
+    private Operation operation;
 
     public SpecialSlot(int capacity) {
         super(capacity);
+
+        base = false;
+        standalone = true;
+
+        operation = Operation.PREPARE;
     }
 
-    public Operation getItemOperation() {
-        return itemOperation;
+    /* */
+
+    public boolean isBase() {
+        return base;
     }
 
     public boolean isStandalone() {
         return standalone;
     }
 
+    public Operation getOperation() {
+        return operation;
+    }
+
+    /* */
+
     @Override
-    public void assignToItem(
-        String name, 
-        double price, 
-        double calories, 
-        String imagePath
-    ) {
-        sampleItem = new Item(name, calories, imagePath);
-        this.unitPrice = price;
-        this.standalone = true;
-        this.itemOperation = null;
+    public void assignToItem(Item item, double price) {
+        clearAssignment();
+        super.assignToItem(item, price);     
     }
 
     public void assignToItem(
-        String name,
+        Item item,
         double price,
-        double calories,
-        String imagePath,
+        boolean base,
         boolean standalone,
         Operation operation
     ) {
-        assignToItem(name, price, calories, imagePath);
+        assignToItem(item, price);
 
+        this.base = base;
         this.standalone = standalone;
-        this.itemOperation = operation;
+        this.operation = operation;
+    }
+
+    @Override
+    public void clearAssignment() {
+        assignToItem(null, 0.0, false, true, Operation.PREPARE);
     }
 }

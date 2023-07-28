@@ -1,17 +1,15 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Slot {
-
     public static final int MIN_MAX_CAPACITY = 10;
 
     protected int capacity;
-    
-    protected ArrayList<Item> items;
+    protected List<Item> items;
 
     protected Item sampleItem;
-
     protected double unitPrice;
 
     public Slot(int capacity) {
@@ -19,10 +17,10 @@ public class Slot {
         items = new ArrayList<>();
 
         sampleItem = null;
-        unitPrice = 0;
+        unitPrice = 0.0;
     }
 
-    // Accessors //
+    /* */
 
     public int getCapacity() {
         return capacity;
@@ -44,23 +42,17 @@ public class Slot {
         unitPrice = v;
     }
 
-    // Main Methods //
+    /* */
 
-    public void assignToItem(
-        String name, 
-        double price, 
-        double calories, 
-        String imagePath
-    ) {
-        this.sampleItem = new Item(name, calories, imagePath);
+    public void assignToItem(Item item, double price) {
+        items.clear();
+
+        this.sampleItem = item;
         this.unitPrice = price;
     }
 
     public void clearAssignment() {
-        sampleItem = null;
-        unitPrice = 0;
-
-        items.clear();
+        assignToItem(null, 0.0);
     }
     
     public Item dispenseItem() {

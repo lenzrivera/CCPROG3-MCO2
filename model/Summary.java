@@ -3,23 +3,22 @@ package model;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
-public class Summary<T extends Slot> {
-    
-    private HashMap<String, ItemSummary> stockChanges;
-    
-    private double totalPayments;    
+public class Summary {
+    private double totalPayment;
+    private Map<String, ItemSummary> stockChanges;
 
-    public Summary(List<T> currentSlots) {
+    public Summary(List<? extends Slot> currentSlots) {
         stockChanges = new HashMap<>();
-        totalPayments = 0.0;
+        totalPayment = 0.0;
 
         reset(currentSlots);        
     }
     
-    public Set<Map.Entry<String, ItemSummary>> getStockChanges() {
-        return stockChanges.entrySet();
+    /* */
+
+    public Map<String, ItemSummary> getStockChanges() {
+        return stockChanges;
     }
 
     /**
@@ -27,9 +26,11 @@ public class Summary<T extends Slot> {
      * a single double value.
      * @return the total payments received by a vending machine
      */
-    public double getTotalPayments() {
-        return totalPayments;
+    public double getTotalPayment() {
+        return totalPayment;
     }
+
+    /* */
 
     public void addTransaction(String itemName, int quantity, double unitPrice) {
         ItemSummary itemSummary = stockChanges.get(itemName);
@@ -39,11 +40,11 @@ public class Summary<T extends Slot> {
         }
 
         itemSummary.setStockDiff(itemSummary.getStockDiff() + quantity);
-        totalPayments += quantity * unitPrice;
+        totalPayment += quantity * unitPrice;
     }
 
-    public void reset(List<T> currentSlots) {
-        totalPayments = 0;
+    public void reset(List<? extends Slot> currentSlots) {
+        totalPayment = 0;
         stockChanges.clear();
         
         for (Slot slot : currentSlots) {

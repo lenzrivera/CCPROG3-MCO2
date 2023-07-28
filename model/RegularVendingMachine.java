@@ -1,73 +1,53 @@
 package model;
 
-import model.exceptions.InsufficientChangeException;
-import model.exceptions.InsufficientCreditException;
+import java.util.Arrays;
+
 import model.exceptions.InsufficientStockException;
 
 public class RegularVendingMachine extends VendingMachine<Slot> {
     private Slot selectedSlot;
 
     public RegularVendingMachine(String name, int slotCount, int slotCapacity) {
-        super(name);
+        super(name, slotCount, slotCapacity);
 
         selectedSlot = null;
 
-        int finalSlotCount = Math.max(VendingMachine.MIN_SLOT_COUNT, slotCount);
-        int finalSlotCapacity = Math.max(slotCapacity, Slot.MIN_MAX_CAPACITY);
-
-        for (int i = 0; i < finalSlotCount; i++) {
-            slots.add(new Slot(finalSlotCapacity));
+        for (int i = 0; i < this.slotCount; i++) {
+            slots.add(new Slot(this.slotCapacity));
         }
     }
 
     @Override
-    public DispenseResult dispenseSelected() {
-        // Do nothing if there is nothing to dispense in the first place.
+    public void addSelection(int slotNo) {
+        Slot slot = getSlot(slotNo);
+
+        if (slot.getStock() == 0) {
+            throw new InsufficientStockException(slot);
+        }
+
+        selectedSlot = slot;
+    }
+
+    @Override
+    public DispenseResult dispenseSelection() {
         if (selectedSlot == null) {
             return null;
         }
-
-        double total = selectedSlot.getUnitPrice();
-
-        if (!computeChangeFor(total)) {
-            throw new InsufficientChangeException();
-        }
+        
+        double totalPayment = selectedSlot.getUnitPrice();
+        DenominationMap change = transact(totalPayment);
 
         Item dispensedItem = selectedSlot.dispenseItem();
-
-        DispenseResult result = new DispenseResult();
-        result.setName(dispensedItem.getName());
-        result.addItem(dispensedItem);
-
-        result.setChange(changeToGive.collect());
-        result.setTotalPayment(total);
-        
-        // TODO: Add the correct message
-        result.addProcessMessage("TODO");
-
-        currentSummary.addTransaction(dispensedItem.getName(), 1, total);
-        resetSelection();
-
-        return result;
-    }
-
-    @Override
-    public void resetSelection() {
+        currentSummary.addTransaction(dispensedItem.getName(), 1, totalPayment);
         selectedSlot = null;
-    }
 
-    @Override
-    public void selectItem(int slotNo) {
-        Slot itemSlot = slots.get(slotNo - 1);
-
-         if (itemSlot.getStock() == 0) {
-            throw new InsufficientStockException();
-        }
-
-        if (credit.getTotal() < itemSlot.getUnitPrice()) {
-            throw new InsufficientCreditException();
-        }
-
-        selectedSlot = itemSlot;       
+        return new DispenseResult(
+            dispensedItem.getName(),
+            Arrays.asList(dispensedItem),
+            Arrays.asList("Dispensed " + dispensedItem.getName()),
+            change,
+            totalPayment,
+            dispensedItem.getCalories()
+        );
     }
 }
