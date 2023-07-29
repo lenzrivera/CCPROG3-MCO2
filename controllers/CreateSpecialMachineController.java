@@ -49,12 +49,8 @@ public class CreateSpecialMachineController
     @Override
     protected void setListeners() {
         view.setExitButtonListener(e -> {
-            if (machine.getPresets().size() == 0) {
-                view.showErrorDialog("At least one default preset should exist.");
-                return;                
-            }
-            
-            view.getSetupPane().setActiveTab(3);
+            // Exit without saving anything.
+            changeState(new MainMenuState());
         });
 
         /* BasicInfoPanel */
