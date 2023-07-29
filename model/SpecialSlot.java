@@ -34,7 +34,7 @@ public class SpecialSlot extends Slot {
     @Override
     public void assignToItem(Item item, double price) {
         clearAssignment();
-        super.assignToItem(item, price);     
+        super.assignToItem(item, price);   
     }
 
     public void assignToItem(
@@ -53,6 +53,10 @@ public class SpecialSlot extends Slot {
 
     @Override
     public void clearAssignment() {
-        assignToItem(null, 0.0, false, true, Operation.PREPARE);
+        super.assignToItem(null, 0.0);   
+
+        base = false;
+        standalone = true;
+        operation = Operation.PREPARE;
     }
 }
