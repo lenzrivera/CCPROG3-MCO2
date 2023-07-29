@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 import model.Operation;
 import model.Preset;
 import model.Slot;
+import model.SpecialSlot;
 import model.SpecialVendingMachine;
 import util.View;
 import views.components.SetupPresetsPanel;
@@ -72,6 +73,24 @@ public class SetupPresetsController {
             if (items.size() == 0) {
                 parentView.showErrorDialog("A preset cannot have no items.");
                 return;                
+            }
+
+            boolean hasBaseItem = false;
+
+            for (SpecialSlot slot : machine.getSlots()) {
+                if (
+                    slot.isBase() && slot.isStandalone() && 
+                    items.containsKey(slot.getSampleItem().getName())
+                ) {
+                    hasBaseItem = true;
+                    break;
+                }
+            }
+
+            if (!hasBaseItem) {
+                parentView.showErrorDialog(
+                    "A preset cannot have no standalone base items.");
+                return;                   
             }
 
             if (imagePath.isBlank()) {
