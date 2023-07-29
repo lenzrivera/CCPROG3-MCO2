@@ -2,22 +2,22 @@ package views;
 
 import views.components.SetupBody;
 import views.components.SetupPresetsPanel;
-import views.components.StockSpecialItemsPanel;
+import views.components.SetupSpecialItemsPanel;
 import views.templates.CreateMachineView;
 
-public class CreateSpecialMachineView extends CreateMachineView<StockSpecialItemsPanel> {
+public class CreateSpecialMachineView extends CreateMachineView<SetupSpecialItemsPanel> {
     private SetupBody<SetupPresetsPanel> setupPresetsPanel;
 
     public CreateSpecialMachineView() {
         super("Create a Special Vending Machine");
 
-        stockItemsPanel = new SetupBody<>(new StockSpecialItemsPanel());
+        setupItemsPanel = new SetupBody<>(new SetupSpecialItemsPanel());
         setupPresetsPanel = new SetupBody<>(new SetupPresetsPanel());
 
         setupPane.addTab("Basic Information", basicInfoPanel);
-        setupPane.addTab("Stock Items", stockItemsPanel);
+        setupPane.addTab("Setup Items", setupItemsPanel);
         setupPane.addTab("Setup Presets", setupPresetsPanel);
-        setupPane.addTab("Stock Change", stockChangePanel);
+        setupPane.addTab("Manage Money", manageMoneyPanel);
     }
 
     public SetupBody<SetupPresetsPanel> getSetupPresetsPanel() {

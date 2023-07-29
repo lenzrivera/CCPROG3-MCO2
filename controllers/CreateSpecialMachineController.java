@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import controllers.templates.CreateMachineController;
-import model.Denomination;
 import model.Item;
 import model.Operation;
 import model.Preset;
@@ -19,8 +18,7 @@ import states.MainMenuState;
 import views.CreateSpecialMachineView;
 import views.components.BasicInfoPanel;
 import views.components.SetupPresetsPanel;
-import views.components.StockChangePanel;
-import views.components.StockSpecialItemsPanel;
+import views.components.SetupSpecialItemsPanel;
 
 public class CreateSpecialMachineController
     extends CreateMachineController<CreateSpecialMachineView> 
@@ -42,7 +40,7 @@ public class CreateSpecialMachineController
                                        .map(Operation::toString)
                                        .collect(Collectors.toList());
 
-        view.getStockItemsPanel().getContent().setOperations(opStrings);
+        view.getSetItemsPanel().getContent().setOperations(opStrings);
         view.getSetupPresetsPanel().getContent().setOperations(opStrings);
     }
 
@@ -73,10 +71,10 @@ public class CreateSpecialMachineController
                 panel.getSlotCapacity()
             );
 
-            view.getStockItemsPanel()
+            view.getSetItemsPanel()
                 .getContent()
                 .setMaxStock(panel.getSlotCapacity());
-            view.getStockItemsPanel()
+            view.getSetItemsPanel()
                 .getContent()
                 .setSlotCount(panel.getSlotCount());
 
@@ -85,7 +83,7 @@ public class CreateSpecialMachineController
 
         /* AddItemsPanel */
 
-        view.getStockItemsPanel().setNextButtonListener(e -> {
+        view.getSetItemsPanel().setNextButtonListener(e -> {
             for (Slot slot : machine.getSlots()) {
                 if (slot.getSampleItem() != null) {
                     setItemList(machine.getSlots());
@@ -97,8 +95,8 @@ public class CreateSpecialMachineController
             view.getSetupPane().setActiveTab(3);
         });
 
-        view.getStockItemsPanel().getContent().setItemAddListener(e -> {
-            StockSpecialItemsPanel panel = view.getStockItemsPanel().getContent();
+        view.getSetItemsPanel().getContent().setItemAddListener(e -> {
+            SetupSpecialItemsPanel panel = view.getSetItemsPanel().getContent();
 
             if (!checkFieldValidity(machine)) {
                 return;
@@ -129,8 +127,8 @@ public class CreateSpecialMachineController
             updateSlotTable(machine.getSlots());            
         });
 
-        view.getStockItemsPanel().getContent().setSlotSelectListener(e -> {
-            StockSpecialItemsPanel panel = view.getStockItemsPanel().getContent();
+        view.getSetItemsPanel().getContent().setSlotSelectListener(e -> {
+            SetupSpecialItemsPanel panel = view.getSetItemsPanel().getContent();
 
             int selectedSlotNo = panel.getSelectedSlotNo();
             SpecialSlot selectedSlot = machine.getSlot(selectedSlotNo);
@@ -155,8 +153,8 @@ public class CreateSpecialMachineController
             }
         });
 
-        view.getStockItemsPanel().getContent().setItemRemoveListener(e -> {
-            StockSpecialItemsPanel panel = view.getStockItemsPanel().getContent();
+        view.getSetItemsPanel().getContent().setItemRemoveListener(e -> {
+            SetupSpecialItemsPanel panel = view.getSetItemsPanel().getContent();
             int slotNo = panel.getSelectedSlotNo();
 
             if (machine.getSlot(slotNo).getSampleItem() == null) {
@@ -310,19 +308,21 @@ public class CreateSpecialMachineController
 
         /* StockMoneyPanel */
 
-        view.getStockChangePanel().setNextButtonListener(e -> {
+        view.getManageMoneyPanel().setNextButtonListener(e -> {
             model.setVendingMachine(machine);
             changeState(new MainMenuState());
         });
 
-        view.getStockChangePanel().getContent().setAddDenominationListener(e -> {
-            StockChangePanel panel = view.getStockChangePanel().getContent();
+        view.getManageMoneyPanel().getContent().setCollectListener(e -> {
+            
+        });
 
-            double denom = panel.getSelectedDenom();
-            int quantity = panel.getSelectedQuantity();
+        view.getManageMoneyPanel().getContent().setCollectAllListener(e -> {
 
-            machine.getMoneyStock().add(Denomination.toEnum(denom), quantity);
-            updateDenominationTable(machine.getMoneyStock());
+        });
+
+        view.getManageMoneyPanel().getContent().setStockListener(e -> {
+
         });
     }
 

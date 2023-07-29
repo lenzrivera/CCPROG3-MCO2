@@ -1,6 +1,5 @@
 package controllers;
 
-import controllers.templates.StockItemsController;
 import model.VendingMachineModel;
 import states.MainMenuState;
 import util.Controller;
@@ -14,7 +13,10 @@ public class TestMaintenanceController extends Controller {
 
     protected TestMaintenanceView view;
 
-    public TestMaintenanceController(VendingMachineModel model, T view) {
+    public TestMaintenanceController(
+        VendingMachineModel model, 
+        TestMaintenanceView view
+    ) {
         this.model = model;
         this.view = view;
 
@@ -27,11 +29,27 @@ public class TestMaintenanceController extends Controller {
         });
 
         // TODO: bind listeners
-        view.getSummaryViewPanel();
+
+        // view.getStockItemsPanel().setItemAddListener(e -> {
+
+        // });
+
+        // view.getStockItemsPanel().setItemRemoveListener(e -> {
+
+        // });
 
         // TODO: bind listeners
-        // view.getManageMoneyPanel().
 
-        view.getManageMoneyPanel();
+        view.getManageMoneyPanel().setCollectListener(e -> {
+
+        });
+
+        view.getManageMoneyPanel().setCollectAllListener(e -> {
+
+        });
+
+        view.getManageMoneyPanel().setStockListener(e -> {
+
+        });
     }
 }

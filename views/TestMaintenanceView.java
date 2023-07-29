@@ -16,26 +16,24 @@ public class TestMaintenanceView extends View {
 
     protected JTabbedPane optionTabs;
 
-
-    // rename stockitempanel to additempanel
-    // fix add item controllers - remove subclasses
-        // retain stockitemcontroller for commonality
-        // remove subclasses - place directly in respective controllers
-
-    // add stockitempanel placeholder
-
     protected SummaryViewPanel summaryViewPanel;
+    protected StockItemsPanel stockItemsPanel;
     protected ManageMoneyPanel manageMoneyPanel;
 
-    public TestMaintenanceView(String heading) {
-        mainContainer = new SectionContainer(heading);
+    public TestMaintenanceView() {
+        mainContainer = new SectionContainer("Test Maintenance Features");
 
         optionTabs = new JTabbedPane();
         mainContainer.setBody(optionTabs);
 
         summaryViewPanel = new SummaryViewPanel();
+        optionTabs.addTab("View Summary", summaryViewPanel);
+
+        stockItemsPanel = new StockItemsPanel();
+        optionTabs.addTab("Restock Items", summaryViewPanel);
 
         manageMoneyPanel = new ManageMoneyPanel();
+        optionTabs.addTab("Manage Money", summaryViewPanel);
     }
 
     @Override
@@ -43,12 +41,12 @@ public class TestMaintenanceView extends View {
         return mainContainer;
     }
 
-    // public T getStockItemsPanel() {
-    //     return stockItemsPanel;
-    // }
-
     public SummaryViewPanel getSummaryViewPanel() {
         return summaryViewPanel;
+    }
+
+    public StockItemsPanel getStockItemsPanel() {
+        return stockItemsPanel;
     }
 
     public ManageMoneyPanel getManageMoneyPanel() {

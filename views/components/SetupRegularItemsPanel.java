@@ -3,8 +3,8 @@ package views.components;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 
-public class StockRegularItemsPanel extends StockItemsPanel {
-    public StockRegularItemsPanel() {
+public class SetupRegularItemsPanel extends SetupItemsPanel {
+    public SetupRegularItemsPanel() {
     }
 
     @Override

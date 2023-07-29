@@ -135,10 +135,8 @@ public class ManageMoneyPanel extends JPanel {
         collectButton.addActionListener(listener);
     }
 
-    public void setCollectAllListener(CollectAllListener listener) {
-        collectAllButton.addActionListener(e -> {
-            listener.run();
-        });
+    public void setCollectAllListener(ActionListener listener) {
+        collectAllButton.addActionListener(listener);
     }
 
     public void setStockListener(ActionListener listener) {

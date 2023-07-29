@@ -9,27 +9,14 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 
-public class StockSpecialItemsPanel extends StockItemsPanel {
+public class SetupSpecialItemsPanel extends SetupItemsPanel {
     private JLabel standaloneLabel;
     private JCheckBox standaloneInput;
     
     private JLabel operationLabel;
     private JComboBox<String> operationInput;
 
-    public interface ItemAddListener {
-        public void run(
-            int slotNo,
-            String name,
-            double price,
-            double calories,
-            String imagePath,
-            boolean standalone,
-            String operation,
-            int stock
-        );
-    }
-
-    public StockSpecialItemsPanel() {
+    public SetupSpecialItemsPanel() {
     }
 
     @Override

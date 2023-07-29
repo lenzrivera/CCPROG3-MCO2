@@ -8,7 +8,7 @@ import model.Slot;
 import model.VendingMachine;
 import model.VendingMachineModel;
 import util.Controller;
-import views.components.StockItemsPanel;
+import views.components.SetupItemsPanel;
 import views.templates.CreateMachineView;
 
 // TODO: CreateMachineView may be simplified to remove generics
@@ -38,7 +38,7 @@ public abstract class CreateMachineController<
         view.getBasicInfoPanel()
             .getContent()
             .setMinSlotCapacity(Slot.MIN_MAX_CAPACITY);
-        view.getStockChangePanel()
+        view.getManageMoneyPanel()
             .getContent()    
             .setDenominations(Denomination.getDoubleValues());
     }
@@ -46,7 +46,7 @@ public abstract class CreateMachineController<
     /* */
 
     protected boolean checkFieldValidity(VendingMachine<?> machine) {
-        StockItemsPanel setItemsPanel = view.getStockItemsPanel().getContent();
+        SetupItemsPanel setItemsPanel = view.getSetItemsPanel().getContent();
 
         int slotIndex = setItemsPanel.getSelectedSlotNo() - 1;
         String name = setItemsPanel.getItemNameInput();
@@ -95,11 +95,11 @@ public abstract class CreateMachineController<
         int count = 1;
 
         for (var entry : denomMap.getQuantityMap().entrySet()) {
-            view.getStockChangePanel()
+            view.getManageMoneyPanel()
                 .getContent()
                 .getDenomTable()
                 .setDenominationCell(count, entry.getKey().getValue());
-            view.getStockChangePanel()
+            view.getManageMoneyPanel()
                 .getContent()
                 .getDenomTable()
                 .setQuantityCell(count, entry.getValue());
@@ -109,7 +109,7 @@ public abstract class CreateMachineController<
     }
 
     public void updateSlotTable(List<? extends Slot> slots) {
-        StockItemsPanel setItemsPanel = view.getStockItemsPanel().getContent();
+        SetupItemsPanel setItemsPanel = view.getSetItemsPanel().getContent();
         
         for (int i = 0; i < slots.size(); i++) {
             String name = (slots.get(i).getSampleItem() == null) 

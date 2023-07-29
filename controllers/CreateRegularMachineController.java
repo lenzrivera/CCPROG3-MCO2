@@ -1,7 +1,6 @@
 package controllers;
 
 import controllers.templates.CreateMachineController;
-import model.Denomination;
 import model.Item;
 import model.RegularVendingMachine;
 import model.Slot;
@@ -9,8 +8,7 @@ import model.VendingMachineModel;
 import states.MainMenuState;
 import views.CreateRegularMachineView;
 import views.components.BasicInfoPanel;
-import views.components.StockChangePanel;
-import views.components.StockItemsPanel;
+import views.components.SetupItemsPanel;
 
 public class CreateRegularMachineController 
     extends CreateMachineController<CreateRegularMachineView> 
@@ -49,10 +47,10 @@ public class CreateRegularMachineController
                 panel.getSlotCapacity()
             );
 
-            view.getStockItemsPanel()
+            view.getSetItemsPanel()
                 .getContent()
                 .setMaxStock(panel.getSlotCapacity());
-            view.getStockItemsPanel()
+            view.getSetItemsPanel()
                 .getContent()
                 .setSlotCount(panel.getSlotCount());
 
@@ -61,12 +59,12 @@ public class CreateRegularMachineController
 
         /* SetItemsPanel */
 
-        view.getStockItemsPanel().setNextButtonListener(e -> {
+        view.getSetItemsPanel().setNextButtonListener(e -> {
             view.getSetupPane().setActiveTab(2);
         });
 
-        view.getStockItemsPanel().getContent().setItemAddListener(e -> {
-            StockItemsPanel panel = view.getStockItemsPanel().getContent();
+        view.getSetItemsPanel().getContent().setItemAddListener(e -> {
+            SetupItemsPanel panel = view.getSetItemsPanel().getContent();
 
             if (!checkFieldValidity(machine)) {
                 return;
@@ -89,8 +87,8 @@ public class CreateRegularMachineController
             updateSlotTable(machine.getSlots());  
         });
 
-        view.getStockItemsPanel().getContent().setSlotSelectListener(e -> {
-            StockItemsPanel panel = view.getStockItemsPanel().getContent();
+        view.getSetItemsPanel().getContent().setSlotSelectListener(e -> {
+            SetupItemsPanel panel = view.getSetItemsPanel().getContent();
 
             int selectedSlotNo = panel.getSelectedSlotNo();
             Slot selectedSlot = machine.getSlot(selectedSlotNo);
@@ -111,8 +109,8 @@ public class CreateRegularMachineController
             }
         });
 
-        view.getStockItemsPanel().getContent().setItemRemoveListener(e -> {
-            int slotNo = view.getStockItemsPanel().getContent().getSelectedSlotNo();
+        view.getSetItemsPanel().getContent().setItemRemoveListener(e -> {
+            int slotNo = view.getSetItemsPanel().getContent().getSelectedSlotNo();
 
             if (machine.getSlot(slotNo).getSampleItem() == null) {
                 view.showErrorDialog("Cannot remove a non-existent item.");
@@ -125,19 +123,21 @@ public class CreateRegularMachineController
 
         /* StockMoneyPanel */
 
-        view.getStockChangePanel().setNextButtonListener(e -> {
+        view.getManageMoneyPanel().setNextButtonListener(e -> {
             model.setVendingMachine(machine);
             changeState(new MainMenuState());
         });
 
-        view.getStockChangePanel().getContent().setAddDenominationListener(e -> {
-            StockChangePanel panel = view.getStockChangePanel().getContent();
+        view.getManageMoneyPanel().getContent().setCollectListener(e -> {
 
-            double denom = panel.getSelectedDenom();
-            int quantity = panel.getSelectedQuantity();
+        });
 
-            machine.getMoneyStock().add(Denomination.toEnum(denom), quantity);
-            updateDenominationTable(machine.getMoneyStock());
+        view.getManageMoneyPanel().getContent().setCollectAllListener(e -> {
+
+        });
+
+        view.getManageMoneyPanel().getContent().setStockListener(e -> {
+
         });
     }
 }
