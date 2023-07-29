@@ -1,5 +1,6 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import model.exceptions.InsufficientChangeException;
@@ -21,8 +22,15 @@ public abstract class VendingMachine<T extends Slot> {
 
     public VendingMachine(String name, int slotCount, int slotCapacity) {
         this.name = name;
+
+        slots = new ArrayList<>();
         this.slotCount = Math.max(MIN_SLOT_COUNT, slotCount);
         this.slotCapacity = Math.max(Slot.MIN_MAX_CAPACITY, slotCapacity);
+
+        credit = new DenominationMap();
+        moneyStock = new DenominationMap();
+
+        currentSummary = new Summary(slots);
     }
 
     /* */
