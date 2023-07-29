@@ -73,6 +73,10 @@ public class StockItemsPanel extends JPanel {
         return (int) quantityInput.getValue();
     }
 
+    public DisplayTable<Integer, String> getSlotTable() {
+        return slotTable;
+    }
+
     public void setStockLabelText(int stock) {
         stockLabel.setText("Stock: " + stock);
     }

@@ -35,17 +35,53 @@ public class TestMaintenanceController extends Controller {
             changeState(new MainMenuState());
         });
 
-        // TODO: bind listeners
+        /* StockItemsPanel */
 
         view.getStockItemsPanel().setItemAddListener(e -> {
+            int slotNo = view.getStockItemsPanel()
+                             .getSlotTable()
+                             .getSelectedRowIndex() + 1;
 
+            Slot selectedSlot = machine.getSlot(slotNo);
+
+            if (selectedSlot.getSampleItem() == null) {
+                view.showErrorDialog("Cannot restock a non-existent item.");
+                return;
+            }
+
+            int qtyToAdd = view.getStockItemsPanel().getQuantityInput();
+            selectedSlot.stockItem(qtyToAdd);
         });
 
         view.getStockItemsPanel().setItemRemoveListener(e -> {
+            int slotNo = view.getStockItemsPanel()
+                             .getSlotTable()
+                             .getSelectedRowIndex() + 1;
 
+            Slot selectedSlot = machine.getSlot(slotNo);
+
+            if (selectedSlot.getSampleItem() == null) {
+                view.showErrorDialog("Cannot remove a non-existent item.");
+                return;
+            }
+
+            int qtyToRemove = view.getStockItemsPanel().getQuantityInput();
+
+            for (int i = 0; i < qtyToRemove; i++) {
+                selectedSlot.dispenseItem();
+            }
         });
 
-        // TODO: bind listeners
+        view.getStockItemsPanel().getSlotTable().setRowSelectListener(e -> {
+            int slotNo = view.getStockItemsPanel()
+                             .getSlotTable()
+                             .getSelectedRowIndex() + 1;
+            
+            Slot selectedSlot = machine.getSlot(slotNo);
+            view.getStockItemsPanel().setStockLabelText(selectedSlot.getStock());
+        });
+
+        /* ManageMoneyPanel */
 
         view.getManageMoneyPanel().setCollectListener(e -> {
             ManageMoneyPanel panel = view.getManageMoneyPanel();
