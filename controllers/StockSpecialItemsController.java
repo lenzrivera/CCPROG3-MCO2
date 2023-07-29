@@ -49,20 +49,19 @@ public class StockSpecialItemsController
         boolean standalone = stockItemsPanel.getStandaloneInput();
         String operation = stockItemsPanel.getOperationInput();
         int stock = stockItemsPanel.getStockInput();
-
+       
         // In case an item is already in the slot.
-        machine.removeItem(slotNo);
+        machine.getSlot(slotNo).clearAssignment();;
 
-        machine.addItem(
-            slotNo, 
-            name,
+        Item sample = new Item(name, calories, imagePath);
+        machine.getSlot(slotNo).assignToItem(
+            sample, 
             price, 
-            calories, 
-            imagePath, 
+            standalone, 
             standalone, 
             Operation.valueOf(operation)
         );
-        machine.stockItem(slotNo, stock);
+        machine.getSlot(slotNo).stockItem(stock);
         
         updateSlotTable();
     }
@@ -86,7 +85,7 @@ public class StockSpecialItemsController
             }
         }        
             
-        machine.removeItem(slotNo);
+        machine.getSlot(slotNo).clearAssignment();
         updateSlotTable();
     }
 
@@ -112,7 +111,7 @@ public class StockSpecialItemsController
             stockItemsPanel.setImagePathInput(sampleItem.getImagePath());
             stockItemsPanel.setStandaloneInput(selectedSlot.isStandalone());
             stockItemsPanel.setOperationInput(
-                selectedSlot.getItemOperation().toString());
+                selectedSlot.getOperation().toString());
         }
     }
 }

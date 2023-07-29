@@ -31,7 +31,6 @@ public abstract class StockItemsController<
         handleSlotSelect();
     }
 
-    // TODO: proper "simulation"
     protected abstract void handleItemAdd();
 
     protected abstract void handleItemRemove();

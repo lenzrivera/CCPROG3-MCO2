@@ -1,11 +1,6 @@
 package controllers;
 
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import controllers.templates.CreateMachineController;
-import model.Operation;
 import model.Slot;
 import model.SpecialVendingMachine;
 import model.VendingMachineModel;

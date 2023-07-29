@@ -32,10 +32,11 @@ public class StockRegularItemsController
         int stock = stockItemsPanel.getStockInput();
 
         // In case an item is already in the slot.
-        machine.removeItem(slotNo);
+        machine.getSlot(slotNo).clearAssignment();
 
-        machine.addItem(slotNo, name, price, calories, imagePath);
-        machine.stockItem(slotNo, stock);
+        Item sample = new Item(name, calories, imagePath);
+        machine.getSlot(slotNo).assignToItem(sample, price);
+        machine.getSlot(slotNo).stockItem(stock);
         
         updateSlotTable();
     }
@@ -43,12 +44,13 @@ public class StockRegularItemsController
     @Override
     protected void handleItemRemove() {
         int slotNo = stockItemsPanel.getSelectedSlotNo();
-            
-        if (!machine.removeItem(slotNo)) {
+
+        if (machine.getSlot(slotNo).getSampleItem() == null) {
             parentView.showErrorDialog("Cannot remove a non-existent item.");
             return;
         }
-
+        
+        machine.getSlot(slotNo).clearAssignment();
         updateSlotTable();
     }
 
