@@ -1,9 +1,9 @@
 package controllers.templates;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Map;
 
+import model.Denomination;
 import model.DenominationMap;
 import model.Slot;
 import model.VendingMachine;
@@ -81,10 +81,7 @@ public abstract class CreateMachineController<
 
         view.getStockChangePanel()
             .getContent()    
-            .setDenominations(
-                Arrays.stream(DenominationMap.VALID_DENOMINATIONS)
-                      .boxed()
-                      .toList());
+            .setDenominations(Denomination.getDoubleValues());
     }
 
     /**
@@ -120,8 +117,8 @@ public abstract class CreateMachineController<
             int quantity = 
                 view.getStockChangePanel().getContent().getSelectedQuantity();
 
-            machine.stockChange(denom, quantity);
-            updateDenominationTable(machine.getChangeStock());
+            machine.getMoneyStock().add(Denomination.toEnum(denom), quantity);
+            updateDenominationTable(machine.getMoneyStock());
         });
 
         view.getStockChangePanel().setNextButtonListener(e -> {
@@ -136,16 +133,16 @@ public abstract class CreateMachineController<
      * @param denomMap the DenominationMap containing the denominations and quantities.
      */
     protected void updateDenominationTable(DenominationMap denomMap) {
-        Map<Double, Integer> rawMap = denomMap.getDenominations();
+        Map<Denomination, Integer> rawMap = denomMap.getQuantityMap();
 
-        ArrayList<Double> denominations = new ArrayList<>(rawMap.keySet());
+        ArrayList<Denomination> denominations = new ArrayList<>(rawMap.keySet());
         ArrayList<Integer> quantities = new ArrayList<>(rawMap.values());
 
         for (int i = 0; i < rawMap.size(); i++) {
             view.getStockChangePanel()
                 .getContent()
                 .getDenomTable()
-                .setDenominationCell(i + 1, denominations.get(i));
+                .setDenominationCell(i + 1, denominations.get(i).getValue());
             view.getStockChangePanel()
                 .getContent()
                 .getDenomTable()

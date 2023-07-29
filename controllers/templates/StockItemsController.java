@@ -1,6 +1,6 @@
 package controllers.templates;
 
-import model.DenominationMap;
+import model.Denomination;
 import model.Slot;
 import model.VendingMachine;
 import util.View;
@@ -63,7 +63,7 @@ public abstract class StockItemsController<
             }
         }
 
-        if (!DenominationMap.isValidPrice(price)) {
+        if (Denomination.toEnum(price) == null) {
             parentView.showErrorDialog("Please enter a valid price.");
             return false;
         }
