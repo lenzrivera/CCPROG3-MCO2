@@ -35,15 +35,6 @@ public enum Denomination {
         return valueList;
     }
 
-    public static boolean isValidDenomination(double denom) {
-        for (Denomination d : values()) {
-            if (d.getValue() == denom){
-                return true;
-            }
-        }
-        return false;
-    }
-
     public static boolean isValidPrice(double price) {
         // Essentially any whole number price is allowed; the only constraints
         // would be with the decimal part which should only be multiples of
@@ -52,5 +43,15 @@ public enum Denomination {
 
         // Account for potential rounding errors.
         return frac % 0.25 < 0.00001;
+    }
+
+    public static Denomination toEnum(double amount) {
+        for (Denomination d : values()) {
+            if (d.getValue() == amount){
+                return d;
+            }
+        }
+
+        return null;
     }
 }
