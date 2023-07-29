@@ -39,6 +39,10 @@ public abstract class VendingMachine<T extends Slot> {
         return slots.get(slotNo - 1);
     }
 
+    public List<T> getSlots() {
+        return slots;
+    }
+
     public int getSlotCount() {
         return slotCount;
     }
