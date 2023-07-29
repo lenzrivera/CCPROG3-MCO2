@@ -190,8 +190,6 @@ public class CreateSpecialMachineController
         });
 
         view.getSetupPresetsPanel().getContent().setPresetAddListener(e -> {
-            // TODO: perhaps look into invalid presets (e.g. only toppings) 
-
             SetupPresetsPanel panel = view.getSetupPresetsPanel().getContent();
             
             int presetIndex = panel.getSelectedPresetIndex();
