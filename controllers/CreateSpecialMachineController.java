@@ -36,6 +36,8 @@ public class CreateSpecialMachineController
 
     @Override
     protected void setConstants() {
+        super.setConstants();
+
         List<String> opStrings = Stream.of(Operation.values())
                                        .map(Operation::toString)
                                        .collect(Collectors.toList());
@@ -77,6 +79,7 @@ public class CreateSpecialMachineController
             view.getSetItemsPanel()
                 .getContent()
                 .setSlotCount(panel.getSlotCount());
+            updateSlotTable(machine.getSlots());
 
             view.getSetupPane().setActiveTab(1);            
         });

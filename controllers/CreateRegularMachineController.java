@@ -54,6 +54,9 @@ public class CreateRegularMachineController
                 .getContent()
                 .setSlotCount(panel.getSlotCount());
 
+            updateDenominationTable(machine.getMoneyStock());
+            updateSlotTable(machine.getSlots());
+
             view.getSetupPane().setActiveTab(1);
         });
 
