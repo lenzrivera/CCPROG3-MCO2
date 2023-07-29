@@ -24,7 +24,7 @@ public class TestMaintenanceController extends Controller {
     ) {
         this.model = model;
         this.view = view;
-
+    
         setListeners();
     }
 
@@ -112,6 +112,8 @@ public class TestMaintenanceController extends Controller {
     /* */
 
     private void updateDenominationTable(DenominationMap denomMap) {
+        view.getManageMoneyPanel().getDenomTable().clearCells();
+
         int i = 0;
 
         for (var entry : denomMap.getQuantityMap().entrySet()) {

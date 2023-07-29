@@ -92,8 +92,10 @@ public abstract class CreateMachineController<
      * quantities.
      */
     protected void updateDenominationTable(DenominationMap denomMap) {
+        view.getManageMoneyPanel().getContent().getDenomTable().clearCells();
+        
         int i = 0;
-
+        
         for (var entry : denomMap.getQuantityMap().entrySet()) {
             view.getManageMoneyPanel()
                 .getContent()

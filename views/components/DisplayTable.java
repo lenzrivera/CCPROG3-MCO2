@@ -22,6 +22,11 @@ public class DisplayTable<T, U> extends JScrollPane {
 
     /* */
 
+    public void clearCells() {
+        tableModel.getDataVector().removeAllElements();
+        tableModel.fireTableDataChanged();
+    }
+
     public int getSelectedRowIndex() {
         return table.getSelectedRow();
     }
