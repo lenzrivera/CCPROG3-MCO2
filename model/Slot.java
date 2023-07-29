@@ -64,6 +64,10 @@ public class Slot {
     }
 
     public void stockItem(int quantity) {
+        if (items.size() + quantity > capacity) {
+            throw new IllegalArgumentException("Overstock.");
+        }
+        
         for (int i = 0; i < quantity; i++) {
             items.add(new Item(sampleItem));
         }

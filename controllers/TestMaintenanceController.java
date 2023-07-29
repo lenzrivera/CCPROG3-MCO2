@@ -1,5 +1,7 @@
 package controllers;
 
+import java.util.List;
+
 import model.Denomination;
 import model.DenominationMap;
 import model.Slot;
@@ -9,6 +11,7 @@ import states.MainMenuState;
 import util.Controller;
 import views.TestMaintenanceView;
 import views.components.ManageMoneyPanel;
+import views.components.StockItemsPanel;
 
 public class TestMaintenanceController extends Controller {
     /**
@@ -25,10 +28,17 @@ public class TestMaintenanceController extends Controller {
         this.model = model;
         this.view = view;
 
-        view.getManageMoneyPanel()
-            .setDenominations(Denomination.getDoubleValues());
+        VendingMachine<? extends Slot> machine = model.getVendingMachine();
 
         setListeners();
+
+        view.getManageMoneyPanel()
+            .setDenominations(Denomination.getDoubleValues());
+        view.getStockItemsPanel()
+            .setSlotCapacity(machine.getSlotCapacity());
+
+        updateSlotTable(machine.getSlots());
+        updateDenominationTable(machine.getMoneyStock());
     }
 
     private void setListeners() {
@@ -45,6 +55,11 @@ public class TestMaintenanceController extends Controller {
                              .getSlotTable()
                              .getSelectedRowIndex() + 1;
 
+            // If for whatever reason no items have been set to the machine.
+            if (slotNo == 0) {
+                return;
+            }
+
             Slot selectedSlot = machine.getSlot(slotNo);
 
             if (selectedSlot.getSampleItem() == null) {
@@ -53,13 +68,25 @@ public class TestMaintenanceController extends Controller {
             }
 
             int qtyToAdd = view.getStockItemsPanel().getQuantityInput();
-            selectedSlot.stockItem(qtyToAdd);
+
+            try {
+                selectedSlot.stockItem(qtyToAdd);
+                view.getStockItemsPanel()
+                    .setStockLabelText(selectedSlot.getStock());
+            } catch (IllegalArgumentException ex) {
+                view.showErrorDialog("Cannot exceed slot capacity.");
+            } 
         });
 
         view.getStockItemsPanel().setItemRemoveListener(e -> {
             int slotNo = view.getStockItemsPanel()
                              .getSlotTable()
                              .getSelectedRowIndex() + 1;
+
+            // If for whatever reason no items have been set to the machine.
+            if (slotNo == 0) {
+                return;
+            }
 
             Slot selectedSlot = machine.getSlot(slotNo);
 
@@ -70,9 +97,19 @@ public class TestMaintenanceController extends Controller {
 
             int qtyToRemove = view.getStockItemsPanel().getQuantityInput();
 
+            if (selectedSlot.getStock() - qtyToRemove < 0) {
+                view.showErrorDialog(
+                    "Cannot remove more than the remaining number of items."
+                );
+                return;
+            }
+
             for (int i = 0; i < qtyToRemove; i++) {
                 selectedSlot.dispenseItem();
             }
+
+            view.getStockItemsPanel()
+                .setStockLabelText(selectedSlot.getStock());
         });
 
         view.getStockItemsPanel().getSlotTable().setRowSelectListener(e -> {
@@ -113,6 +150,19 @@ public class TestMaintenanceController extends Controller {
     }
 
     /* */
+
+    public void updateSlotTable(List<? extends Slot> slots) {
+        StockItemsPanel panel = view.getStockItemsPanel();
+        
+        for (int i = 0; i < slots.size(); i++) {
+            String name = (slots.get(i).getSampleItem() == null) 
+                ? "[empty]" 
+                : slots.get(i).getSampleItem().getName();
+
+            panel.getSlotTable().setCol0(i, i + 1);
+            panel.getSlotTable().setCol1(i, name);
+        }
+    }
 
     private void updateDenominationTable(DenominationMap denomMap) {
         view.getManageMoneyPanel().getDenomTable().clearCells();

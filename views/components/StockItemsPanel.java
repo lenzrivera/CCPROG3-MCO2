@@ -12,6 +12,8 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
 public class StockItemsPanel extends JPanel {
+    private int slotCapacity;
+
     private DisplayTable<Integer, String> slotTable;
 
     private JPanel inputPanel;
@@ -27,6 +29,8 @@ public class StockItemsPanel extends JPanel {
     public StockItemsPanel() {
         super(new GridLayout(1, 2));
     
+        slotCapacity = 0;
+
         slotTable = new DisplayTable<>("Slot", "Item Name");
         add(slotTable);
 
@@ -50,8 +54,8 @@ public class StockItemsPanel extends JPanel {
         inputPanel.add(quantityLabel, gbc);
 
         SpinnerNumberModel qtyInputModel = new SpinnerNumberModel();
-        qtyInputModel.setMinimum(0);
-        qtyInputModel.setValue(0);
+        qtyInputModel.setMinimum(1);
+        qtyInputModel.setValue(1);
         quantityInput = new JSpinner(qtyInputModel);
         inputPanel.add(quantityInput, gbc);
 
@@ -77,8 +81,12 @@ public class StockItemsPanel extends JPanel {
         return slotTable;
     }
 
+    public void setSlotCapacity(int capacity) {
+        slotCapacity = capacity;
+    }
+
     public void setStockLabelText(int stock) {
-        stockLabel.setText("Stock: " + stock);
+        stockLabel.setText("Stock: " + stock + " / " + slotCapacity);
     }
 
     /* */
@@ -88,6 +96,6 @@ public class StockItemsPanel extends JPanel {
     }
 
     public void setItemRemoveListener(ActionListener listener) {
-        removeButton.removeActionListener(listener);
+        removeButton.addActionListener(listener);
     }
 }
