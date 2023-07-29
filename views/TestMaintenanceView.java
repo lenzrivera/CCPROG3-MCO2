@@ -1,4 +1,4 @@
-package views.templates;
+package views;
 
 import java.awt.Container;
 import java.awt.event.ActionListener;
@@ -11,12 +11,19 @@ import views.components.SectionContainer;
 import views.components.StockItemsPanel;
 import views.components.SummaryViewPanel;
 
-public class TestMaintenanceView<T extends StockItemsPanel> extends View {
+public class TestMaintenanceView extends View {
     protected SectionContainer mainContainer;
 
     protected JTabbedPane optionTabs;
 
-    protected T stockItemsPanel;
+
+    // rename stockitempanel to additempanel
+    // fix add item controllers - remove subclasses
+        // retain stockitemcontroller for commonality
+        // remove subclasses - place directly in respective controllers
+
+    // add stockitempanel placeholder
+
     protected SummaryViewPanel summaryViewPanel;
     protected ManageMoneyPanel manageMoneyPanel;
 
@@ -27,6 +34,7 @@ public class TestMaintenanceView<T extends StockItemsPanel> extends View {
         mainContainer.setBody(optionTabs);
 
         summaryViewPanel = new SummaryViewPanel();
+
         manageMoneyPanel = new ManageMoneyPanel();
     }
 
@@ -35,9 +43,9 @@ public class TestMaintenanceView<T extends StockItemsPanel> extends View {
         return mainContainer;
     }
 
-    public T getStockItemsPanel() {
-        return stockItemsPanel;
-    }
+    // public T getStockItemsPanel() {
+    //     return stockItemsPanel;
+    // }
 
     public SummaryViewPanel getSummaryViewPanel() {
         return summaryViewPanel;

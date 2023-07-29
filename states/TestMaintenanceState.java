@@ -1,14 +1,11 @@
 package states;
 
-import controllers.MaintenanceView;
-import controllers.TestSpecialMaintenanceController;
+import controllers.TestMaintenanceController;
 import model.VendingMachineModel;
 import util.Controller;
 import util.State;
 import util.View;
-import views.TestMaintenanceController;
-import views.TestSpecialMaintenanceView;
-import views.templates.TestMaintenanceView;
+import views.TestMaintenanceView;
 
 public class TestMaintenanceState extends State {
     private TestMaintenanceView view;
@@ -45,7 +42,7 @@ public class TestMaintenanceState extends State {
      */
     @Override
     public void initialize(VendingMachineModel model) {
-        view = new TestSpecialMaintenanceView();
-        controller = new TestSpecialMaintenanceController(model, view);
+        view = new TestMaintenanceView();
+        controller = new TestMaintenanceController(model, view);
     }
 }

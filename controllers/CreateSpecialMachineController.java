@@ -1,31 +1,182 @@
 package controllers;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import controllers.templates.CreateMachineController;
+import model.Denomination;
+import model.Item;
+import model.Operation;
+import model.Preset;
 import model.Slot;
+import model.SpecialSlot;
 import model.SpecialVendingMachine;
 import model.VendingMachineModel;
+import states.MainMenuState;
 import views.CreateSpecialMachineView;
 import views.components.BasicInfoPanel;
+import views.components.SetupPresetsPanel;
+import views.components.StockChangePanel;
+import views.components.StockSpecialItemsPanel;
 
-public class CreateSpecialMachineController extends CreateMachineController<
-    CreateSpecialMachineView, SpecialVendingMachine> 
+public class CreateSpecialMachineController
+    extends CreateMachineController<CreateSpecialMachineView> 
 {
-    private SetupPresetsController presetsController;
+    private SpecialVendingMachine machine;
 
     public CreateSpecialMachineController(
-        VendingMachineModel m, 
-        CreateSpecialMachineView v
+        VendingMachineModel model, 
+        CreateSpecialMachineView view
     ) {
-        super(m, v);
+        super(model, view);
 
-        // Can't be initialized immediately as the machine to control does not
-        // exist yet at initialization.
-        presetsController = null;
+        machine = null;
+    }
+
+    @Override
+    protected void setConstants() {
+        List<String> opStrings = Stream.of(Operation.values())
+                                       .map(Operation::toString)
+                                       .collect(Collectors.toList());
+
+        view.getStockItemsPanel().getContent().setOperations(opStrings);
+        view.getSetupPresetsPanel().getContent().setOperations(opStrings);
     }
 
     @Override
     protected void setListeners() {
-        super.setListeners();
+        view.setExitButtonListener(e -> {
+            if (machine.getPresets().size() == 0) {
+                view.showErrorDialog("At least one default preset should exist.");
+                return;                
+            }
+            
+            view.getSetupPane().setActiveTab(3);
+        });
+
+        /* BasicInfoPanel */
+
+        view.getBasicInfoPanel().setNextButtonListener(e -> {
+            BasicInfoPanel panel = view.getBasicInfoPanel().getContent();
+            
+            if (panel.getName().isBlank()) {
+                view.showErrorDialog("Please enter a valid name.");
+                return;
+            }
+
+            machine = new SpecialVendingMachine(
+                panel.getName(),
+                panel.getSlotCount(),
+                panel.getSlotCapacity()
+            );
+
+            view.getStockItemsPanel()
+                .getContent()
+                .setMaxStock(panel.getSlotCapacity());
+            view.getStockItemsPanel()
+                .getContent()
+                .setSlotCount(panel.getSlotCount());
+
+            view.getSetupPane().setActiveTab(1);            
+        });
+
+        /* AddItemsPanel */
+
+        view.getStockItemsPanel().setNextButtonListener(e -> {
+            for (Slot slot : machine.getSlots()) {
+                if (slot.getSampleItem() != null) {
+                    setItemList(machine.getSlots());
+                    view.getSetupPane().setActiveTab(2);
+                    break;
+                }
+            }
+
+            view.getSetupPane().setActiveTab(3);
+        });
+
+        view.getStockItemsPanel().getContent().setItemAddListener(e -> {
+            StockSpecialItemsPanel panel = view.getStockItemsPanel().getContent();
+
+            if (!checkFieldValidity(machine)) {
+                return;
+            }
+
+            int slotNo = panel.getSelectedSlotNo();
+            String name = panel.getItemNameInput();
+            double price = panel.getPriceInput();
+            double calories = panel.getCaloriesInput();
+            String imagePath = panel.getImagePathInput();
+            boolean standalone = panel.getStandaloneInput();
+            String operation = panel.getOperationInput();
+            int stock = panel.getStockInput();
+        
+            // In case an item is already in the slot.
+            machine.getSlot(slotNo).clearAssignment();;
+
+            Item sample = new Item(name, calories, imagePath);
+            machine.getSlot(slotNo).assignToItem(
+                sample, 
+                price, 
+                standalone, 
+                standalone, 
+                Operation.valueOf(operation)
+            );
+            machine.getSlot(slotNo).stockItem(stock);
+            
+            updateSlotTable(machine.getSlots());            
+        });
+
+        view.getStockItemsPanel().getContent().setSlotSelectListener(e -> {
+            StockSpecialItemsPanel panel = view.getStockItemsPanel().getContent();
+
+            int selectedSlotNo = panel.getSelectedSlotNo();
+            SpecialSlot selectedSlot = machine.getSlot(selectedSlotNo);
+            Item sampleItem = selectedSlot.getSampleItem();
+            
+            if (sampleItem == null) {
+                panel.setItemNameInput("");
+                panel.setCaloriesInput(0.0);
+                panel.setPriceInput(0.0);
+                panel.setStockInput(0);
+                panel.setImagePathInput(null);
+                panel.setStandaloneInput(true);
+                panel.setOperationInput(0);
+            } else {
+                panel.setItemNameInput(sampleItem.getName());
+                panel.setCaloriesInput(sampleItem.getCalories());
+                panel.setPriceInput(selectedSlot.getUnitPrice());
+                panel.setStockInput(selectedSlot.getStock());
+                panel.setImagePathInput(sampleItem.getImagePath());
+                panel.setStandaloneInput(selectedSlot.isStandalone());
+                panel.setOperationInput(selectedSlot.getOperation().toString());
+            }
+        });
+
+        view.getStockItemsPanel().getContent().setItemRemoveListener(e -> {
+            StockSpecialItemsPanel panel = view.getStockItemsPanel().getContent();
+            int slotNo = panel.getSelectedSlotNo();
+
+            if (machine.getSlot(slotNo).getSampleItem() == null) {
+                view.showErrorDialog("Cannot remove a non-existent item.");
+                return;
+            }
+
+            String itemName = machine.getSlot(slotNo).getSampleItem().getName();
+
+            for (Preset preset : machine.getPresets()) {
+                if (preset.getItems().containsKey(itemName)) {
+                    view.showErrorDialog(
+                        "Cannot remove item being used in a preset.");
+                    return;
+                }
+            }        
+                
+            machine.getSlot(slotNo).clearAssignment();
+            updateSlotTable(machine.getSlots());
+        });
 
         /* SetupPresetsPanel */
 
@@ -37,59 +188,167 @@ public class CreateSpecialMachineController extends CreateMachineController<
             
             view.getSetupPane().setActiveTab(3);
         });
-    }
 
-    @Override
-    protected void handleBasicInfoNext() {
-        BasicInfoPanel panel = view.getBasicInfoPanel().getContent();
-        
-        if (panel.getName().isBlank()) {
-            view.showErrorDialog("Please enter a valid name.");
-            return;
-        }
+        view.getSetupPresetsPanel().getContent().setPresetAddListener(e -> {
+            // TODO: perhaps look into invalid presets (e.g. only toppings) 
 
-        machine = new SpecialVendingMachine(
-            panel.getName(),
-            panel.getSlotCount(),
-            panel.getSlotCapacity()
-        );
+            SetupPresetsPanel panel = view.getSetupPresetsPanel().getContent();
+            
+            int presetIndex = panel.getSelectedPresetIndex();
+            String name = panel.getNameInput();
+            Map<String, Integer> items = panel.getItemMapping();
+            String operation = panel.getOperationInput();
+            String imagePath = panel.getImagePath();
 
-        view.getStockItemsPanel()
-            .getContent()
-            .setMaxStock(panel.getSlotCapacity());
-        view.getStockItemsPanel()
-            .getContent()
-            .setSlotCount(panel.getSlotCount());
-
-        stockItemsController = new StockSpecialItemsController(
-            machine, 
-            view.getStockItemsPanel().getContent(),
-            view
-        );
-
-        view.getSetupPane().setActiveTab(1);
-    }
-
-    @Override
-    protected void handleStockItemsNext() {
-        boolean hasItems = false;
-
-        for (Slot slot : machine.getSlots()) {
-            if (slot.getSampleItem() != null) {
-                hasItems = true;
-                break;
+            if (name.isBlank()) {
+                view.showErrorDialog("Please enter a valid preset name.");
+                return;
             }
-        }
+            
+            for (int i = 0; i < machine.getPresets().size(); i++) {
+                Preset preset = machine.getPresets().get(i);
+    
+                if (
+                    i != presetIndex && 
+                    preset != null && 
+                    preset.getName().equalsIgnoreCase(name)    
+                ) {
+                    view.showErrorDialog("Please enter an unused preset name.");
+                    return;
+                }
+            }
 
-        if (hasItems) {
-            presetsController = new SetupPresetsController(
-                machine,
-                view.getSetupPresetsPanel().getContent(),
-                view
-            );
-            view.getSetupPane().setActiveTab(2);
-        } else {
-            view.getSetupPane().setActiveTab(3);
+            if (items.size() == 0) {
+                view.showErrorDialog("A preset cannot have no items.");
+                return;                
+            }
+
+            boolean hasBaseItem = false;
+
+            for (SpecialSlot slot : machine.getSlots()) {
+                if (
+                    slot.isBase() && slot.isStandalone() && 
+                    items.containsKey(slot.getSampleItem().getName())
+                ) {
+                    hasBaseItem = true;
+                    break;
+                }
+            }
+
+            if (!hasBaseItem) {
+                view.showErrorDialog(
+                    "A preset cannot have no standalone base items."
+                );
+                return;                   
+            }
+
+            if (imagePath.isBlank()) {
+                view.showErrorDialog("Please select a preset image.");
+                return;                
+            }
+
+            Preset newPreset = new Preset(
+                name, items, Operation.valueOf(operation), imagePath);
+
+            if (presetIndex == -1) {
+                machine.getPresets().add(newPreset);
+            } else {
+                machine.getPresets().set(presetIndex, newPreset);
+            }
+
+            updatePresetList();           
+        });
+
+        view.getSetupPresetsPanel().getContent().setPresetRemoveListener(e -> {
+            SetupPresetsPanel panel = view.getSetupPresetsPanel().getContent();
+
+            machine.getPresets().remove(panel.getSelectedPresetIndex());
+            updatePresetList();
+        });
+
+        view.getSetupPresetsPanel().getContent().setPresetSelectListener(e -> {
+            SetupPresetsPanel panel = view.getSetupPresetsPanel().getContent();
+
+            int selectedIndex = panel.getSelectedPresetIndex();
+            
+            if (selectedIndex == -1) {
+                panel.setNameInputValue("");
+                panel.setImagePathValue("");
+                panel.setOperationValue(0);
+                panel.updateItemMap(new HashMap<>());
+                return;
+            }
+
+            Preset preset = machine.getPresets().get(selectedIndex);
+            panel.setNameInputValue(preset.getName());
+            panel.setImagePathValue(preset.getImagePath());
+            panel.setOperationValue(preset.getOperation().toString());
+
+            panel.updateItemMap(preset.getItems());
+        });
+
+        view.getSetupPresetsPanel().getContent().setPresetSelectListener(e -> {
+            SetupPresetsPanel panel = view.getSetupPresetsPanel().getContent();
+            
+            int selectedIndex = panel.getSelectedPresetIndex();
+            
+            if (selectedIndex == -1) {
+                panel.setNameInputValue("");
+                panel.setImagePathValue("");
+                panel.setOperationValue(0);
+                panel.updateItemMap(new HashMap<>());
+                return;
+            }
+
+            Preset preset = machine.getPresets().get(selectedIndex);
+            panel.setNameInputValue(preset.getName());
+            panel.setImagePathValue(preset.getImagePath());
+            panel.setOperationValue(preset.getOperation().toString());
+
+            panel.updateItemMap(preset.getItems());
+        });    
+
+        /* StockMoneyPanel */
+
+        view.getStockChangePanel().setNextButtonListener(e -> {
+            model.setVendingMachine(machine);
+            changeState(new MainMenuState());
+        });
+
+        view.getStockChangePanel().getContent().setAddDenominationListener(e -> {
+            StockChangePanel panel = view.getStockChangePanel().getContent();
+
+            double denom = panel.getSelectedDenom();
+            int quantity = panel.getSelectedQuantity();
+
+            machine.getMoneyStock().add(Denomination.toEnum(denom), quantity);
+            updateDenominationTable(machine.getMoneyStock());
+        });
+    }
+
+    /* */
+
+    private void setItemList(List<? extends Slot> slots) {
+        SetupPresetsPanel panel = view.getSetupPresetsPanel().getContent();
+
+        panel.clearItemQtySelectors();
+
+        for (Slot slot : slots) {
+            if (slot.getSampleItem() == null) {
+                continue;
+            }
+
+            panel.addItemQtySelector(slot.getSampleItem().getName());
+        }
+    }
+
+    private void updatePresetList() {
+        SetupPresetsPanel panel = view.getSetupPresetsPanel().getContent();
+        
+        panel.clearPresetList();
+
+        for (Preset preset : machine.getPresets()) {
+            panel.addPreset(preset.getName());
         }
     }
 }

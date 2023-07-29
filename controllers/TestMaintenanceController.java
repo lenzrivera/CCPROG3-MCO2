@@ -1,22 +1,18 @@
-package controllers.templates;
+package controllers;
 
+import controllers.templates.StockItemsController;
 import model.VendingMachineModel;
 import states.MainMenuState;
 import util.Controller;
-import views.templates.TestMaintenanceView;
+import views.TestMaintenanceView;
 
-public abstract class TestMaintenanceController<
-    T extends TestMaintenanceView<?>,
-    U extends StockItemsController<?, ?>> extends Controller
-{
+public class TestMaintenanceController extends Controller {
     /**
      * The VendingMachineModel for the whole simulator.
      */
     protected VendingMachineModel model;
 
-    protected T view;
-
-    protected U stockItemsController;
+    protected TestMaintenanceView view;
 
     public TestMaintenanceController(VendingMachineModel model, T view) {
         this.model = model;
@@ -25,14 +21,10 @@ public abstract class TestMaintenanceController<
         setListeners();
     }
 
-    protected abstract U initStockItemsController();
-
-    protected void setListeners() {
+    private void setListeners() {
         view.setExitButtonListener(e -> {
             changeState(new MainMenuState());
         });
-
-        stockItemsController = initStockItemsController();
 
         // TODO: bind listeners
         view.getSummaryViewPanel();
