@@ -2,6 +2,7 @@ package model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +13,7 @@ public class DenominationMap {
     private Map<Denomination, List<Denomination>> denominations;
 
     public DenominationMap() {
-        denominations = new TreeMap<>();
+        denominations = new TreeMap<>(Collections.reverseOrder());
     }
 
     public DenominationMap(DenominationMap denomMap) {
