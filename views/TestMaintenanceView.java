@@ -30,10 +30,10 @@ public class TestMaintenanceView extends View {
         optionTabs.addTab("View Summary", summaryViewPanel);
 
         stockItemsPanel = new StockItemsPanel();
-        optionTabs.addTab("Restock Items", summaryViewPanel);
+        optionTabs.addTab("Restock Items", stockItemsPanel);
 
         manageMoneyPanel = new ManageMoneyPanel();
-        optionTabs.addTab("Manage Money", summaryViewPanel);
+        optionTabs.addTab("Manage Money", manageMoneyPanel);
     }
 
     @Override
