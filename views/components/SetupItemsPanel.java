@@ -152,8 +152,7 @@ public abstract class SetupItemsPanel extends JPanel {
         tableModel.setRowCount(slotCount);
         
         if (table.getSelectedRow() == -1) {
-            int selectedIndex = selectedSlotNo - 1;
-            table.setRowSelectionInterval(selectedIndex, selectedIndex);
+            table.setRowSelectionInterval(0, 0);
         }
     }
 
