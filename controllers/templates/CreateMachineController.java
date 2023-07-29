@@ -72,7 +72,7 @@ public abstract class CreateMachineController<
             }
         }
 
-        if (Denomination.toEnum(price) == null) {
+        if (!Denomination.isValidPrice(price)) {
             view.showErrorDialog("Please enter a valid price.");
             return false;
         }
