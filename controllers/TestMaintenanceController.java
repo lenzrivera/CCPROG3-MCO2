@@ -24,7 +24,10 @@ public class TestMaintenanceController extends Controller {
     ) {
         this.model = model;
         this.view = view;
-    
+
+        view.getManageMoneyPanel()
+            .setDenominations(Denomination.getDoubleValues());
+
         setListeners();
     }
 
