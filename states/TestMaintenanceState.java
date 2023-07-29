@@ -1,35 +1,20 @@
 package states;
 
+import controllers.MaintenanceView;
 import controllers.TestSpecialMaintenanceController;
 import model.VendingMachineModel;
 import util.Controller;
 import util.State;
 import util.View;
+import views.TestMaintenanceController;
 import views.TestSpecialMaintenanceView;
+import views.templates.TestMaintenanceView;
 
-/**
- * Represents the state where the user can test the maintenance features of a
- * special vending machine.
- */
-public class TestSpecialMaintenanceState extends State {
-    /**
-     * The view associated with this state, particularly 
-     * TestSpecialMachineMaintenanceView.
-     */
-    private TestSpecialMaintenanceView view;
+public class TestMaintenanceState extends State {
+    private TestMaintenanceView view;
+    private TestMaintenanceController controller;
 
-    /**
-     * The controller associated with this state, particularly 
-     * TestSpecialMachineMaintenanceController.
-     */
-    private TestSpecialMaintenanceController controller;
-
-    /**
-     * Constructs a new TestSpecialMachineMaintenanceState object. The view
-     * and controller is initially set to null and initialized only when 
-     * initialize() is called.
-     */
-    public TestSpecialMaintenanceState() {
+    public TestMaintenanceState() {
         view = null;
         controller = null;
     }
