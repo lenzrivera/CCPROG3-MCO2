@@ -98,11 +98,11 @@ public abstract class CreateMachineController<
             view.getManageMoneyPanel()
                 .getContent()
                 .getDenomTable()
-                .setDenominationCell(count, entry.getKey().getValue());
+                .setCol0(count, entry.getKey().getValue());
             view.getManageMoneyPanel()
                 .getContent()
                 .getDenomTable()
-                .setQuantityCell(count, entry.getValue());
+                .setCol1(count, entry.getValue());
             
             count += 1;
         }
