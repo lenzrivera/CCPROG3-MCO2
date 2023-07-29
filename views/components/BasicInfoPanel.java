@@ -71,8 +71,12 @@ public class BasicInfoPanel extends JPanel {
         gbc.gridy = 4;
     }
 
-    public String getName() {
+    public String getNameInput() {
         return nameInput.getText();
+    }
+
+    public void setNameInput(String name) {
+        nameInput.setText(name);
     }
 
     public int getSlotCount() {

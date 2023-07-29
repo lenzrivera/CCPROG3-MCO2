@@ -60,13 +60,13 @@ public class CreateSpecialMachineController
         view.getBasicInfoPanel().setNextButtonListener(e -> {
             BasicInfoPanel panel = view.getBasicInfoPanel().getContent();
             
-            if (panel.getName().isBlank()) {
+            if (panel.getNameInput().isBlank()) {
                 view.showErrorDialog("Please enter a valid name.");
                 return;
             }
 
             machine = new SpecialVendingMachine(
-                panel.getName(),
+                panel.getNameInput(),
                 panel.getSlotCount(),
                 panel.getSlotCapacity()
             );
