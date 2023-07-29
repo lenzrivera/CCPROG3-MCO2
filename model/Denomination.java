@@ -1,5 +1,8 @@
 package model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public enum Denomination {
     C25(0.25),
     P1(1.0),
@@ -20,6 +23,16 @@ public enum Denomination {
 
     public double getValue() {
         return value;
+    }
+
+    public static List<Double> getDoubleValues() {
+        List<Double> valueList = new ArrayList<>();
+
+        for (Denomination denom : values()) {
+            valueList.add(denom.getValue());
+        }
+
+        return valueList;
     }
 
     public static boolean isValidDenomination(double denom) {
