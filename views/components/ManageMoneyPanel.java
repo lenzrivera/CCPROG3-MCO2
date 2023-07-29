@@ -31,14 +31,6 @@ public class ManageMoneyPanel extends JPanel {
     private JButton collectAllButton;
     private JButton stockButton;
 
-    public interface CollectAllListener {
-        public void run();
-    }
-
-    public interface DenomSelectListener {
-        public void run(double denom, int quantity);
-    }
-
     public ManageMoneyPanel() {
         super(new GridLayout(1, 2));
         
