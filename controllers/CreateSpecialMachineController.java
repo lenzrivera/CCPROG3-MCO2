@@ -34,6 +34,8 @@ public class CreateSpecialMachineController
         super(model, view);
 
         machine = null;
+
+        view.getBasicInfoPanel().getContent().setNameInput("Pizza VM");
     }
 
     @Override
@@ -71,6 +73,128 @@ public class CreateSpecialMachineController
                 panel.getSlotCapacity()
             );
 
+            // TODO: replace w/ actual path
+            // TODO: set prices and calories
+
+            machine.getSlot(1).assignToItem(
+                new Item("Dough", 111, "help/me/pls"), 
+                111,
+                true,
+                true,
+                Operation.PREPARE
+            );
+            machine.getSlot(1).assignToItem(
+                new Item("Pepperoni", 111, "help/me/pls"), 
+                111,
+                false,
+                true,
+                Operation.PREPARE
+            );
+            machine.getSlot(2).assignToItem(
+                new Item("Ham", 111, "help/me/pls"), 
+                111,
+                false,
+                true,
+                Operation.TOP
+            ); 
+            machine.getSlot(3).assignToItem(
+                new Item("Ground Pork", 111, "help/me/pls"), 
+                111,
+                false,
+                true,
+                Operation.TOP
+            ); 
+            machine.getSlot(4).assignToItem(
+                new Item("Pineapple", 111, "help/me/pls"), 
+                111,
+                false,
+                true,
+                Operation.TOP
+            ); 
+            machine.getSlot(5).assignToItem(
+                new Item("Olives", 111, "help/me/pls"), 
+                111,
+                false,
+                false,
+                Operation.TOP
+            ); 
+            machine.getSlot(6).assignToItem(
+                new Item("Bell Peppers", 111, "help/me/pls"), 
+                111,
+                false,
+                true,
+                Operation.TOP
+            ); 
+            machine.getSlot(7).assignToItem(
+                new Item("Tomato Sauce", 111, "help/me/pls"), 
+                111,
+                false,
+                false,
+                Operation.SPREAD
+            ); 
+            machine.getSlot(8).assignToItem(
+                new Item("Cheese", 111, "help/me/pls"), 
+                111,
+                false,
+                false,
+                Operation.TOP
+            ); 
+
+            machine.getPresets().add(
+                new Preset(
+                    "Plain Pizza",
+                    Map.of(
+                        "Dough", 1,
+                        "Tomato Sauce", 1,
+                        "Cheese", 2
+                    ),
+                    Operation.HEAT, 
+                    "help/me/pls"
+                )
+            );
+            machine.getPresets().add(
+                new Preset(
+                    "Pepperoni Pizza",
+                    Map.of(
+                        "Dough", 1,
+                        "Tomato Sauce", 1,
+                        "Cheese", 2,
+                        "Pepperoni", 2
+                    ),
+                    Operation.HEAT, 
+                    "help/me/pls"
+                )
+            );
+            machine.getPresets().add(
+                new Preset(
+                    "Hawaiian Pizza",
+                    Map.of(
+                        "Dough", 1,
+                        "Tomato Sauce", 1,
+                        "Cheese", 2,
+                        "Ham", 2,
+                        "Pineapple", 2
+                    ),
+                    Operation.HEAT, 
+                    "help/me/pls"
+                )
+            );
+            machine.getPresets().add(
+                new Preset(
+                    "Garden Fresh Pizza",
+                    Map.of(
+                        "Dough", 1,
+                        "Tomato Sauce", 1,
+                        "Cheese", 2,
+                        "Ground Pork", 2,
+                        "Bell Peppers", 2,
+                        "Olives", 3
+                    ),
+                    Operation.HEAT, 
+                    "help/me/pls"
+                )
+            );
+
             view.getSetItemsPanel()
                 .getContent()
                 .setMaxStock(panel.getSlotCapacity());
@@ -87,12 +211,13 @@ public class CreateSpecialMachineController
             for (Slot slot : machine.getSlots()) {
                 if (slot.getSampleItem() != null) {
                     setItemList(machine.getSlots());
-                    view.getSetupPane().setActiveTab(2);
+                    updatePresetList();           
+                    view.getSetupPane().setActiveTab(3);
                     break;
                 }
             }
 
-            view.getSetupPane().setActiveTab(3);
+            view.getSetupPane().setActiveTab(2);
         });
 
         view.getSetItemsPanel().getContent().setItemAddListener(e -> {
