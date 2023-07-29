@@ -7,20 +7,12 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
-import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.table.DefaultTableModel;
 
 public abstract class SetupItemsPanel extends JPanel {
-    protected int selectedSlotNo;
-
-    protected JScrollPane tableScrollPane;
-    protected DefaultTableModel tableModel;
-    protected JTable table;
+    protected DisplayTable<Integer, String> slotTable;
 
     protected JPanel inputPanel;
     protected JLabel inputHeading;
@@ -45,17 +37,8 @@ public abstract class SetupItemsPanel extends JPanel {
     public SetupItemsPanel() {
         super(new GridLayout(1, 2));
 
-        selectedSlotNo = 1;
-        
-        tableModel = new DefaultTableModel();
-        tableModel.addColumn("Slot");
-        tableModel.addColumn("Item Name");
-
-        table = new JTable(tableModel);
-        table.getTableHeader().setReorderingAllowed(false);
-
-        tableScrollPane = new JScrollPane(table);
-        add(tableScrollPane);
+        slotTable = new DisplayTable<>("Slot", "Item Name");
+        add(slotTable);
         
         inputPanel = new JPanel();
         inputPanel.setLayout(new GridBagLayout());
@@ -127,7 +110,7 @@ public abstract class SetupItemsPanel extends JPanel {
     }
 
     public int getSelectedSlotNo() {
-        return selectedSlotNo;
+        return slotTable.getSelectedRowIndex() + 1;
     }
 
     public int getStockInput() {
@@ -140,24 +123,12 @@ public abstract class SetupItemsPanel extends JPanel {
 
     /* */
 
-    public void setItemNameCell(int rowNo, String value) {
-        tableModel.setValueAt(value, rowNo - 1, 1);
+    public DisplayTable<Integer, String> getSlotTable() {
+        return slotTable;
     }
 
     public void setMaxStock(int maxStock) {
         ((SpinnerNumberModel) stockInput.getModel()).setMaximum(maxStock);
-    }
-
-    public void setSlotCount(int slotCount) {
-        tableModel.setRowCount(slotCount);
-        
-        if (table.getSelectedRow() == -1) {
-            table.setRowSelectionInterval(0, 0);
-        }
-    }
-
-    public void setSlotNumberCell(int rowNo, int value) {
-        tableModel.setValueAt(value, rowNo - 1, 0);
     }
 
     /* */
@@ -168,19 +139,5 @@ public abstract class SetupItemsPanel extends JPanel {
 
     public void setItemRemoveListener(ActionListener listener) {
         removeItemButton.addActionListener(listener);
-    }
-
-    public void setSlotSelectListener(ListSelectionListener listener) {
-        table.getSelectionModel().addListSelectionListener(e -> {
-            // Don't handle extra invokations of this event: the mouseup part
-            // of the selection, and when no selection is actually made.
-            if (e.getValueIsAdjusting() || table.getSelectedRow() == -1) {
-                return;
-            }
-
-            selectedSlotNo = table.getSelectedRow() + 1;
-
-            listener.valueChanged(e);
-        });        
     }
 }

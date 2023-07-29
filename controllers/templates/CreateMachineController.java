@@ -116,8 +116,8 @@ public abstract class CreateMachineController<
                 ? "[empty]" 
                 : slots.get(i).getSampleItem().getName();
 
-            setItemsPanel.setSlotNumberCell(i + 1, i + 1);
-            setItemsPanel.setItemNameCell(i + 1, name);
+            setItemsPanel.getSlotTable().setCol0(i, i + 1);
+            setItemsPanel.getSlotTable().setCol1(i, name);
         }
     }
 }

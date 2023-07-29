@@ -50,9 +50,6 @@ public class CreateRegularMachineController
             view.getSetItemsPanel()
                 .getContent()
                 .setMaxStock(panel.getSlotCapacity());
-            view.getSetItemsPanel()
-                .getContent()
-                .setSlotCount(panel.getSlotCount());
 
             updateDenominationTable(machine.getMoneyStock());
             updateSlotTable(machine.getSlots());
@@ -90,7 +87,9 @@ public class CreateRegularMachineController
             updateSlotTable(machine.getSlots());  
         });
 
-        view.getSetItemsPanel().getContent().setSlotSelectListener(e -> {
+        view.getSetItemsPanel().getContent().getSlotTable().setRowSelectListener(
+            e 
+        -> {
             SetupItemsPanel panel = view.getSetItemsPanel().getContent();
 
             int selectedSlotNo = panel.getSelectedSlotNo();

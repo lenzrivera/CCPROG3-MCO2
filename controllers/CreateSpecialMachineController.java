@@ -72,9 +72,8 @@ public class CreateSpecialMachineController
             view.getSetItemsPanel()
                 .getContent()
                 .setMaxStock(panel.getSlotCapacity());
-            view.getSetItemsPanel()
-                .getContent()
-                .setSlotCount(panel.getSlotCount());
+            
+            updateDenominationTable(machine.getMoneyStock());
             updateSlotTable(machine.getSlots());
 
             view.getSetupPane().setActiveTab(1);            
@@ -126,7 +125,9 @@ public class CreateSpecialMachineController
             updateSlotTable(machine.getSlots());            
         });
 
-        view.getSetItemsPanel().getContent().setSlotSelectListener(e -> {
+        view.getSetItemsPanel().getContent().getSlotTable().setRowSelectListener(
+            e 
+        -> {
             SetupSpecialItemsPanel panel = view.getSetItemsPanel().getContent();
 
             int selectedSlotNo = panel.getSelectedSlotNo();
