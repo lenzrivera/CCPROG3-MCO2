@@ -28,7 +28,7 @@ public class MainMenuView extends View {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridx = 0;
 
-        heading = new JLabel("Vending Machine Simulator");
+        heading = new JLabel("Vending Machine Factory!");
         heading.setFont(new Font("Sans-Serif", Font.PLAIN, 24));
         heading.setHorizontalAlignment(JLabel.CENTER);
 
