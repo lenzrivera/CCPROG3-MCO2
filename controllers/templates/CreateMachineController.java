@@ -92,19 +92,19 @@ public abstract class CreateMachineController<
      * quantities.
      */
     protected void updateDenominationTable(DenominationMap denomMap) {
-        int count = 1;
+        int i = 0;
 
         for (var entry : denomMap.getQuantityMap().entrySet()) {
             view.getManageMoneyPanel()
                 .getContent()
                 .getDenomTable()
-                .setCol0(count, entry.getKey().getValue());
+                .setCol0(i, entry.getKey().getValue());
             view.getManageMoneyPanel()
                 .getContent()
                 .getDenomTable()
-                .setCol1(count, entry.getValue());
+                .setCol1(i, entry.getValue());
             
-            count += 1;
+            i += 1;
         }
     }
 

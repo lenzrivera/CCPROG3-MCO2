@@ -117,7 +117,7 @@ public class ManageMoneyPanel extends JPanel {
         return (double) denomInput.getSelectedItem();
     }
 
-    public int getSelectedValue() {
+    public int getSelectedQuantity() {
         return (int) quantityInput.getValue();
     }
 

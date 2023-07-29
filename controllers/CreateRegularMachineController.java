@@ -1,6 +1,7 @@
 package controllers;
 
 import controllers.templates.CreateMachineController;
+import model.Denomination;
 import model.Item;
 import model.RegularVendingMachine;
 import model.Slot;
@@ -8,6 +9,7 @@ import model.VendingMachineModel;
 import states.MainMenuState;
 import views.CreateRegularMachineView;
 import views.components.BasicInfoPanel;
+import views.components.ManageMoneyPanel;
 import views.components.SetupItemsPanel;
 
 public class CreateRegularMachineController 
@@ -131,15 +133,28 @@ public class CreateRegularMachineController
         });
 
         view.getManageMoneyPanel().getContent().setCollectListener(e -> {
+            ManageMoneyPanel panel = view.getManageMoneyPanel().getContent();
 
+            double denom = panel.getSelectedDenom();
+            int quantity = panel.getSelectedQuantity();
+            
+            machine.getMoneyStock().remove(Denomination.toEnum(denom), quantity);
+            updateDenominationTable(machine.getMoneyStock()); 
         });
 
         view.getManageMoneyPanel().getContent().setCollectAllListener(e -> {
-
+            machine.getMoneyStock().collect();
+            updateDenominationTable(machine.getMoneyStock()); 
         });
 
         view.getManageMoneyPanel().getContent().setStockListener(e -> {
+            ManageMoneyPanel panel = view.getManageMoneyPanel().getContent();
 
+            double denom = panel.getSelectedDenom();
+            int quantity = panel.getSelectedQuantity();
+
+            machine.getMoneyStock().add(Denomination.toEnum(denom), quantity);
+            updateDenominationTable(machine.getMoneyStock());
         });
     }
 }

@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import controllers.templates.CreateMachineController;
+import model.Denomination;
 import model.Item;
 import model.Operation;
 import model.Preset;
@@ -17,6 +18,7 @@ import model.VendingMachineModel;
 import states.MainMenuState;
 import views.CreateSpecialMachineView;
 import views.components.BasicInfoPanel;
+import views.components.ManageMoneyPanel;
 import views.components.SetupPresetsPanel;
 import views.components.SetupSpecialItemsPanel;
 
@@ -314,15 +316,28 @@ public class CreateSpecialMachineController
         });
 
         view.getManageMoneyPanel().getContent().setCollectListener(e -> {
+            ManageMoneyPanel panel = view.getManageMoneyPanel().getContent();
+
+            double denom = panel.getSelectedDenom();
+            int quantity = panel.getSelectedQuantity();
             
+            machine.getMoneyStock().remove(Denomination.toEnum(denom), quantity);
+            updateDenominationTable(machine.getMoneyStock()); 
         });
 
         view.getManageMoneyPanel().getContent().setCollectAllListener(e -> {
-
+            machine.getMoneyStock().collect();
+            updateDenominationTable(machine.getMoneyStock()); 
         });
 
         view.getManageMoneyPanel().getContent().setStockListener(e -> {
+            ManageMoneyPanel panel = view.getManageMoneyPanel().getContent();
 
+            double denom = panel.getSelectedDenom();
+            int quantity = panel.getSelectedQuantity();
+
+            machine.getMoneyStock().add(Denomination.toEnum(denom), quantity);
+            updateDenominationTable(machine.getMoneyStock());
         });
     }
 
