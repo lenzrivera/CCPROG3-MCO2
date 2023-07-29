@@ -18,6 +18,8 @@ public class StockItemsPanel extends JPanel {
 
     private JPanel inputPanel;
 
+    private JLabel heading;
+
     private JLabel stockLabel;
 
     private JLabel quantityLabel;
@@ -44,10 +46,15 @@ public class StockItemsPanel extends JPanel {
         gbc.gridy = 0;
         gbc.gridwidth = 2;
 
+        heading = new JLabel("<html><u>Stock Items</u></html>");
+        inputPanel.add(heading, gbc);
+
+        gbc.gridy = 1;
+
         stockLabel = new JLabel("Item Stock: ");
         inputPanel.add(stockLabel, gbc);
 
-        gbc.gridy = 1;
+        gbc.gridy = 2;
         gbc.gridwidth = 1;
 
         quantityLabel = new JLabel("Quantity: ");
@@ -59,13 +66,13 @@ public class StockItemsPanel extends JPanel {
         quantityInput = new JSpinner(qtyInputModel);
         inputPanel.add(quantityInput, gbc);
 
-        gbc.gridy = 2;
+        gbc.gridy = 3;
         gbc.gridwidth = 2;
 
         addButton = new JButton("Add Quantity");
         inputPanel.add(addButton, gbc);
 
-        gbc.gridy = 3;
+        gbc.gridy = 4;
 
         removeButton = new JButton("Remove Quantity");
         inputPanel.add(removeButton, gbc);
