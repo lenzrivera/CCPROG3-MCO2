@@ -1,5 +1,6 @@
 package controllers;
 
+import java.io.IOException;
 import java.util.List;
 
 import model.Denomination;
@@ -118,6 +119,19 @@ public class TestMaintenanceController extends Controller {
                              .getSelectedRowIndex() + 1;
             
             Slot selectedSlot = machine.getSlot(slotNo);
+            
+            try {
+                if (selectedSlot.getSampleItem() != null) {
+                    view.getStockItemsPanel()
+                        .setItemImage(
+                            selectedSlot.getSampleItem().getImagePath()
+                        );
+                }
+                
+            } catch (IOException ex) {
+                view.showErrorDialog("Cannot load item image!");
+            }
+
             view.getStockItemsPanel().setStockLabelText(selectedSlot.getStock());
         });
 

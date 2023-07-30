@@ -3,13 +3,19 @@ package views.components;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
 
 public class StockItemsPanel extends JPanel {
     private int slotCapacity;
@@ -19,6 +25,8 @@ public class StockItemsPanel extends JPanel {
     private JPanel inputPanel;
 
     private JLabel heading;
+
+    private JLabel itemImage;
 
     private JLabel stockLabel;
 
@@ -50,11 +58,18 @@ public class StockItemsPanel extends JPanel {
         inputPanel.add(heading, gbc);
 
         gbc.gridy = 1;
+        gbc.gridwidth = 2;
+
+        itemImage = new JLabel();
+        itemImage.setHorizontalAlignment(SwingConstants.CENTER);
+        inputPanel.add(itemImage, gbc);
+
+        gbc.gridy = 2;
 
         stockLabel = new JLabel("Item Stock: ");
         inputPanel.add(stockLabel, gbc);
 
-        gbc.gridy = 2;
+        gbc.gridy = 3;
         gbc.gridwidth = 1;
 
         quantityLabel = new JLabel("Quantity: ");
@@ -66,13 +81,13 @@ public class StockItemsPanel extends JPanel {
         quantityInput = new JSpinner(qtyInputModel);
         inputPanel.add(quantityInput, gbc);
 
-        gbc.gridy = 3;
+        gbc.gridy = 4;
         gbc.gridwidth = 2;
 
         addButton = new JButton("Add Quantity");
         inputPanel.add(addButton, gbc);
 
-        gbc.gridy = 4;
+        gbc.gridy = 5;
 
         removeButton = new JButton("Remove Quantity");
         inputPanel.add(removeButton, gbc);
@@ -86,6 +101,14 @@ public class StockItemsPanel extends JPanel {
 
     public DisplayTable<Integer, String> getSlotTable() {
         return slotTable;
+    }
+
+    public void setItemImage(String path) throws IOException {
+        Image image = ImageIO.read(new File(path))
+                             .getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+        ImageIcon icon = new ImageIcon(image);
+
+        itemImage.setIcon(icon);
     }
 
     public void setSlotCapacity(int capacity) {
