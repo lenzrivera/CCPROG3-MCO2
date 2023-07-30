@@ -7,7 +7,7 @@ import model.DenominationMap;
 import model.Slot;
 import model.VendingMachine;
 import model.VendingMachineModel;
-import states.MainMenuState;
+import states.TestMachineMenuState;
 import util.Controller;
 import views.TestMaintenanceView;
 import views.components.ManageMoneyPanel;
@@ -45,7 +45,7 @@ public class TestMaintenanceController extends Controller {
         VendingMachine<? extends Slot> machine = model.getVendingMachine();
 
         view.setExitButtonListener(e -> {
-            changeState(new MainMenuState());
+            changeState(new TestMachineMenuState());
         });
 
         /* StockItemsPanel */
