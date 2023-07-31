@@ -35,7 +35,10 @@ public class Summary {
     public void addTransaction(String itemName, int quantity, double unitPrice) {
         ItemSummary itemSummary = stockChanges.get(itemName);
 
-        if (itemSummary == null) {
+        if (
+            itemSummary == null ||
+            itemSummary.getStockDiff() + quantity > itemSummary.getCurrentStock() 
+        ) {
             throw new IllegalArgumentException();
         }
 
