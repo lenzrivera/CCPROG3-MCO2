@@ -22,6 +22,7 @@ public class DispenseResult {
     ) {
         this.name = name;
         this.items = items;
+        this.processMessages = processMessages;
         this.change = change;
         this.totalCalories = totalCalories;
         this.totalPayment = totalPayment;
