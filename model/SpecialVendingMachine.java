@@ -223,15 +223,21 @@ public class SpecialVendingMachine extends VendingMachine<SpecialSlot> {
         for (var entry : preset.getItems().entrySet()) {
             String itemName = entry.getKey();
             int itemQuantity = entry.getValue();
-            
-            SpecialSlot itemSlot = findSlotByItemName(itemName);
 
-            if (itemSlot.getStock() < itemQuantity) {
-                selectedSlots.clear();
-                throw new InsufficientStockException(itemSlot);
+            for (SpecialSlot itemSlot : slots) {
+                if (
+                    itemSlot.getSampleItem() != null && 
+                    itemSlot.getSampleItem().getName().equalsIgnoreCase(itemName)
+                ) {
+                    if (itemSlot.getStock() < itemQuantity) {
+                        selectedSlots.clear();
+                        throw new InsufficientStockException(itemSlot);
+                    }
+
+                    selectedSlots.put(itemSlot, itemQuantity);
+                    break;
+                }
             }
-
-            selectedSlots.put(itemSlot, itemQuantity);
         }
 
         selectedPreset = preset;
@@ -240,20 +246,5 @@ public class SpecialVendingMachine extends VendingMachine<SpecialSlot> {
     public void deselectPreset() {
         selectedPreset = null;
         selectedSlots.clear();
-    }
-
-    /* */
-
-    private SpecialSlot findSlotByItemName(String name) {
-        for (SpecialSlot slot : slots) {
-            if (
-                slot.getSampleItem() != null && 
-                slot.getSampleItem().getName().equalsIgnoreCase(name)
-            ) {
-                return slot;
-            }
-        }
-
-        return null;
     }
 }
