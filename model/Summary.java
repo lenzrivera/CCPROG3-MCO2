@@ -36,7 +36,7 @@ public class Summary {
         ItemSummary itemSummary = stockChanges.get(itemName);
 
         if (itemSummary == null) {
-            return;
+            throw new IllegalArgumentException();
         }
 
         itemSummary.setStockDiff(itemSummary.getStockDiff() + quantity);
