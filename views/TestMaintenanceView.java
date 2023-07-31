@@ -8,7 +8,7 @@ import javax.swing.JTabbedPane;
 import util.View;
 import views.components.ManageMoneyPanel;
 import views.components.SectionContainer;
-import views.components.StockItemsPanel;
+import views.components.ManageItemsPanel;
 import views.components.SummaryViewPanel;
 
 public class TestMaintenanceView extends View {
@@ -17,7 +17,7 @@ public class TestMaintenanceView extends View {
     protected JTabbedPane optionTabs;
 
     protected SummaryViewPanel summaryViewPanel;
-    protected StockItemsPanel stockItemsPanel;
+    protected ManageItemsPanel manageItemsPanel;
     protected ManageMoneyPanel manageMoneyPanel;
 
     public TestMaintenanceView() {
@@ -29,8 +29,8 @@ public class TestMaintenanceView extends View {
         summaryViewPanel = new SummaryViewPanel();
         optionTabs.addTab("View Summary", summaryViewPanel);
 
-        stockItemsPanel = new StockItemsPanel();
-        optionTabs.addTab("Restock Items", stockItemsPanel);
+        manageItemsPanel = new ManageItemsPanel();
+        optionTabs.addTab("Manage Items", manageItemsPanel);
 
         manageMoneyPanel = new ManageMoneyPanel();
         optionTabs.addTab("Manage Money", manageMoneyPanel);
@@ -45,8 +45,8 @@ public class TestMaintenanceView extends View {
         return summaryViewPanel;
     }
 
-    public StockItemsPanel getStockItemsPanel() {
-        return stockItemsPanel;
+    public ManageItemsPanel getManageItemsPanel() {
+        return manageItemsPanel;
     }
 
     public ManageMoneyPanel getManageMoneyPanel() {

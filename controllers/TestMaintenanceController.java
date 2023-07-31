@@ -12,7 +12,7 @@ import states.TestMachineMenuState;
 import util.Controller;
 import views.TestMaintenanceView;
 import views.components.ManageMoneyPanel;
-import views.components.StockItemsPanel;
+import views.components.ManageItemsPanel;
 
 public class TestMaintenanceController extends Controller {
     /**
@@ -35,7 +35,7 @@ public class TestMaintenanceController extends Controller {
 
         view.getManageMoneyPanel()
             .setDenominations(Denomination.getDoubleValues());
-        view.getStockItemsPanel()
+        view.getManageItemsPanel()
             .setSlotCapacity(machine.getSlotCapacity());
 
         updateSlotTable(machine.getSlots());
@@ -49,10 +49,10 @@ public class TestMaintenanceController extends Controller {
             changeState(new TestMachineMenuState());
         });
 
-        /* StockItemsPanel */
+        /* ManageItemsPanel */
 
-        view.getStockItemsPanel().setItemAddListener(e -> {
-            int slotNo = view.getStockItemsPanel()
+        view.getManageItemsPanel().setItemAddListener(e -> {
+            int slotNo = view.getManageItemsPanel()
                              .getSlotTable()
                              .getSelectedRowIndex() + 1;
 
@@ -68,19 +68,19 @@ public class TestMaintenanceController extends Controller {
                 return;
             }
 
-            int qtyToAdd = view.getStockItemsPanel().getQuantityInput();
+            int qtyToAdd = view.getManageItemsPanel().getQuantityInput();
 
             try {
                 selectedSlot.stockItem(qtyToAdd);
-                view.getStockItemsPanel()
+                view.getManageItemsPanel()
                     .setStockLabelText(selectedSlot.getStock());
             } catch (IllegalArgumentException ex) {
                 view.showErrorDialog("Cannot exceed slot capacity.");
             } 
         });
 
-        view.getStockItemsPanel().setItemRemoveListener(e -> {
-            int slotNo = view.getStockItemsPanel()
+        view.getManageItemsPanel().setItemRemoveListener(e -> {
+            int slotNo = view.getManageItemsPanel()
                              .getSlotTable()
                              .getSelectedRowIndex() + 1;
 
@@ -96,7 +96,7 @@ public class TestMaintenanceController extends Controller {
                 return;
             }
 
-            int qtyToRemove = view.getStockItemsPanel().getQuantityInput();
+            int qtyToRemove = view.getManageItemsPanel().getQuantityInput();
 
             if (selectedSlot.getStock() - qtyToRemove < 0) {
                 view.showErrorDialog(
@@ -109,12 +109,36 @@ public class TestMaintenanceController extends Controller {
                 selectedSlot.dispenseItem();
             }
 
-            view.getStockItemsPanel()
+            view.getManageItemsPanel()
                 .setStockLabelText(selectedSlot.getStock());
         });
 
-        view.getStockItemsPanel().getSlotTable().setRowSelectListener(e -> {
-            int slotNo = view.getStockItemsPanel()
+        view.getManageItemsPanel().setPriceEditListener(e -> {
+            int slotNo = view.getManageItemsPanel()
+                             .getSlotTable()
+                             .getSelectedRowIndex() + 1;
+            
+            Slot selectedSlot = machine.getSlot(slotNo);
+            
+            if (selectedSlot.getSampleItem() == null) {
+                view.showErrorDialog(
+                    "Cannot set the price of a nonexistent item."
+                );
+                return;
+            }
+
+            double newPrice = view.getManageItemsPanel().getPriceInput();
+
+            if (Denomination.isValidPrice(newPrice)) {
+                view.showErrorDialog("Please enter a valid price.");
+                return;                
+            }
+            
+            selectedSlot.setUnitPrice(newPrice);
+        });
+
+        view.getManageItemsPanel().getSlotTable().setRowSelectListener(e -> {
+            int slotNo = view.getManageItemsPanel()
                              .getSlotTable()
                              .getSelectedRowIndex() + 1;
             
@@ -122,7 +146,7 @@ public class TestMaintenanceController extends Controller {
             
             try {
                 if (selectedSlot.getSampleItem() != null) {
-                    view.getStockItemsPanel()
+                    view.getManageItemsPanel()
                         .setItemImage(
                             selectedSlot.getSampleItem().getImagePath()
                         );
@@ -132,7 +156,8 @@ public class TestMaintenanceController extends Controller {
                 view.showErrorDialog("Cannot load item image!");
             }
 
-            view.getStockItemsPanel().setStockLabelText(selectedSlot.getStock());
+            view.getManageItemsPanel().setStockLabelText(selectedSlot.getStock());
+            view.getManageItemsPanel().setPriceInput(selectedSlot.getUnitPrice());
         });
 
         /* ManageMoneyPanel */
@@ -166,7 +191,7 @@ public class TestMaintenanceController extends Controller {
     /* */
 
     public void updateSlotTable(List<? extends Slot> slots) {
-        StockItemsPanel panel = view.getStockItemsPanel();
+        ManageItemsPanel panel = view.getManageItemsPanel();
         
         for (int i = 0; i < slots.size(); i++) {
             String name = (slots.get(i).getSampleItem() == null) 
