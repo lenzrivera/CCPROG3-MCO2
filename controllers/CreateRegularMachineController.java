@@ -100,6 +100,7 @@ public class CreateRegularMachineController
         /* SetItemsPanel */
 
         view.getSetItemsPanel().setNextButtonListener(e -> {
+            machine.getSummary().reset(machine.getSlots());
             view.getSetupPane().setActiveTab(2);
         });
 

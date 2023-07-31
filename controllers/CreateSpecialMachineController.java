@@ -208,6 +208,8 @@ public class CreateSpecialMachineController
         /* AddItemsPanel */
 
         view.getSetItemsPanel().setNextButtonListener(e -> {
+            machine.getSummary().reset(machine.getSlots());
+
             for (Slot slot : machine.getSlots()) {
                 if (slot.getSampleItem() != null) {
                     setItemList(machine.getSlots());

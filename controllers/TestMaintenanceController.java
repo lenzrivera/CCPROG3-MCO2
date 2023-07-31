@@ -72,6 +72,8 @@ public class TestMaintenanceController extends Controller {
 
             try {
                 selectedSlot.stockItem(qtyToAdd);
+                machine.getSummary().reset(machine.getSlots());
+
                 view.getManageItemsPanel()
                     .setStockLabelText(selectedSlot.getStock());
             } catch (IllegalArgumentException ex) {
@@ -108,6 +110,7 @@ public class TestMaintenanceController extends Controller {
             for (int i = 0; i < qtyToRemove; i++) {
                 selectedSlot.dispenseItem();
             }
+            machine.getSummary().reset(machine.getSlots());
 
             view.getManageItemsPanel()
                 .setStockLabelText(selectedSlot.getStock());
