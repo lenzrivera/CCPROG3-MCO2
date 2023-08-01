@@ -18,7 +18,8 @@ public class TestMaintenanceState extends State {
     private TestMaintenanceView view;
 
     /**
-     * The view associated with this state, particularly TestMaintenanceController.
+     * The controller associated with this state, particularly 
+     * TestMaintenanceController.
      */
     private TestMaintenanceController controller;
 
