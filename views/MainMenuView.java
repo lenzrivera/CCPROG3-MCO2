@@ -13,18 +13,44 @@ import javax.swing.JPanel;
 
 import util.View;
 
+/**
+ * This class represents the view for the main menu of the simulator. It
+ * presents the interface for the user to pick between creating a vending
+ * machine, testing a vending machine, or exiting the simulator.
+ */
 public class MainMenuView extends View {
+    /**
+     * The panel for the GUI components.
+     */
     private JPanel panel;
-    
+
+    /**
+     * The heading label for the main menu.
+     */
     private JLabel heading;
+
+    /**
+     * The button to create a vending machine.
+     */
     private JButton createButton;
+
+    /**
+     * The button to test a vending machine.
+     */
     private JButton testButton;
+
+    /**
+     * The button to exit the simulator.
+     */
     private JButton exitButton;
 
+    /**
+     * Constructs a new MainMenuView with its GUI components.
+     */
     public MainMenuView() {
         panel = new JPanel(new GridBagLayout());
 
-        GridBagConstraints gbc = new GridBagConstraints();  
+        GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridx = 0;
 
@@ -52,22 +78,42 @@ public class MainMenuView extends View {
         return panel;
     }
 
+    /**
+     * Sets the Listener for the button to create a regular vending machine.
+     * @param listener the listener for the create regular vending machine button.
+     */
     public void setCreateButtonListener(ActionListener listener) {
         createButton.addActionListener(listener);
     }
 
+    /**
+     * Sets the Listener for the button to exit the simulator.
+     * @param listener the listener for the button to exit the simulator.
+     */
     public void setExitButtonListener(ActionListener listener) {
         exitButton.addActionListener(listener);
     }
 
+    /**
+     * Sets the enabled status of the test vending machine button.
+     * @param v true to enable the button, false to disable it.
+     */
     public void setTestButtonEnabled(boolean v) {
         testButton.setEnabled(v);
     }
 
+    /**
+     * Sets the Listener for the button to test a vending machine.
+     * @param listener the listener for the button to test a vending machine.
+     */
     public void setTestButtonListener(ActionListener listener) {
         testButton.addActionListener(listener);
     }
 
+    /**
+     * Sets the tooltip text for the test vending machine button.
+     * @param tooltip the tooltip text to be set for the button.
+     */
     public void setTestButtonToolTip(String tooltip) {
         testButton.setToolTipText(tooltip);
     }
