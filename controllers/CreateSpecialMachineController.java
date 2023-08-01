@@ -94,68 +94,65 @@ public class CreateSpecialMachineController
                 panel.getSlotCapacity()
             );
 
-            // TODO: replace w/ actual path
-            // TODO: set prices and calories
-
             machine.getSlot(1).assignToItem(
-                new Item("Dough", 111, "help/me/pls"), 
-                111,
+                new Item("Dough", 250, "images/dough.png"), 
+                100,
                 true,
                 true,
                 Operation.PREPARE
             );
             machine.getSlot(1).assignToItem(
-                new Item("Pepperoni", 111, "help/me/pls"), 
-                111,
+                new Item("Pepperoni", 494, "images/pepperoni.png"), 
+                100,
                 false,
                 true,
                 Operation.PREPARE
             );
             machine.getSlot(2).assignToItem(
-                new Item("Ham", 111, "help/me/pls"), 
-                111,
+                new Item("Ham", 145, "images/ham.png"), 
+                100,
                 false,
                 true,
                 Operation.TOP
             ); 
             machine.getSlot(3).assignToItem(
-                new Item("Ground Pork", 111, "help/me/pls"), 
-                111,
+                new Item("Ground Pork", 200, "images/ground_pork.png"), 
+                100,
                 false,
                 true,
                 Operation.TOP
             ); 
             machine.getSlot(4).assignToItem(
-                new Item("Pineapple", 111, "help/me/pls"), 
-                111,
+                new Item("Pineapple", 84, "images/pineapple.png"), 
+                50.25,
                 false,
                 true,
                 Operation.TOP
             ); 
             machine.getSlot(5).assignToItem(
-                new Item("Olives", 111, "help/me/pls"), 
-                111,
+                new Item("Olives", 80, "images/olives.png"), 
+                75,
                 false,
                 false,
                 Operation.TOP
             ); 
             machine.getSlot(6).assignToItem(
-                new Item("Bell Peppers", 111, "help/me/pls"), 
-                111,
+                new Item("Bell Peppers", 20, "images/bell_pepper.png"), 
+                35,
                 false,
                 true,
                 Operation.TOP
             ); 
             machine.getSlot(7).assignToItem(
-                new Item("Tomato Sauce", 111, "help/me/pls"), 
-                111,
+                new Item("Pizza Sauce", 104, "images/pizza_sauce.png"), 
+                50,
                 false,
                 false,
                 Operation.SPREAD
             ); 
             machine.getSlot(8).assignToItem(
-                new Item("Cheese", 111, "help/me/pls"), 
-                111,
+                new Item("Cheese", 325, "images/cheese.png"), 
+                50,
                 false,
                 false,
                 Operation.TOP
@@ -170,7 +167,7 @@ public class CreateSpecialMachineController
                         "Cheese", 2
                     ),
                     Operation.HEAT, 
-                    "help/me/pls"
+                    "images/plain_pizza.png"
                 )
             );
             machine.getPresets().add(
@@ -183,7 +180,7 @@ public class CreateSpecialMachineController
                         "Pepperoni", 2
                     ),
                     Operation.HEAT, 
-                    "help/me/pls"
+                    "images/pepperoni_pizza.png"
                 )
             );
             machine.getPresets().add(
@@ -197,7 +194,7 @@ public class CreateSpecialMachineController
                         "Pineapple", 2
                     ),
                     Operation.HEAT, 
-                    "help/me/pls"
+                    "images/hawaiian_pizza.png"
                 )
             );
             machine.getPresets().add(
@@ -212,7 +209,7 @@ public class CreateSpecialMachineController
                         "Olives", 3
                     ),
                     Operation.HEAT, 
-                    "help/me/pls"
+                    "images/garden_fresh_pizza.png"
                 )
             );
 

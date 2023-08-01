@@ -68,39 +68,36 @@ public class CreateRegularMachineController
                 panel.getSlotCapacity()
             );
 
-            // TODO: replace w/ actual path
-            // TODO: set prices
-
             machine.getSlot(1).assignToItem(
-                new Item("100g Pepperoni", 494, "help/me/pls"), 
+                new Item("100g Pepperoni", 494, "images/pepperoni.png"), 
                 100
             );
             machine.getSlot(2).assignToItem(
-                new Item("100g Ham", 145, "help/me/pls"), 
-                200
+                new Item("100g Ham", 145, "images/ham.png"), 
+                100
             );
             machine.getSlot(3).assignToItem(
-                new Item("100g Ground Pork", 200, "help/me/pls"), 
-                300
+                new Item("100g Ground Pork", 200, "images/ground_pork.png"), 
+                100
             );
             machine.getSlot(4).assignToItem(
-                new Item("100g Sausage", 301, "help/me/pls"), 
-                500
+                new Item("100g Sausage", 301, "images/sausage.png"), 
+                200
             );
             machine.getSlot(5).assignToItem(
-                new Item("50g Shrimp", 28, "help/me/pls"), 
+                new Item("50g Shrimp", 28, "images/shrimp.png"), 
                 150
             );
             machine.getSlot(6).assignToItem(
-                new Item("1 Slice Pineapple", 42, "help/me/pls"), 
+                new Item("1 Slice Pineapple", 42, "images/pineapple.png"), 
                 50.25
             );
             machine.getSlot(7).assignToItem(
-                new Item("100g Bell Pepper", 20, "help/me/pls"), 
+                new Item("100g Bell Pepper", 20, "images/bell_pepper.png"), 
                 25
             );
             machine.getSlot(8).assignToItem(
-                new Item("100g Spinach", 23, "help/me/pls"), 
+                new Item("100g Spinach", 23, "images/spinach.png"), 
                 50
             );
                 
