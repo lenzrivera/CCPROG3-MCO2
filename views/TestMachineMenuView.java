@@ -13,22 +13,52 @@ import javax.swing.JPanel;
 
 import util.View;
 
+/**
+ * This class represents the view for testing the created vending machine.
+ * It allows the user to choose between testing vending features or 
+ * maintenance features.
+ */
 public class TestMachineMenuView extends View {
+    /**
+     * The panel for all the GUI elements
+     */
     private JPanel panel;
-    
+
+    /**
+     * The heading label for the test machine menu.
+     */
     private JLabel heading;
+
+    /**
+     * The sub-heading label for the test machine menu.
+     */
     private JLabel subHeading;
+
+    /**
+     * The button to test vending features.
+     */
     private JButton testVendingButton;
+
+    /**
+     * The button to test maintenance features.
+     */
     private JButton testMaintenanceButton;
+
+    /**
+     * The button to go back to the main menu.
+     */
     private JButton backButton;
 
+    /**
+     * Constructs a new TestMachineMenuView with its associated GUI components.
+     */
     public TestMachineMenuView() {
         panel = new JPanel(new GridBagLayout());
 
-        GridBagConstraints gbc = new GridBagConstraints();  
+        GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridx = 0;
-        
+
         heading = new JLabel("Test the Created Vending Machine");
         heading.setFont(new Font("Sans-Serif", Font.PLAIN, 24));
         heading.setHorizontalAlignment(JLabel.CENTER);
@@ -56,14 +86,26 @@ public class TestMachineMenuView extends View {
         return panel;
     }
 
+    /**
+     * Sets the listener for the button to test vending features.
+     * @param listener the listener for the button to test vending features.
+     */
     public void setTestVendingButtonListener(ActionListener listener) {
         testVendingButton.addActionListener(listener);
     }
 
+    /**
+     * Sets the listener for the button to test maintenance features.
+     * @param listener the listener for the button to test maintenance features.
+     */
     public void setTestMaintenanceButtonListener(ActionListener listener) {
         testMaintenanceButton.addActionListener(listener);
     }
 
+    /**
+     * Sets the listener for the back button.
+     * @param listener the listener for the back button
+     */
     public void setBackButtonListener(ActionListener listener) {
         backButton.addActionListener(listener);
     }
