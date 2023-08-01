@@ -20,27 +20,27 @@ public class TestMaintenanceView extends View {
     /**
      * The section container for the GUI components.
      */
-    protected SectionContainer mainContainer;
+    private SectionContainer mainContainer;
 
     /**
      * The JTabbedPane to hold the different maintenance feature options.
      */
-    protected JTabbedPane optionTabs;
+    private JTabbedPane optionTabs;
 
     /**
      * The panel to view the summary of the vending machine transactions.
      */
-    protected SummaryViewPanel summaryViewPanel;
+    private SummaryViewPanel summaryViewPanel;
 
     /**
      * The panel to manage the items in the vending machine.
      */
-    protected ManageItemsPanel manageItemsPanel;
+    private ManageItemsPanel manageItemsPanel;
 
     /**
      * The panel to manage the money in the vending machine.
      */
-    protected ManageMoneyPanel manageMoneyPanel;
+    private ManageMoneyPanel manageMoneyPanel;
 
     /**
      * Constructs a new TestMaintenanceView with its associated GUI components.
