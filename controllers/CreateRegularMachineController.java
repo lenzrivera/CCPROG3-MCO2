@@ -73,35 +73,35 @@ public class CreateRegularMachineController
 
             machine.getSlot(1).assignToItem(
                 new Item("100g Pepperoni", 494, "help/me/pls"), 
-                30
+                100
             );
             machine.getSlot(2).assignToItem(
                 new Item("100g Ham", 145, "help/me/pls"), 
-                10
+                200
             );
             machine.getSlot(3).assignToItem(
                 new Item("100g Ground Pork", 200, "help/me/pls"), 
-                10
+                300
             );
             machine.getSlot(4).assignToItem(
                 new Item("100g Sausage", 301, "help/me/pls"), 
-                10
+                500
             );
             machine.getSlot(5).assignToItem(
                 new Item("50g Shrimp", 28, "help/me/pls"), 
-                10
+                150
             );
             machine.getSlot(6).assignToItem(
                 new Item("1 Slice Pineapple", 42, "help/me/pls"), 
-                10
+                50.25
             );
             machine.getSlot(7).assignToItem(
                 new Item("100g Bell Pepper", 20, "help/me/pls"), 
-                10
+                25
             );
             machine.getSlot(8).assignToItem(
                 new Item("100g Spinach", 23, "help/me/pls"), 
-                10
+                50
             );
                 
             view.getSetItemsPanel()
