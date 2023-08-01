@@ -42,7 +42,7 @@ public class ManageItemsPanel extends JPanel {
     
         slotCapacity = 0;
 
-        slotTable = new DisplayTable<>("Slot", "Item Name");
+        slotTable = new DisplayTable<>(new String[] { "Slot", "Item Name" });
         add(slotTable);
 
         /* Input Panel */

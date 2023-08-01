@@ -125,11 +125,11 @@ public abstract class CreateMachineController<
             view.getManageMoneyPanel()
                 .getContent()
                 .getDenomTable()
-                .setCol0(i, entry.getKey().getValue());
+                .setCell(0, i, entry.getKey().getValue());
             view.getManageMoneyPanel()
                 .getContent()
                 .getDenomTable()
-                .setCol1(i, entry.getValue());
+                .setCell(1, i, entry.getValue());
             
             i += 1;
         }
@@ -148,8 +148,8 @@ public abstract class CreateMachineController<
                 ? "[empty]" 
                 : slots.get(i).getSampleItem().getName();
 
-            setItemsPanel.getSlotTable().setCol0(i, i + 1);
-            setItemsPanel.getSlotTable().setCol1(i, name);
+            setItemsPanel.getSlotTable().setCell(0, i, i + 1);
+            setItemsPanel.getSlotTable().setCell(1, i, name);
         }
     }
 }

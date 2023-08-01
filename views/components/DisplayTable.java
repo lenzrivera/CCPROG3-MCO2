@@ -9,10 +9,12 @@ public class DisplayTable<T, U> extends JScrollPane {
     private JTable table;
     private DefaultTableModel tableModel;
 
-    public DisplayTable(String col0Heading, String col1Heading) {
+    public DisplayTable(String[] headings) {
         tableModel = new DefaultTableModel();
-        tableModel.addColumn(col0Heading);
-        tableModel.addColumn(col1Heading);
+
+        for (String heading : headings) {
+            tableModel.addColumn(heading);
+        }
 
         table = new JTable(tableModel);
         table.getTableHeader().setReorderingAllowed(false);
@@ -31,16 +33,7 @@ public class DisplayTable<T, U> extends JScrollPane {
         return table.getSelectedRow();
     }
 
-    public void setCol0(int rowIndex, T value) {
-        setCell(0, rowIndex, value);
-
-    }
-
-    public void setCol1(int rowIndex, U value) {
-        setCell(1, rowIndex, value);
-    }
-
-    private void setCell(int colIndex, int rowIndex, Object value) {
+    public void setCell(int colIndex, int rowIndex, Object value) {
         if (tableModel.getRowCount() <= rowIndex) {
             tableModel.setRowCount(rowIndex + 1);
         }

@@ -225,8 +225,8 @@ public class TestMaintenanceController extends Controller {
                 ? "[empty]" 
                 : slots.get(i).getSampleItem().getName();
 
-            panel.getSlotTable().setCol0(i, i + 1);
-            panel.getSlotTable().setCol1(i, name);
+            panel.getSlotTable().setCell(0, i, i + 1);
+            panel.getSlotTable().setCell(1, i, name);
         }
     }
 
@@ -244,10 +244,10 @@ public class TestMaintenanceController extends Controller {
         for (var entry : denomMap.getQuantityMap().entrySet()) {
             view.getManageMoneyPanel()
                 .getDenomTable()
-                .setCol0(i, entry.getKey().getValue());
+                .setCell(0, i, entry.getKey().getValue());
             view.getManageMoneyPanel()
                 .getDenomTable()
-                .setCol1(i, entry.getValue());
+                .setCell(0, i, entry.getValue());
             
             i += 1;
         }

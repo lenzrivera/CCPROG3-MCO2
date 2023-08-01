@@ -37,7 +37,9 @@ public abstract class SetupItemsPanel extends JPanel {
     public SetupItemsPanel() {
         super(new GridLayout(1, 2));
 
-        slotTable = new DisplayTable<>("Slot", "Item Name");
+        slotTable = new DisplayTable<>(
+            new String[] { "Slot", "Item Name" }
+        );
         add(slotTable);
         
         inputPanel = new JPanel();

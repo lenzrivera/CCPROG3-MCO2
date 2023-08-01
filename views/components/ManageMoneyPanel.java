@@ -36,7 +36,9 @@ public class ManageMoneyPanel extends JPanel {
         
         /* TABLE */
 
-        denomTable = new DisplayTable<>("Denomination", "Quantity");
+        denomTable = new DisplayTable<>(
+            new String[] { "Denomination", "Quantity" }
+        );
         add(denomTable);
 
         /* INPUT PANEL */
