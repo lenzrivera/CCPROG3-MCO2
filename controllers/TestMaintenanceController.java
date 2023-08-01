@@ -51,8 +51,6 @@ public class TestMaintenanceController extends Controller {
 
         view.getManageMoneyPanel()
             .setDenominations(Denomination.getDoubleValues());
-        view.getManageItemsPanel()
-            .setSlotCapacity(machine.getSlotCapacity());
 
         updateSlotTable(machine.getSlots());
         updateDenominationTable(machine.getMoneyStock());
@@ -94,7 +92,10 @@ public class TestMaintenanceController extends Controller {
                 machine.getSummary().reset(machine.getSlots());
 
                 view.getManageItemsPanel()
-                    .setStockLabelText(selectedSlot.getStock());
+                    .setStockLabelText(
+                        selectedSlot.getStock(), 
+                        machine.getSlotCapacity()
+                    );
             } catch (IllegalArgumentException ex) {
                 view.showErrorDialog("Cannot exceed slot capacity.");
             } 
@@ -132,7 +133,10 @@ public class TestMaintenanceController extends Controller {
             machine.getSummary().reset(machine.getSlots());
 
             view.getManageItemsPanel()
-                .setStockLabelText(selectedSlot.getStock());
+                .setStockLabelText(
+                    selectedSlot.getStock(), 
+                    machine.getSlotCapacity()
+                );
         });
 
         view.getManageItemsPanel().setPriceEditListener(e -> {
@@ -178,7 +182,10 @@ public class TestMaintenanceController extends Controller {
                 view.showErrorDialog("Cannot load item image!");
             }
 
-            view.getManageItemsPanel().setStockLabelText(selectedSlot.getStock());
+            view.getManageItemsPanel().setStockLabelText(
+                selectedSlot.getStock(),
+                machine.getSlotCapacity()
+            );
             view.getManageItemsPanel().setPriceInput(selectedSlot.getUnitPrice());
         });
 

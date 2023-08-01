@@ -17,30 +17,81 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 
+/**
+ * This class represents the panel for managing vending machine items. It
+ * allows for the setting the price and stock of each item in the machine.
+ */
 public class ManageItemsPanel extends JPanel {
-    private int slotCapacity;
-
+    /**
+     * The table to display slot number and item name per slot.
+     */
     private DisplayTable slotTable;
 
+    /**
+     * The panel containing various input fields for item management.
+     */
     private JPanel inputPanel;
+
+    /**
+     * The label to display the item image.
+     */
     private JLabel itemImage;
 
+    /**
+     * The label for setting the item price.
+     */
     private JLabel setPriceHeading;
+
+    /**
+     * The label for the item price.
+     */
     private JLabel priceLabel;
+
+    /**
+     * The text field for setting the item price.
+     */
     private DoubleTextField priceInput;
+
+    /**
+     * The button to set the item price.
+     */
     private JButton setPriceButton;
 
+    /**
+     * The label for managing item stock.
+     */
     private JLabel setStockHeading;
+
+    /**
+     * The label to display the current item stock.
+     */
     private JLabel stockLabel;
+
+    /**
+     * The label for the item quantity input.
+     */
     private JLabel quantityLabel;
+
+    /**
+     * The spinner to input the quantity of items to add or remove.
+     */
     private JSpinner quantityInput;
+
+    /**
+     * The button to add item quantity.
+     */
     private JButton addButton;
+
+    /**
+     * The button to remove item quantity.
+     */
     private JButton removeButton;
 
+    /**
+     * Creates a new ManageItemsPanel.
+     */
     public ManageItemsPanel() {
         super(new GridLayout(1, 2));
-    
-        slotCapacity = 0;
 
         slotTable = new DisplayTable(new String[] { "Slot", "Item Name" });
         add(slotTable);
@@ -131,18 +182,35 @@ public class ManageItemsPanel extends JPanel {
 
     /* */
 
+    /**
+     * Gets the quantity input value from the spinner.
+     * @return The quantity input value.
+     */
     public int getQuantityInput() {
         return (int) quantityInput.getValue();
     }
 
+    /**
+     * Gets the DisplayTable component for displaying the item slots.
+     * @return the DisplayTable component.
+     */
     public DisplayTable getSlotTable() {
         return slotTable;
     }
 
+    /**
+     * Gets the price input value from the text field.
+     * @return the price input value.
+     */
     public double getPriceInput() {
         return (double) priceInput.getValue();
     }
 
+    /**
+     * Sets the item image to display in the panel.
+     * @param path the file path of the item image.
+     * @throws IOException If there is an error reading the image file.
+     */
     public void setItemImage(String path) throws IOException {
         Image image = ImageIO.read(new File(path))
                              .getScaledInstance(100, 100, Image.SCALE_SMOOTH);
@@ -151,28 +219,44 @@ public class ManageItemsPanel extends JPanel {
         itemImage.setIcon(icon);
     }
 
+    /**
+     * Sets the price input value in the text field.
+     * @param value the price value to set.
+     */
     public void setPriceInput(double value) {
         priceInput.setValue(value);
     }
 
-    public void setSlotCapacity(int capacity) {
-        slotCapacity = capacity;
-    }
-
-    public void setStockLabelText(int stock) {
-        stockLabel.setText("Stock: " + stock + " / " + slotCapacity);
+    /**
+     * Sets the label text for the item stock quantity.
+     * @param stock the current item stock quantity.
+     */
+    public void setStockLabelText(int stock, int maxCapacity) {
+        stockLabel.setText("Stock: " + stock + " / " + maxCapacity);
     }
 
     /* */
 
+    /**
+     * Sets the listener for the add quantity button.
+     * @param listener the action listener for the button.
+     */
     public void setItemAddListener(ActionListener listener) {
         addButton.addActionListener(listener);
     }
 
+    /**
+     * Sets the listener for the remove quantity button.
+     * @param listener The action listener for the button.
+     */
     public void setItemRemoveListener(ActionListener listener) {
         removeButton.addActionListener(listener);
     }
 
+    /**
+     * Sets the listener for the set price button.
+     * @param listener The listener for the button.
+     */
     public void setPriceEditListener(ActionListener listener) {
         setPriceButton.addActionListener(listener);
     }
