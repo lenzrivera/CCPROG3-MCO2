@@ -3,7 +3,7 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 
-import model.exceptions.InsufficientChangeException;
+import model.exceptions.MissingChangeException;
 import model.exceptions.InsufficientCreditException;
 
 /**
@@ -175,7 +175,7 @@ public abstract class VendingMachine<T extends Slot> {
      * @return The DenominationMap representing the change to be returned.
      * @throws InsufficientCreditException if the user does not have sufficient
      * credit to pay.
-     * @throws InsufficientChangeException if the vending machine cannot provide 
+     * @throws MissingChangeException if the vending machine cannot provide 
      * exact change.
      */
     protected DenominationMap transact(double paymentAmount) {
@@ -214,7 +214,7 @@ public abstract class VendingMachine<T extends Slot> {
         }
 
         if (change.getTotal() != changeAmount) {
-            throw new InsufficientChangeException(payment.getTotal());
+            throw new MissingChangeException(payment.getTotal());
         }
 
         // Transfer user payment from credit to moneyStock.
