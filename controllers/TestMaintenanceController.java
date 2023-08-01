@@ -5,6 +5,7 @@ import java.util.List;
 
 import model.Denomination;
 import model.DenominationMap;
+import model.ItemSummary;
 import model.Slot;
 import model.VendingMachine;
 import model.VendingMachineModel;
@@ -12,6 +13,7 @@ import states.TestMachineMenuState;
 import util.Controller;
 import views.TestMaintenanceView;
 import views.components.ManageMoneyPanel;
+import views.components.SummaryViewPanel;
 import views.components.ManageItemsPanel;
 
 /**
@@ -54,6 +56,7 @@ public class TestMaintenanceController extends Controller {
 
         updateSlotTable(machine.getSlots());
         updateDenominationTable(machine.getMoneyStock());
+        updateSummaryView();
     }
 
     /**
@@ -89,7 +92,7 @@ public class TestMaintenanceController extends Controller {
 
             try {
                 selectedSlot.stockItem(qtyToAdd);
-                machine.getSummary().reset(machine.getSlots());
+                updateSummaryView();
 
                 view.getManageItemsPanel()
                     .setStockLabelText(
@@ -130,7 +133,7 @@ public class TestMaintenanceController extends Controller {
             for (int i = 0; i < qtyToRemove; i++) {
                 selectedSlot.dispenseItem();
             }
-            machine.getSummary().reset(machine.getSlots());
+            updateSummaryView();
 
             view.getManageItemsPanel()
                 .setStockLabelText(
@@ -258,5 +261,32 @@ public class TestMaintenanceController extends Controller {
             
             i += 1;
         }
+    }
+
+    /**
+     * Updates the summary view panel with the transaction data.
+     */
+    private void updateSummaryView() {
+        VendingMachine<? extends Slot> machine = model.getVendingMachine();
+        machine.getSummary().reset(machine.getSlots());
+
+        int i = 0;
+        SummaryViewPanel panel = view.getSummaryViewPanel();
+
+        for (var entry : machine.getSummary().getStockChanges().entrySet()) {
+            String name = entry.getKey();
+            ItemSummary summary = entry.getValue();
+            
+            panel.setNameCell(i, name);
+            panel.setLastStockCell(i, summary.getInitialStock());
+            panel.setCurrStockCell(i, summary.getCurrentStock());
+            panel.setQtyCell(i, summary.getStockDiff());
+
+            i++;
+        }
+
+        view.getSummaryViewPanel().updateTotalIncome(
+            machine.getSummary().getTotalPayment()
+        );
     }
 }
