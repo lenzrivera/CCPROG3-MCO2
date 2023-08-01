@@ -10,18 +10,51 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 
+/**
+ * Represents the interface to enter basic information about a vending machine.
+ * It provides fields to enter the name, number of slots, and slot capacity.
+ */
 public class BasicInfoPanel extends JPanel {
+    /**
+     * The label for the heading of the basic information section.
+     */
     private JLabel heading;
 
+    /**
+     * The label for the "Name" input field.
+     */
     private JLabel nameLabel;
+
+    /**
+     * The text input field for the name of the vending machine.
+     */
     private JTextField nameInput;
 
+    /**
+     * The label for the "Number of slots" input field.
+     */
     private JLabel slotCountLabel;
+
+    /**
+     * The spinner input field for specifying the number of slots in 
+     * the vending machine.
+     */
     private JSpinner slotCountInput;
 
+    /**
+     * The label for the "Slot capacity" input field.
+     */
     private JLabel slotCapacityLabel;
+
+    /**
+     * The spinner input field for specifying the capacity of each slot
+     * in the vending machine.
+     */
     private JSpinner slotCapacityInput;
 
+    /**
+     * Constructs a new BasicInfoPanel with its associated GUI components.
+     */
     public BasicInfoPanel() {
         super(new GridBagLayout());
 
@@ -71,22 +104,43 @@ public class BasicInfoPanel extends JPanel {
         gbc.gridy = 4;
     }
 
+    /**
+     * Gets the value of the name input field.
+     * @return the name entered in the name input field.
+     */
     public String getNameInput() {
         return nameInput.getText();
     }
 
+    /**
+     * Sets the value of the name input field.
+     * @param name the name to set in the name input field.
+     */
     public void setNameInput(String name) {
         nameInput.setText(name);
     }
 
+    /**
+     * Gets the number of slots entered in the slot count input field.
+     * @return the number of slots.
+     */
     public int getSlotCount() {
         return (int) slotCountInput.getValue();
     }
 
+    /**
+     * Gets the slot capacity entered in the slot capacity input field.
+     * @return the slot capacity.
+     */
     public int getSlotCapacity() {
         return (int) slotCapacityInput.getValue();
     }
 
+    /**
+     * Sets the minimum value that can be entered in the slot count input
+     * field.
+     * @param minSlotCount the minimum value for the slot count field.
+     */
     public void setMinSlotCount(int minSlotCount) {
         SpinnerNumberModel model = new SpinnerNumberModel();
         model.setMinimum(minSlotCount);  
@@ -95,6 +149,12 @@ public class BasicInfoPanel extends JPanel {
         slotCountInput.setModel(model);
     }
 
+    /**
+     * Sets the minimum value that can be entered in the slot capacity input
+     * field.
+     * @param minSlotCapacity The minimum value for the slot capacity input
+     * field.
+     */
     public void setMinSlotCapacity(int minSlotCapacity) {
         SpinnerNumberModel model = new SpinnerNumberModel();
         model.setMinimum(minSlotCapacity);  
