@@ -25,7 +25,7 @@ public class Summary {
      * This constructor initializes a Summary from the contents of the slots
      * of a vending machine, priming transaction summaries of such slots to
      * be recorded.
-     * @param currSlots the current slots of the vending machine, used to
+     * @param currentSlots the current slots of the vending machine, used to
      * determine the items whose summaries must be stored
      */
     public Summary(List<? extends Slot> currentSlots) {

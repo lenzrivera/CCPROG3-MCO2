@@ -9,6 +9,12 @@ import model.VendingMachineModel;
  */
 public abstract class State {
     /**
+     * Constructs a new State instance.
+     */
+    public State() {
+    }
+    
+    /**
      * Retrieves the controller associated with this state.
      * @return the Controller instance associated with this state
      */
