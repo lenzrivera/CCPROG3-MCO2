@@ -14,14 +14,30 @@ import views.TestMaintenanceView;
 import views.components.ManageMoneyPanel;
 import views.components.ManageItemsPanel;
 
+/**
+ * A controller class for managing the testing of the maintenance features of 
+ * a regular or special vending machine.
+ */
 public class TestMaintenanceController extends Controller {
     /**
      * The VendingMachineModel for the whole simulator.
      */
     protected VendingMachineModel model;
 
+    /**
+     * The view associated with the controller, particularly 
+     * TestMaintenanceView.
+     */
     protected TestMaintenanceView view;
 
+    /**
+     * Constructs a new TestMaintenanceController with the provided 
+     * VendingMachineModel and TestMaintenanceView.
+     * @param model The VendingMachineModel to be associated with the 
+     * controller.
+     * @param view The TestMaintenanceView to be associated with the 
+     * controller.
+     */
     public TestMaintenanceController(
         VendingMachineModel model, 
         TestMaintenanceView view
@@ -42,6 +58,9 @@ public class TestMaintenanceController extends Controller {
         updateDenominationTable(machine.getMoneyStock());
     }
 
+    /**
+     * Sets up the event listeners for the view.
+     */
     private void setListeners() {
         VendingMachine<? extends Slot> machine = model.getVendingMachine();
 
@@ -193,6 +212,11 @@ public class TestMaintenanceController extends Controller {
 
     /* */
 
+    /**
+     * Updates the slot table in the ManageItemsPanel with the items in the 
+     * vending machine's slots.
+     * @param slots the list of Slot instances in the vending machine.
+     */
     public void updateSlotTable(List<? extends Slot> slots) {
         ManageItemsPanel panel = view.getManageItemsPanel();
         
@@ -206,6 +230,12 @@ public class TestMaintenanceController extends Controller {
         }
     }
 
+    /**
+     * Updates the denomination table in the ManageMoneyPanel with the 
+     * denominations in the vending machine's money stock.
+     * @param denomMap the DenominationMap representing the money stock of 
+     * the vending machine.
+     */
     private void updateDenominationTable(DenominationMap denomMap) {
         view.getManageMoneyPanel().getDenomTable().clearCells();
 
