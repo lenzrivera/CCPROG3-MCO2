@@ -11,11 +11,30 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+/**
+ * This class represents a particular section in the program, having a heading,
+ * exit button, and a content body which is settable.
+ */
 public class SectionContainer extends JPanel {
+    /**
+     * The header of the section.
+     */
     private JPanel header;
+
+    /**
+     * The heading of the section.
+     */
     private JLabel heading;
+
+    /**
+     * The exit button.
+     */
     private JButton exitButton;
 
+    /**
+     * Creates a new SectionContainer with the given heading text.
+     * @param headingText the text to display as the heading of the section.
+     */
     public SectionContainer(String headingText) {
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         setBorder(new EmptyBorder(5, 10, 10, 10));
@@ -36,10 +55,18 @@ public class SectionContainer extends JPanel {
         add(Box.createVerticalStrut(5));
     }
 
+    /**
+     * Sets the body component to be displayed inside the section container.
+     * @param body the body component to be displayed.
+     */
     public void setBody(JComponent body) {
         add(body);
     }
 
+    /**
+     * Sets the listener for the exit button.
+     * @param listener The listener for the exit button
+     */
     public void setExitButtonListener(ActionListener listener) {
         exitButton.addActionListener(listener);
     }
