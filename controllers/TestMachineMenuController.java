@@ -4,7 +4,8 @@ import model.RegularVendingMachine;
 import model.VendingMachineModel;
 import states.MainMenuState;
 import states.TestMaintenanceState;
-// import states.TestRegularVendingState;
+import states.TestRegularVendingState;
+import states.TestSpecialVendingState;
 import util.Controller;
 import views.TestMachineMenuView;
 
@@ -41,9 +42,9 @@ public class TestMachineMenuController extends Controller {
 
         view.setTestVendingButtonListener(e -> {
             if (model.getVendingMachine() instanceof RegularVendingMachine) {
-                // changeState(new TestRegularVendingState());
+                changeState(new TestRegularVendingState());
             } else {
-                // changeState(new TestSpecialVendingState());
+                changeState(new TestSpecialVendingState());
             }
         });
 
