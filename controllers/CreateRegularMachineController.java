@@ -121,7 +121,7 @@ public class CreateRegularMachineController
             view.getSetupPane().setActiveTab(2);
         });
 
-        view.getSetItemsPanel().getContent().setItemAddListener(e -> {
+        view.getSetItemsPanel().getContent().setItemSetListener(e -> {
             SetupItemsPanel panel = view.getSetItemsPanel().getContent();
 
             if (!checkFieldValidity(machine)) {
