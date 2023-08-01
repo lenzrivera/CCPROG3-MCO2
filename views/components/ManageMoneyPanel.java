@@ -15,22 +15,64 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
+/**
+ * This class represents the panel for managing the money stock in a vending 
+ * machine. It allows the money stock to be stocked to or collected from. 
+ */
 public class ManageMoneyPanel extends JPanel {
+    /**
+     * The table to display denominations and their quantities.
+     */
     private DisplayTable denomTable;
 
+    /**
+     * The panel containing various input fields for money management.
+     */
     private JPanel inputPanel;
+
+    /**
+     * The label to display the section heading.
+     */
     private JLabel inputHeading;
 
+    /**
+     * The label for selecting the denomination.
+     */
     private JLabel denomLabel;
+
+    /**
+     * The combo box for selecting the denomination.
+     */
     private JComboBox<Double> denomInput;
 
+    /**
+     * The label for the quantity input.
+     */
     private JLabel quantityLabel;
+
+    /**
+     * The spinner for inputting the quantity.
+     */
     private JSpinner quantityInput;
 
+    /**
+     * The button for collecting money of the selected denomination.
+     */
     private JButton collectButton;
+
+    /**
+     * The button for collecting all money.
+     */
     private JButton collectAllButton;
+
+    /**
+     * The button for restocking money.
+     */
     private JButton stockButton;
 
+    /**
+     * Creates a new ManageMoneyPanel.
+     */
     public ManageMoneyPanel() {
         super(new GridLayout(1, 2));
         
@@ -103,10 +145,18 @@ public class ManageMoneyPanel extends JPanel {
 
     /* */
 
+    /**
+     * Gets the DisplayTable component for denominations and their quantities.
+     * @return the DisplayTable for denominations and quantities.
+     */
     public DisplayTable getDenomTable() {
         return denomTable;
     }
 
+    /**
+     * Sets the denominations available for selection in the combo box.
+     * @param denominations the list of denominations available.
+     */
     public void setDenominations(List<Double> denominations) {
         DefaultComboBoxModel<Double> model = new DefaultComboBoxModel<>();
         model.addAll(denominations);
@@ -115,24 +165,44 @@ public class ManageMoneyPanel extends JPanel {
         denomInput.setSelectedIndex(0);
     }
 
+    /**
+     * Gets the selected denomination from the combo box.
+     * @return the selected denomination.
+     */
     public double getSelectedDenom() {
         return (double) denomInput.getSelectedItem();
     }
 
+    /**
+     * Gets the inputted quantity from the quantity input field.
+     * @return the seleced quantity.
+     */
     public int getSelectedQuantity() {
         return (int) quantityInput.getValue();
     }
 
     /* */
 
+    /**
+     * Sets the listener for the collect button.
+     * @param listener the action listener for the button.
+     */
     public void setCollectListener(ActionListener listener) {
         collectButton.addActionListener(listener);
     }
 
+    /**
+     * Sets the listener for the collect all button.
+     * @param listener the action listener for the button.
+     */
     public void setCollectAllListener(ActionListener listener) {
         collectAllButton.addActionListener(listener);
     }
 
+    /**
+     * Sets the listener for the stock button.
+     * @param listener the action listener for the button.
+     */
     public void setStockListener(ActionListener listener) {
         stockButton.addActionListener(listener);
     }
