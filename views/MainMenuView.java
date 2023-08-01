@@ -79,7 +79,7 @@ public class MainMenuView extends View {
     }
 
     /**
-     * Sets the Listener for the button to create a regular vending machine.
+     * Adds a listener for the button to create a regular vending machine.
      * @param listener the listener for the create regular vending machine button.
      */
     public void setCreateButtonListener(ActionListener listener) {
@@ -87,7 +87,7 @@ public class MainMenuView extends View {
     }
 
     /**
-     * Sets the Listener for the button to exit the simulator.
+     * Adds a listener for the button to exit the simulator.
      * @param listener the listener for the button to exit the simulator.
      */
     public void setExitButtonListener(ActionListener listener) {
@@ -103,7 +103,7 @@ public class MainMenuView extends View {
     }
 
     /**
-     * Sets the Listener for the button to test a vending machine.
+     * Adds a listener for the button to test a vending machine.
      * @param listener the listener for the button to test a vending machine.
      */
     public void setTestButtonListener(ActionListener listener) {

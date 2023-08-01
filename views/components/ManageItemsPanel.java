@@ -238,7 +238,7 @@ public class ManageItemsPanel extends JPanel {
     /* */
 
     /**
-     * Sets the listener for the add quantity button.
+     * Adds a listener for the add quantity button.
      * @param listener the action listener for the button.
      */
     public void setItemAddListener(ActionListener listener) {
@@ -246,7 +246,7 @@ public class ManageItemsPanel extends JPanel {
     }
 
     /**
-     * Sets the listener for the remove quantity button.
+     * Adds a listener for the remove quantity button.
      * @param listener The action listener for the button.
      */
     public void setItemRemoveListener(ActionListener listener) {
@@ -254,7 +254,7 @@ public class ManageItemsPanel extends JPanel {
     }
 
     /**
-     * Sets the listener for the set price button.
+     * Adds a listener for the set price button.
      * @param listener The listener for the button.
      */
     public void setPriceEditListener(ActionListener listener) {

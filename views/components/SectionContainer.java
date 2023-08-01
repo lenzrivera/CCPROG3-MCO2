@@ -64,7 +64,7 @@ public class SectionContainer extends JPanel {
     }
 
     /**
-     * Sets the listener for the exit button.
+     * Adds a listener for the exit button.
      * @param listener The listener for the exit button
      */
     public void setExitButtonListener(ActionListener listener) {

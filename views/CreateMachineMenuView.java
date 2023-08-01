@@ -90,7 +90,7 @@ public class CreateMachineMenuView extends View {
     }
 
     /**
-     * Sets the listener for the button for creating a regular
+     * Adds a listener for the button for creating a regular
      * vending machine.
      * @param listener The listener to be set for the button.
      */
@@ -99,7 +99,7 @@ public class CreateMachineMenuView extends View {
     }
 
     /**
-     * Sets the listener for the button for creating a special
+     * Adds a listener for the button for creating a special
      * vending machine.
      * @param listener The listener to be set for the button.
      */
@@ -108,7 +108,7 @@ public class CreateMachineMenuView extends View {
     }
 
     /**
-     * Sets the listener for the back button.
+     * Adds a listener for the back button.
      * @param listener The listener to be set for the button.
      */
     public void setBackButtonListener(ActionListener listener) {

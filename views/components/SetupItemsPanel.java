@@ -249,7 +249,7 @@ public abstract class SetupItemsPanel extends JPanel {
     /* */
 
     /**
-     * Sets the listener for the set item button.
+     * Adds a listener for the set item button.
      * @param listener the action listener for the button.
      */
     public void setItemSetListener(ActionListener listener) {
@@ -257,7 +257,7 @@ public abstract class SetupItemsPanel extends JPanel {
     }
 
     /**
-     * Sets the listener for the remove item button.
+     * Adds a listener for the remove item button.
      * @param listener the action listener for the button.
      */
     public void setItemRemoveListener(ActionListener listener) {

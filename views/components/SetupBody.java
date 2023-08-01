@@ -63,7 +63,7 @@ public class SetupBody<T extends JComponent> extends JPanel {
     }
 
     /**
-     * Sets the listener for the "Next" button.
+     * Adds a listener for the "Next" button.
      * @param listener The listener for the button.
      */
     public void setNextButtonListener(ActionListener listener) {

@@ -87,7 +87,7 @@ public class TestMachineMenuView extends View {
     }
 
     /**
-     * Sets the listener for the button to test vending features.
+     * Adds a listener for the button to test vending features.
      * @param listener the listener for the button to test vending features.
      */
     public void setTestVendingButtonListener(ActionListener listener) {
@@ -95,7 +95,7 @@ public class TestMachineMenuView extends View {
     }
 
     /**
-     * Sets the listener for the button to test maintenance features.
+     * Adds a listener for the button to test maintenance features.
      * @param listener the listener for the button to test maintenance features.
      */
     public void setTestMaintenanceButtonListener(ActionListener listener) {
@@ -103,7 +103,7 @@ public class TestMachineMenuView extends View {
     }
 
     /**
-     * Sets the listener for the back button.
+     * Adds a listener for the back button.
      * @param listener the listener for the back button
      */
     public void setBackButtonListener(ActionListener listener) {

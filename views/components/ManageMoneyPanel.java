@@ -184,7 +184,7 @@ public class ManageMoneyPanel extends JPanel {
     /* */
 
     /**
-     * Sets the listener for the collect button.
+     * Adds a listener for the collect button.
      * @param listener the action listener for the button.
      */
     public void setCollectListener(ActionListener listener) {
@@ -192,7 +192,7 @@ public class ManageMoneyPanel extends JPanel {
     }
 
     /**
-     * Sets the listener for the collect all button.
+     * Adds a listener for the collect all button.
      * @param listener the action listener for the button.
      */
     public void setCollectAllListener(ActionListener listener) {
@@ -200,7 +200,7 @@ public class ManageMoneyPanel extends JPanel {
     }
 
     /**
-     * Sets the listener for the stock button.
+     * Adds a listener for the stock button.
      * @param listener the action listener for the button.
      */
     public void setStockListener(ActionListener listener) {

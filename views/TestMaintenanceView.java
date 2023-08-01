@@ -94,7 +94,7 @@ public class TestMaintenanceView extends View {
     }
 
     /**
-     * Sets the listener for the exit button.
+     * Adds a listener for the exit button.
      * @param listener the listener for the exit button
      */
     public void setExitButtonListener(ActionListener listener) {
