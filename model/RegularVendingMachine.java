@@ -16,7 +16,9 @@ public class RegularVendingMachine extends VendingMachine<Slot> {
 
     /**
      * Constructs a new RegularVendingMachine instance with the specified 
-     * name, slot count, and slot capacity.
+     * name, slot count, and slot capacity. Slot count falls back to a minimum
+     * of MIN_SLOT_COUNT and slot capacity falls back to a minimum of 
+     * Slot.MIN_MAX_CAPACITY.
      * @param name the name of the vending machine.
      * @param slotCount the total number of slots in the vending machine.
      * @param slotCapacity the maximum capacity of each slot.

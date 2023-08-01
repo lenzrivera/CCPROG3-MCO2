@@ -32,7 +32,9 @@ public class SpecialVendingMachine extends VendingMachine<SpecialSlot> {
 
     /**
      * Constructs a new SpecialVendingMachine instance with the specified name, 
-     * slot count, and slot capacity.
+     * slot count, and slot capacity. Slot count falls back to a minimum of
+     * MIN_SLOT_COUNT and slot capacity falls back to a minimum of 
+     * Slot.MIN_MAX_CAPACITY.
      * @param name the name of the special vending machine.
      * @param slotCount the number of slots in the vending machine.
      * @param slotCapacity the capacity of each slot in the vending machine.
