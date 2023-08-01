@@ -1,8 +1,6 @@
 package model;
 
 /**
- * TODO: double check javadoc
- * 
  * This class represents the changes made to the stock of an item given
  * several transactions. It is primarily used in conjunction with 
  * the Summary class.
