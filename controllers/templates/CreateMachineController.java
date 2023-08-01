@@ -11,14 +11,30 @@ import util.Controller;
 import views.components.SetupItemsPanel;
 import views.templates.CreateMachineView;
 
-// TODO: CreateMachineView may be simplified to remove generics
-
+/**
+ * This abstract controller class contains the common code for managing
+ * the creation of vending machines.
+ * @param <T> the type of CreateMachineView associated with this controller.
+ */
 public abstract class CreateMachineController<
     T extends CreateMachineView<?>> extends Controller 
 {
+    /**
+     * The VendingMachineModel for the whole simulator.
+     */
     protected VendingMachineModel model;
+    
+    /**
+     * The view associated with the controller.
+     */
     protected T view;
 
+    /**
+     * Constructs a new CreateMachineController with the provided 
+     * VendingMachineModel and view.
+     * @param model the VendingMachineModel associated with the controller
+     * @param view the view associated with the controller
+     */
     public CreateMachineController(VendingMachineModel model, T view) {
         this.model = model;
         this.view = view;
@@ -27,10 +43,15 @@ public abstract class CreateMachineController<
         setListeners();
     }
 
-    /* */
-
+    /**
+     * Sets up the event listeners for the view.
+     */
     protected abstract void setListeners();
     
+    /**
+     * Sets the constants for the view, such as minimum slot count, minimum 
+     * slot capacity, and available denominations for money management.
+     */
     protected void setConstants() {
         view.getBasicInfoPanel()
             .getContent()
@@ -43,8 +64,13 @@ public abstract class CreateMachineController<
             .setDenominations(Denomination.getDoubleValues());
     }
 
-    /* */
-
+    /**
+     * Checks the validity of the input fields for setting an item in the
+     * vending machine.
+     * @param machine the vending machine instance to check against in
+     * validating the fields.
+     * @return true if all fields are valid, false otherwise.
+     */
     protected boolean checkFieldValidity(VendingMachine<?> machine) {
         SetupItemsPanel setItemsPanel = view.getSetItemsPanel().getContent();
 
@@ -65,7 +91,6 @@ public abstract class CreateMachineController<
                 i != slotIndex && 
                 slot.getSampleItem() != null && 
                 slot.getSampleItem().getName().equalsIgnoreCase(name)
-                
             ) {
                 view.showErrorDialog("Please enter an unused item name.");
                 return false;
@@ -86,7 +111,7 @@ public abstract class CreateMachineController<
     }
 
     /**
-     * Updates the stock change panel's denomination table with the provided 
+     * Updates the change stock panel's denomination table with the provided 
      * DenominationMap.
      * @param denomMap the DenominationMap containing the denominations and 
      * quantities.
@@ -110,6 +135,11 @@ public abstract class CreateMachineController<
         }
     }
 
+    /**
+     * Updates the set item panel's slot table with the provided list of slots.
+     * @param slots the list of Slot instances to display in the view's slot 
+     * table.
+     */
     public void updateSlotTable(List<? extends Slot> slots) {
         SetupItemsPanel setItemsPanel = view.getSetItemsPanel().getContent();
         
