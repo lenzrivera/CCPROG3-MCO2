@@ -9,13 +9,34 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 
+/**
+ * This class represents the setup items panel for the special vending machine.
+ * It provides additional fields for standalone status and operation selection.
+ */
 public class SetupSpecialItemsPanel extends SetupItemsPanel {
+    /** 
+     * Label for the standalone status checkbox. 
+     */
     private JLabel standaloneLabel;
+    
+    /** 
+     * Checkbox for marking an item as standalone. 
+     */
     private JCheckBox standaloneInput;
     
+    /** 
+     * Label for the operation selection combo box. 
+     */
     private JLabel operationLabel;
+    
+    /** 
+     * Combo box for selecting the item operation. 
+     */
     private JComboBox<String> operationInput;
 
+    /**
+     * Constructs a new SetupSpecialItemsPanel.
+     */
     public SetupSpecialItemsPanel() {
     }
 
@@ -97,12 +118,12 @@ public class SetupSpecialItemsPanel extends SetupItemsPanel {
 
         gbc.gridy = 6;
         gbc.gridwidth = 1;
+        gbc.fill = GridBagConstraints.CENTER;
 
         gbc.gridx = 0;
         inputPanel.add(standaloneLabel, gbc);
 
         gbc.gridx = 1;
-        gbc.fill = GridBagConstraints.CENTER;
         inputPanel.add(standaloneInput, gbc);
 
         /* Row 8 */
@@ -130,27 +151,51 @@ public class SetupSpecialItemsPanel extends SetupItemsPanel {
         inputPanel.add(removeItemButton, gbc);
     }
 
+    /**
+     * Gets the standalone status input value.
+     * @return true if the standalone checkbox is selected, false otherwise.
+     */
     public boolean getStandaloneInput() {
         return standaloneInput.isSelected();
     }
 
+    /**
+     * Sets the standalone status input value.
+     * @param isChecked true to check the standalone checkbox, false to uncheck it.
+     */
     public void setStandaloneInput(boolean isChecked) {
         standaloneInput.setSelected(isChecked);
     }
 
+    /**
+     * Gets the selected operation from the combo box.
+     * @return the selected operation as a string.
+     */
     public String getOperationInput() {
         return (String) operationInput.getSelectedItem();
     }
     
+    /**
+     * Sets the selected operation in the combo box based on its index.
+     * @param index the index of the operation to select.
+     */
     public void setOperationInput(int index) {
         operationInput.setSelectedIndex(index);
     }
 
+    /**
+     * Sets the selected operation in the combo box based on its value.
+     * @param value the operation value to select.
+     */
     public void setOperationInput(String value) {
         // Assume that `value` is in the JComboBox model.
         operationInput.setSelectedItem(value);
     }
 
+    /**
+     * Sets the available operations in the operation combo box.
+     * @param operations the list of available operations.
+     */
     public void setOperations(List<String> operations) {
         DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
         model.addAll(operations);
