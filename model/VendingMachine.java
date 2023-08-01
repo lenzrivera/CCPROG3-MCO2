@@ -194,7 +194,7 @@ public abstract class VendingMachine<T extends Slot> {
         }
 
         if (payment.getTotal() < paymentAmount) {
-            throw new InsufficientCreditException(paymentAmount, credit.getTotal());
+            throw new InsufficientCreditException(credit.collect());
         }
 
         double changeAmount = payment.getTotal() - paymentAmount;
@@ -214,7 +214,7 @@ public abstract class VendingMachine<T extends Slot> {
         }
 
         if (change.getTotal() != changeAmount) {
-            throw new MissingChangeException(payment.getTotal());
+            throw new MissingChangeException(credit.collect());
         }
 
         // Transfer user payment from credit to moneyStock.
