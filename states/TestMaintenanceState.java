@@ -7,10 +7,26 @@ import util.State;
 import util.View;
 import views.TestMaintenanceView;
 
+/**
+ * Represents the state where the user can test the maintenance features of
+ * a regular or special vending machine.
+ */
 public class TestMaintenanceState extends State {
+    /**
+     * The view associated with this state, particularly TestMaintenanceView.
+     */
     private TestMaintenanceView view;
+
+    /**
+     * The view associated with this state, particularly TestMaintenanceController.
+     */
     private TestMaintenanceController controller;
 
+    /**
+     * Constructs a new TestMaintenanceState object. The view and controller
+     * is initially set to null and initialized only when initialize() is 
+     * called.
+     */
     public TestMaintenanceState() {
         view = null;
         controller = null;
