@@ -3,7 +3,15 @@ package views.components;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 
+/**
+ * This class represents the setup items panel for the regular vending machine.
+ * It allows the items in each slot of the vending machine to be set, along
+ * with their stock and price.
+ */
 public class SetupRegularItemsPanel extends SetupItemsPanel {
+    /**
+     * Constructs a new SetupRegularItemsPanel.
+     */
     public SetupRegularItemsPanel() {
     }
 
