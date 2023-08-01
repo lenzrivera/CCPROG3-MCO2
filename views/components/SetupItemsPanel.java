@@ -12,7 +12,7 @@ import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 
 public abstract class SetupItemsPanel extends JPanel {
-    protected DisplayTable<Integer, String> slotTable;
+    protected DisplayTable slotTable;
 
     protected JPanel inputPanel;
     protected JLabel inputHeading;
@@ -37,7 +37,7 @@ public abstract class SetupItemsPanel extends JPanel {
     public SetupItemsPanel() {
         super(new GridLayout(1, 2));
 
-        slotTable = new DisplayTable<>(
+        slotTable = new DisplayTable(
             new String[] { "Slot", "Item Name" }
         );
         add(slotTable);
@@ -125,7 +125,7 @@ public abstract class SetupItemsPanel extends JPanel {
 
     /* */
 
-    public DisplayTable<Integer, String> getSlotTable() {
+    public DisplayTable getSlotTable() {
         return slotTable;
     }
 

@@ -20,7 +20,7 @@ import javax.swing.SwingConstants;
 public class ManageItemsPanel extends JPanel {
     private int slotCapacity;
 
-    private DisplayTable<Integer, String> slotTable;
+    private DisplayTable slotTable;
 
     private JPanel inputPanel;
     private JLabel itemImage;
@@ -42,7 +42,7 @@ public class ManageItemsPanel extends JPanel {
     
         slotCapacity = 0;
 
-        slotTable = new DisplayTable<>(new String[] { "Slot", "Item Name" });
+        slotTable = new DisplayTable(new String[] { "Slot", "Item Name" });
         add(slotTable);
 
         /* Input Panel */
@@ -135,7 +135,7 @@ public class ManageItemsPanel extends JPanel {
         return (int) quantityInput.getValue();
     }
 
-    public DisplayTable<Integer, String> getSlotTable() {
+    public DisplayTable getSlotTable() {
         return slotTable;
     }
 

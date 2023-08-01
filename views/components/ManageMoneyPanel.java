@@ -16,7 +16,7 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
 public class ManageMoneyPanel extends JPanel {
-    private DisplayTable<Double, Integer> denomTable;
+    private DisplayTable denomTable;
 
     private JPanel inputPanel;
     private JLabel inputHeading;
@@ -36,7 +36,7 @@ public class ManageMoneyPanel extends JPanel {
         
         /* TABLE */
 
-        denomTable = new DisplayTable<>(
+        denomTable = new DisplayTable(
             new String[] { "Denomination", "Quantity" }
         );
         add(denomTable);
@@ -103,7 +103,7 @@ public class ManageMoneyPanel extends JPanel {
 
     /* */
 
-    public DisplayTable<Double, Integer> getDenomTable() {
+    public DisplayTable getDenomTable() {
         return denomTable;
     }
 
