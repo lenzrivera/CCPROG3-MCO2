@@ -12,11 +12,25 @@ import views.components.BasicInfoPanel;
 import views.components.ManageMoneyPanel;
 import views.components.SetupItemsPanel;
 
+/**
+ * A controller class for managing the creation of a regular vending machine.
+ */
 public class CreateRegularMachineController 
     extends CreateMachineController<CreateRegularMachineView> 
 {
+    /**
+     * The regular vending machine to create.
+     */
     private RegularVendingMachine machine;
 
+    /**
+     * Constructs a new CreateRegularMachineController with the provided 
+     * VendingMachineModel and CreateRegularMachineView.
+     * @param model the VendingMachineModel to be associated with the 
+     * controller
+     * @param view the CreateRegularMachineView to be associated with the 
+     * controller
+     */
     public CreateRegularMachineController(
         VendingMachineModel model, 
         CreateRegularMachineView view
@@ -28,6 +42,9 @@ public class CreateRegularMachineController
         view.getBasicInfoPanel().getContent().setNameInput("Pizza VM");
     }
 
+    /**
+     * Sets up the event listeners for the view.
+     */
     @Override
     protected void setListeners() {
         view.setExitButtonListener(e -> {
