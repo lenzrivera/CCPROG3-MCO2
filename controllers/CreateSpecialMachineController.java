@@ -22,11 +22,25 @@ import views.components.ManageMoneyPanel;
 import views.components.SetupPresetsPanel;
 import views.components.SetupSpecialItemsPanel;
 
-public class CreateSpecialMachineController
+/**
+ * A controller class for managing the creation of a special vending machine.
+ */
+public class CreateSpecialMachineController 
     extends CreateMachineController<CreateSpecialMachineView> 
 {
+    /**
+     * The special vending machine to create.
+     */
     private SpecialVendingMachine machine;
 
+    /**
+     * Constructs a new CreateSpecialMachineController with the provided 
+     * VendingMachineModel and CreateSpecialMachineView.
+     * @param model the VendingMachineModel to be associated with the 
+     * controller
+     * @param view the CreateSpecialMachineView to be associated with the 
+     * controller
+     */
     public CreateSpecialMachineController(
         VendingMachineModel model, 
         CreateSpecialMachineView view
@@ -38,6 +52,10 @@ public class CreateSpecialMachineController
         view.getBasicInfoPanel().getContent().setNameInput("Pizza VM");
     }
 
+    /**
+     * Sets constants for the view, including those specific to the creation
+     * process of a special vending machine.
+     */
     @Override
     protected void setConstants() {
         super.setConstants();
@@ -49,7 +67,10 @@ public class CreateSpecialMachineController
         view.getSetItemsPanel().getContent().setOperations(opStrings);
         view.getSetupPresetsPanel().getContent().setOperations(opStrings);
     }
-
+    
+    /**
+     * Sets up the event listeners for the view.
+     */
     @Override
     protected void setListeners() {
         view.setExitButtonListener(e -> {
@@ -468,9 +489,13 @@ public class CreateSpecialMachineController
 
     /* */
 
+    /**
+     * Updates the item list in the SetupPresetsPanel based on the items in 
+     * the vending machine's slots.
+     * @param slots the list of Slot instances in the vending machine.
+     */
     private void setItemList(List<? extends Slot> slots) {
         SetupPresetsPanel panel = view.getSetupPresetsPanel().getContent();
-
         panel.clearItemQtySelectors();
 
         for (Slot slot : slots) {
@@ -482,9 +507,12 @@ public class CreateSpecialMachineController
         }
     }
 
+    /**
+     * Updates the preset list in the SetupPresetsPanel based on the presets 
+     * in the vending machine.
+     */
     private void updatePresetList() {
         SetupPresetsPanel panel = view.getSetupPresetsPanel().getContent();
-        
         panel.clearPresetList();
 
         for (Preset preset : machine.getPresets()) {
