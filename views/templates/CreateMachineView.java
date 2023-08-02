@@ -1,43 +1,66 @@
 package views.templates;
 
-import java.awt.Component;
 import java.awt.Container;
-import java.awt.GridLayout;
-
-import javax.swing.JPanel;
+import java.awt.event.ActionListener;
 
 import util.View;
 import views.components.BasicInfoPanel;
+import views.components.ManageMoneyPanel;
 import views.components.SectionContainer;
+import views.components.SetupBody;
 import views.components.SetupPane;
-import views.components.StockChangePanel;
-import views.components.StockItemsPanel;
+import views.components.SetupItemsPanel;
 
-public abstract class CreateMachineView extends View {
+/**
+ * This class represents the view for the machine creation menus. It provides
+ * common GUI components and layouts for the regular and special vending 
+ * machine creation menus.
+ * @param <T> The type of the setup items panel specific to the subclass.
+ */
+public abstract class CreateMachineView<
+    T extends SetupItemsPanel> extends View 
+{
+    /**
+     * The main container for the view.
+     */
     protected SectionContainer mainContainer;
 
-    protected JPanel setupPaneContainer;
+    /**
+     * The setup pane containing different setup sections.
+     */
     protected SetupPane setupPane;
 
-    protected BasicInfoPanel basicInfoPanel;
-    protected StockChangePanel stockChangePanel;
+    /**
+     * The basic info panel wrapped in a SetupBody to facilitate the setup 
+     * progression.
+     */
+    protected SetupBody<BasicInfoPanel> basicInfoPanel;
 
+    /**
+     * The setup items panel wrapped in a SetupBody to facilitate the setup 
+     * progression.
+     */
+    protected SetupBody<T> setupItemsPanel;
+    
+    /**
+     * The manage money panel wrapped in a SetupBody to facilitate the setup 
+     * progression.
+     */
+    protected SetupBody<ManageMoneyPanel> manageMoneyPanel;
+
+    /**
+     * Constructs a new CreateMachineView with the specified heading to 
+     * display.
+     * @param heading The heading to be displayed in the setup view.
+     */
     public CreateMachineView(String heading) {
         mainContainer = new SectionContainer(heading);
 
-        setupPaneContainer = new JPanel();
-        mainContainer.setBody(setupPaneContainer);
-        
-        // Remove the indentation given to the heading by default.
-        setupPaneContainer.setAlignmentX(Component.LEFT_ALIGNMENT); 
-        // Make the tabbed pane take all the window space.
-        setupPaneContainer.setLayout(new GridLayout());
-
         setupPane = new SetupPane();
-        setupPaneContainer.add(setupPane);
+        mainContainer.add(setupPane);
 
-        basicInfoPanel = new BasicInfoPanel();
-        stockChangePanel = new StockChangePanel();
+        basicInfoPanel = new SetupBody<>(new BasicInfoPanel());
+        manageMoneyPanel = new SetupBody<>(new ManageMoneyPanel());
     }
 
     @Override
@@ -45,17 +68,43 @@ public abstract class CreateMachineView extends View {
         return mainContainer;
     }
 
-    public BasicInfoPanel getBasicInfoPanel() {
+    /**
+     * Returns the basic info panel wrapped around a SetupBody.
+     * @return the basic info panel wrapped around a SetupBody.
+     */
+    public SetupBody<BasicInfoPanel> getBasicInfoPanel() {
         return basicInfoPanel;
     }
 
+    /**
+     * Returns the setup pane that contains the different setup sections.
+     * @return the setup pane.
+     */
     public SetupPane getSetupPane() {
         return setupPane;
     }
 
-    public abstract StockItemsPanel getStockItemsPanel();
+    /**
+     * Returns the set items panel wrapped around a SetupBody.
+     * @return the set items panel wrapped around a SetupBody.
+     */
+    public SetupBody<T> getSetItemsPanel() {
+        return setupItemsPanel;
+    }
 
-    public StockChangePanel getStockChangePanel() {
-        return stockChangePanel;
+    /**
+     * Returns the manage money panel wrapped around a SetupBody.
+     * @return the manage money panel wrapped around a SetupBody.
+     */
+    public SetupBody<ManageMoneyPanel> getManageMoneyPanel() {
+        return manageMoneyPanel;
+    }
+
+    /**
+     * Sets the ActionListener for the exit button for this section.
+     * @param listener The listener to be set for the exit button.
+     */
+    public void setExitButtonListener(ActionListener listener) {
+        mainContainer.setExitButtonListener(listener);
     }
 }

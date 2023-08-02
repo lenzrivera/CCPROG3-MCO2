@@ -13,15 +13,46 @@ import javax.swing.JPanel;
 
 import util.View;
 
+/**
+ * This class represents the view for the machine creation menu. This view 
+ * allows the user to choose between creating a regular vending machine 
+ * or a special vending machine.
+ */
 public class CreateMachineMenuView extends View {
+    /**
+     * The main panel for the machine creation menu.
+     */
     private JPanel panel;
 
+    /**
+     * The heading label displaying "Create a Vending Machine".
+     */
     private JLabel heading;
+
+    /**
+     * The sub-heading label displaying "What kind?".
+     */
     private JLabel subHeading;
+
+    /**
+     * The button to create a regular vending machine.
+     */
     private JButton createRegularButton;
+    
+    /**
+     * The button to create a special vending machine.
+     */
     private JButton createSpecialButton;
+
+    /**
+     * The button to go back to the main menu.
+     */
     private JButton backButton;
 
+    /**
+     * Constructs a new CreateMachineMenuView instance, setting up the
+     * GUI components and layout.
+     */
     public CreateMachineMenuView() {
         super();
 
@@ -58,14 +89,28 @@ public class CreateMachineMenuView extends View {
         return panel;
     }
 
+    /**
+     * Adds a listener for the button for creating a regular
+     * vending machine.
+     * @param listener The listener to be set for the button.
+     */
     public void setCreateRegularButtonListener(ActionListener listener) {
         createRegularButton.addActionListener(listener);
     }
 
+    /**
+     * Adds a listener for the button for creating a special
+     * vending machine.
+     * @param listener The listener to be set for the button.
+     */
     public void setCreateSpecialButtonListener(ActionListener listener) {
         createSpecialButton.addActionListener(listener);
     }
 
+    /**
+     * Adds a listener for the back button.
+     * @param listener The listener to be set for the button.
+     */
     public void setBackButtonListener(ActionListener listener) {
         backButton.addActionListener(listener);
     }

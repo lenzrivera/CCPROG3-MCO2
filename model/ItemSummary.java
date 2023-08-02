@@ -1,8 +1,6 @@
 package model;
 
 /**
- * TODO: double check javadoc
- * 
  * This class represents the changes made to the stock of an item given
  * several transactions. It is primarily used in conjunction with 
  * the Summary class.
@@ -18,6 +16,10 @@ public class ItemSummary {
      */
     private int stockDiff;
 
+    /**
+     * Constructs a new ItemSummary from a given initialStock.
+     * @param initialStock the initial stock of an item since the last restock
+     */
     public ItemSummary(int initialStock) {
         this.initialStock = initialStock;
         stockDiff = 0;

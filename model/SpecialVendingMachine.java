@@ -5,245 +5,437 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import model.exceptions.InsufficientChangeException;
-import model.exceptions.InsufficientCreditException;
+import model.exceptions.DuplicateBaseException;
 import model.exceptions.InsufficientStockException;
-import model.exceptions.SelectedStandaloneException;
+import model.exceptions.RemoveLastBaseException;
+import model.exceptions.SelectedNonStandaloneException;
 
-public class SpecialVendingMachine extends VendingMachine {
-    private ArrayList<SpecialSlot> slots;
+/**
+ * This class represents a special vending machine, capable of dispensing
+ * single items as well as products made from several items.
+ */
+public class SpecialVendingMachine extends VendingMachine<SpecialSlot> {
+    /**
+     * The list of presets acknowledged by the vending machine
+     */
+    private List<Preset> presets;
 
-    private ArrayList<Preset> presets;
+    /**
+     * The map of selected slots and their respective quantities to dispense
+     */
+    private Map<SpecialSlot, Integer> selectedSlots;
 
-    private HashMap<String, Integer> itemsToDispense;
-
-    private ArrayList<String> extraSelections;
-
+    /**
+     * The currently selected preset, if any
+     */
     private Preset selectedPreset;
 
+    /**
+     * Constructs a new SpecialVendingMachine instance with the specified name, 
+     * slot count, and slot capacity. Slot count falls back to a minimum of
+     * MIN_SLOT_COUNT and slot capacity falls back to a minimum of 
+     * Slot.MIN_MAX_CAPACITY.
+     * @param name the name of the special vending machine.
+     * @param slotCount the number of slots in the vending machine.
+     * @param slotCapacity the capacity of each slot in the vending machine.
+     */
     public SpecialVendingMachine(String name, int slotCount, int slotCapacity) {
-        super(name);
-        
-        presets = new ArrayList<>();
-        slots = new ArrayList<>();
+        super(name, slotCount, slotCapacity);
 
-        itemsToDispense = new HashMap<>();
-        extraSelections = new ArrayList<>();
+        presets = new ArrayList<>();
+
+        selectedSlots = new HashMap<>();
         selectedPreset = null;
 
-        int finalSlotCount = Math.max(VendingMachine.MIN_SLOT_COUNT, slotCount);
-        int finalSlotCapacity = Math.max(slotCapacity, Slot.MIN_MAX_CAPACITY);
-
-        for (int i = 0; i < finalSlotCount; i++) {
-            slots.add(new SpecialSlot(finalSlotCapacity));
-        }        
+        for (int i = 0; i < this.slotCount; i++) {
+            slots.add(new SpecialSlot(this.slotCapacity));
+        }
     }
 
-    // Accessors //
+    /* */
 
-    private double getItemSelectionTotal() {
-        double total = 0;
+    /**
+     * Returns the map of current selected slots to their quantities to
+     * dispense. 
+     * @return the map of selected slots to their quantities to dispense
+     */
+    public Map<SpecialSlot, Integer> getSelectedSlots() {
+        return selectedSlots;
+    }
 
-        for (
-            Map.Entry<String, Integer> entry : itemsToDispense.entrySet()
-        ) {
-            SpecialSlot itemSlot = findSlotByItemName(entry.getKey());
+    /**
+     * Returns the list of available presets for the vending machine.
+     * @return the list of presets in the vending machine.
+     */
+    public List<Preset> getPresets() {
+        return presets;
+    }
+
+    /**
+     * Returns the currently selected preset in the machine.
+     * @return the selected preset
+     */
+    public Preset getSelectedPreset() {
+        return selectedPreset;
+    }
+
+    /**
+     * Determines the price that selecting a preset would entail.
+     * @param presetNo the number (index - 1) of the preset whose price
+     * will be determined
+     * @return the computed preset price
+     */
+    public double getPresetPrice(int presetNo) {
+        double total = 0.0;
+
+        for (var entry : presets.get(presetNo - 1).getItems().entrySet()) {
+            String itemName = entry.getKey();
+            int quantity = entry.getValue();
+            
+            total += slots.stream()
+                .filter(s -> 
+                    s.getSampleItem().getName().equalsIgnoreCase(itemName))
+                .findFirst().get()
+                .getUnitPrice() * quantity;
+        }
+
+        return total;
+    }
+
+    /**
+     * Determines the total calories that the items in a preset have.
+     * @param presetNo the number (index - 1) of the preset whose calories
+     * will be determined
+     * @return the computed preset calories
+     */
+    public double getPresetCalories(int presetNo) {
+        double total = 0.0;
+
+        for (var entry : presets.get(presetNo - 1).getItems().entrySet()) {
+            String itemName = entry.getKey();
+            int quantity = entry.getValue();
+            
+            total += slots.stream()
+                .filter(s -> 
+                    s.getSampleItem().getName().equalsIgnoreCase(itemName))
+                .findFirst().get()
+                .getSampleItem().getCalories() * quantity;
+        }
+
+        return total;
+    }
+
+    /**
+     * Checks if a preset with the given name exists in the vending machine.
+     * @param name the name of the preset to check.
+     * @return true if the preset exists, false otherwise.
+     */
+    public boolean hasPreset(String name) {
+        for (Preset preset : presets) {
+            if (preset.getName().equalsIgnoreCase(name)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Determines whether the currently selected items has deviated from the
+     * items in the selected preset
+     * @param presetNo the number (index - 1) of the preset 
+     * @return true is there is a deviation, false otherwise
+     */
+    public boolean hasDeviatedFrom(int presetNo) {
+        if (selectedPreset.getItems().size() != selectedSlots.size()) {
+            return true;
+        }
+
+        for (var entry : selectedSlots.entrySet()) {
+            SpecialSlot itemSlot = entry.getKey();
+
+            String itemName = itemSlot.getSampleItem().getName();
+            int itemQuantity = entry.getValue();
+
+            // If the selected preset has been deviated from:
+            if (
+                !selectedPreset.getItems().containsKey(itemName) ||
+                selectedPreset.getItems().get(itemName) != itemQuantity
+            ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Determines whether there is enough item stock to select a preset.
+     * @param presetNo the number (index - 1) of the preset
+     * @return true is there is enough stock, false otherwise
+     */
+    public boolean hasEnoughStockFor(int presetNo) {
+        for (var entry : presets.get(presetNo - 1).getItems().entrySet()) {
+            String itemName = entry.getKey();
+            int itemQuantity = entry.getValue();
+
+            for (SpecialSlot itemSlot : slots) {
+                if (
+                    itemSlot.getSampleItem() != null &&
+                    itemSlot.getSampleItem().getName().equalsIgnoreCase(itemName)
+                ) {
+                    if (itemSlot.getStock() < itemQuantity) {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Calculates the total calories of the items selected in the vending machine.
+     * @return the total calories of the selected items.
+     */
+    public double getTotalCalories() {
+        double total = 0.0;
+
+        for (var entry : selectedSlots.entrySet()) {
+            SpecialSlot itemSlot = entry.getKey();
+            total += itemSlot.getSampleItem().getCalories() * entry.getValue();
+        }
+
+        return total;
+    }
+
+    /**
+     * Calculates the total price of the items selected in the vending machine.
+     * @return the total price of the selected items.
+     */
+    public double getTotalPrice() {
+        double total = 0.0;
+
+        for (var entry : selectedSlots.entrySet()) {
+            SpecialSlot itemSlot = entry.getKey();
             total += itemSlot.getUnitPrice() * entry.getValue();
         }
 
         return total;
     }
 
-    public List<Preset> getPresets() {
-        return presets;
-    }
+    /* */
 
-    // Vending Methods //
-
+    /**
+     * Selects a slot to be dispensed from the vending machine. This acts akin
+     * to the regular vending machine's selection method if no preset is 
+     * selected. However, when a preset is selected, it acts as a way to add
+     * an item to the items already pre-selected by the preset.
+     * @param slotNo the number of the slot associated with the item to select
+     * @throws InsufficientStockException if the slot has insufficient stock.
+     * @throws SelectedNonStandaloneException if a non-standalone item is selected
+     * without a preset.
+     * @throws DuplicateBaseException if more than 1 of a base item will end
+     * up selected
+     */
     @Override
-    public DispenseResult dispenseSelected() {
-        // Do nothing if there is nothing to dispense in the first place.
-        if (selectedPreset == null && itemsToDispense.isEmpty()) {
-            return null;
-        }
+    public void addSelection(int slotNo) {
+        SpecialSlot slot = getSlot(slotNo);
 
-        double totalPayment = getItemSelectionTotal();
-
-        if (!computeChangeFor(totalPayment)) {
-            throw new InsufficientChangeException();
-        }
-
-        DispenseResult result = new DispenseResult();
-
-        for (
-           Map.Entry<String, Integer> entry : itemsToDispense.entrySet()
-        ) {
-            String itemName = entry.getKey();
-            int qtyToDispense = entry.getValue();
-
-            SpecialSlot itemSlot = findSlotByItemName(itemName);
-
-            for (int i = 0; i < qtyToDispense; i++) {
-                result.addItem(itemSlot.dispenseItem());
-            }
-
-            for (ItemOperation io : itemSlot.getItemOperations()) {
-                result.addProcessMessage(io.getProcessMessage(itemName));
-            }
-
-            currentSummary.addTransaction(
-                itemName, qtyToDispense, itemSlot.getUnitPrice());
+        if (slot.getStock() == 0) {
+            throw new InsufficientStockException(credit.collect());
         }
 
         if (selectedPreset == null) {
-            result.setName(result.getItems().get(0).getName());
-        } else if (extraSelections.size() == 0) {
-            result.setName(selectedPreset.getName());
+            // Non-standalone items can only be selected with a preset, i.e. they
+            // must be selected with at least 1 base item (it is assumed that
+            // each preset has at least 1 base item).
+            if (!slot.isStandalone()) {
+                throw new SelectedNonStandaloneException(slot);
+            }
+
+            // Only 1 item can be selected at a time if no preset is selected.
+            selectedSlots.clear();
+        }
+
+        if (!selectedSlots.containsKey(slot)) {
+            selectedSlots.put(slot, 1);
         } else {
-            String name = selectedPreset.getName() + "(w/ Additional ";
+            // Only 1 of a base item can be added at a time.
+            if (slot.isBase()) {
+                throw new DuplicateBaseException(slot);
+            }
 
-            for (int i = 0; i < extraSelections.size(); i++) {
-                name += extraSelections.get(i);
+            selectedSlots.put(slot, selectedSlots.get(slot) + 1);
+        }
+    }
 
-                if (i != extraSelections.size() - 1) {
-                    name += ", ";
+    /**
+     * Removes a single quantity of an item from the item selection.
+     * @param slotNo the number of the slot associated with the item to remove
+     * a selection from.
+     * @throws IllegalArgumentException the item has not been selected
+     * at all in the first place
+     * @throws RemoveLastBaseException if the item being removed is the last
+     * standalone base item in the selection
+     */
+    public void removeSelection(int slotNo) {
+        SpecialSlot slot = getSlot(slotNo);
+
+        if (!selectedSlots.containsKey(slot)) {
+            throw new IllegalArgumentException();
+        }
+
+        int newQuantity = selectedSlots.get(slot) - 1;
+
+        if (newQuantity == 0) {
+            // When a preset is selected, at least one base item should be left
+            // to allow non-standalone items to be selected (it is assumed that
+            // each preset has at least 1 base item selected).
+            if (selectedPreset != null && slot.isBase()) {
+                boolean isLastStandaloneBase = true;
+
+                for (SpecialSlot selectedSlot : selectedSlots.keySet()) {
+                    if (
+                        selectedSlot.isBase() &&
+                        selectedSlot.isStandalone() &&
+                        selectedSlot != slot
+                    ) {
+                        isLastStandaloneBase = false;
+                        break;
+                    }
+                }
+
+                if (isLastStandaloneBase) {
+                    throw new RemoveLastBaseException(slot);
                 }
             }
 
-            name += ")";
-
-            result.setName(name);
+            selectedSlots.remove(slot);
+        } else {
+            selectedSlots.put(slot, newQuantity);
         }
-
-        result.addProcessMessage("Heating pizza...");
-        result.addProcessMessage("Done!");
-
-        result.setTotalPayment(totalPayment);
-        resetSelection();
-        
-        return result;
     }
 
-    private SpecialSlot findSlotByItemName(String name) {
-        for (SpecialSlot slot : slots) {
-             if (
-                slot.getStock() > 0 && 
-                slot.getSampleItem().getName().equalsIgnoreCase(name)
-            ) {
-                return slot;
-            }           
-        }
-
-        return null;
-    }
-
+    /**
+     * Dispenses the currently selected items from the vending machine. The
+     * resultant DispenseResult shall take the name of the selected preset, 
+     * if any, or just the name of the single selected item otherwise.
+     * @return the DispenseResult object containing information about the 
+     * dispensed item and transaction details.
+     */
     @Override
-    public void resetSelection() {
-        itemsToDispense.clear();
-        extraSelections.clear();
-        selectedPreset = null;
-    }
-
-    @Override
-    public void selectItem(int slotNo) {
-        SpecialSlot itemSlot = slots.get(slotNo - 1);
-
-        if (itemSlot.getStock() == 0) {
-            throw new InsufficientStockException();
+    public DispenseResult dispenseSelection() {
+        if (selectedSlots.isEmpty()) {
+            return null;
         }
 
-        if (!itemSlot.isStandalone()) {
-            throw new SelectedStandaloneException();
+        // Handle payment
+
+        double totalPayment = getTotalPrice();
+        DenominationMap change = transact(totalPayment);
+
+        // Handle dispensing and operations
+
+        List<Item> itemsToDispense = new ArrayList<>();
+        List<String> operations = new ArrayList<>();
+
+        List<Map.Entry<SpecialSlot, Integer>> selectionByOperation = 
+            new ArrayList<>(selectedSlots.entrySet());
+        selectionByOperation.sort((a, b) -> 
+            a.getKey().getOperation().getPrecedence() - 
+                b.getKey().getOperation().getPrecedence()
+        );
+
+        for (var entry : selectionByOperation) {
+            SpecialSlot itemSlot = entry.getKey();
+            int qtyToDispense = entry.getValue();
+
+            for (int i = 0; i < qtyToDispense; i++) {
+                itemsToDispense.add(itemSlot.dispenseItem());
+            }
+
+            String itemName = itemSlot.getSampleItem().getName();
+
+            operations.add(itemSlot.getOperation().getProcessMessage(itemName));
+
+            currentSummary.addTransaction(
+                itemName,
+                qtyToDispense,
+                itemSlot.getUnitPrice()
+            );
         }
 
-        if (credit.getTotal() < getItemSelectionTotal()) {
-            throw new InsufficientCreditException();
-        }
+        // Determine result name
 
-        Item sample = itemSlot.getSampleItem();
+        String resultName;
 
-        // Only one distinct item can be selected/dispensed should it be
-        // selected and not item presets.
         if (selectedPreset == null) {
-            itemsToDispense.clear();
+            resultName = itemsToDispense.get(0).getName();
         } else {
-            extraSelections.add(sample.getName());
+            resultName = selectedPreset.getName();
+
+            if (hasDeviatedFrom(presets.indexOf(selectedPreset))) {
+                resultName += " (Customized)";
+            }
         }
 
-        if (itemsToDispense.get(sample.getName()) == null) {
-            itemsToDispense.put(
-                sample.getName(), itemsToDispense.get(sample.getName()) + 1);
-        } else {
-            itemsToDispense.put(sample.getName(), 1);
+        if (selectedPreset != null) {
+            operations.add(
+                selectedPreset.getOperation().getProcessMessage(resultName)
+            );
         }
+
+        // Clear and return
+
+        selectedPreset = null;
+        selectedSlots.clear();
+
+        return new DispenseResult(
+            resultName,
+            itemsToDispense,
+            operations,
+            change,
+            getTotalCalories(),
+            totalPayment
+        );
     }
 
-    public void selectPreset(int presetNo) {        
+    /**
+     * Selects a preset from the available presets by its specified number.
+     * @param presetNo the number of the preset to select.
+     * @throws InsufficientStockException if there is insufficient stock for 
+     * the selected preset.
+     */
+    public void selectPreset(int presetNo) {
         Preset preset = presets.get(presetNo - 1);
 
-        double totalSoFar = 0;
+        if (!hasEnoughStockFor(presetNo)) {
+            selectedSlots.clear();
+            throw new InsufficientStockException(credit.collect());
+        }
 
-        for (
-            Map.Entry<String, Integer> entry : selectedPreset.getItems()
-        ) {
-            String itemName = entry.getKey();
-            int itemQuantity = entry.getValue();
-
-            SpecialSlot itemSlot = findSlotByItemName(itemName);
-
-            if (itemSlot == null || itemSlot.getStock() < itemQuantity) {
-                resetSelection();
-                throw new InsufficientStockException();
+        for (SpecialSlot slot : slots) {
+            if (slot.getSampleItem() == null) {
+                continue;
             }
 
-            totalSoFar += itemSlot.getUnitPrice();
-
-            if (credit.getTotal() < totalSoFar) {
-                resetSelection();
-                throw new InsufficientCreditException();
+            String itemName = slot.getSampleItem().getName();
+            
+            if (preset.getItems().containsKey(itemName)) {
+                selectedSlots.put(slot, preset.getItems().get(itemName));
             }
-
-            itemsToDispense.put(itemName, itemQuantity);
         }
 
         selectedPreset = preset;
     }
 
-    // Maintenance Methods //
-
-    public boolean addItem(
-        int slotNo, 
-        String name, 
-        double price, 
-        double calories,
-        String imagePath,
-        boolean standalone,
-        List<ItemOperation> operations
-    ) {
-        SpecialSlot slot = slots.get(slotNo - 1);
-
-        if (slot.getSampleItem() != null) {
-            return false;
-        }
-
-        slot.assignToItem(
-            name, price, calories, imagePath, standalone, operations);
-        return true;
-    }
-
-    public boolean addPreset(Preset preset) {
-        for (
-            Map.Entry<String, Integer> entry : selectedPreset.getItems()
-        ) {
-            if (findSlotByItemName(entry.getKey()) == null) {
-                return false;
-            }
-        }
-        
-        return presets.add(preset);
-    }
-
-    public boolean removePreset(String presetName) {
-        return presets.removeIf(p -> p.getName().equalsIgnoreCase(presetName));
+    /**
+     * Deselects the currently selected preset, clearing the selected items
+     * as well.
+     */
+    public void deselectPreset() {
+        selectedPreset = null;
+        selectedSlots.clear();
     }
 }

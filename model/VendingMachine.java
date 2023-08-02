@@ -1,241 +1,235 @@
 package model;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
-public abstract class VendingMachine {
+import model.exceptions.MissingChangeException;
+import model.exceptions.InsufficientCreditException;
+
+/**
+ * This abstract class contains the functionality shared between regular
+ * and special vending machines.
+ *
+ * @param <T> the type of slot used in the vending machine.
+ */
+public abstract class VendingMachine<T extends Slot> {
+    /**
+     * The minimum number of slots stored in a vending machine.
+     */
     public static final int MIN_SLOT_COUNT = 8;
 
-    private static double matchTransfer(
-        double amount, 
-        DenominationMap src, 
-        DenominationMap dst, 
-        DenominationMap basis
-    ) {
-        double matchAmount = 0.0;
+    /**
+     * The name of the vending machine.
+     */
+    protected String name; 
 
-        for (
-            Map.Entry<Double, Integer> entry : 
-                basis.getDenominations().entrySet()
-        ) {
-            double denomination = entry.getKey();
+    /**
+     * The list of slots in the vending machine.
+     */
+    protected List<T> slots;
 
-            src.remove(denomination, 1);
-            matchAmount += denomination;
-            dst.add(denomination, 1);
+    /**
+     * The number of slots in the vending machine.
+     */
+    protected int slotCount;
 
-            if (matchAmount >= amount) {
-                return matchAmount;
-            }
-        }
+    /**
+     * The capacity of each slot in the vending machine.
+     */
+    protected int slotCapacity;
 
-        return -1;
-    }
-
-    protected String name;
-
-    protected ArrayList<Slot> slots;
-
-    protected DenominationMap changeToGive;
-
+    /**
+     * The DenominationMap containing the inserted credit of the user
+     */
     protected DenominationMap credit;
 
-    protected DenominationMap changeStock;
+    /**
+     * The DenominationMap containing the money stock of the machine
+     */
+    protected DenominationMap moneyStock;
 
-    protected DenominationMap payments;
-
+    /**
+     * The transaction summary of the vending machine since its last item 
+     * (re)stocking.
+     */
     protected Summary currentSummary;
 
-    public VendingMachine(String name) {
+    /**
+     * Constructs a new VendingMachine instance with the specified name,
+     * slot count, and slot capacity. Slot count falls back to a minimum
+     * of MIN_SLOT_COUNT and slot capacity falls back to a minimum of 
+     * Slot.MIN_MAX_CAPACITY.
+     * @param name the name of the vending machine.
+     * @param slotCount the total number of slots in the vending machine.
+     * @param slotCapacity the maximum capacity of each slot.
+     */
+    public VendingMachine(String name, int slotCount, int slotCapacity) {
         this.name = name;
 
         slots = new ArrayList<>();
+        this.slotCount = Math.max(MIN_SLOT_COUNT, slotCount);
+        this.slotCapacity = Math.max(Slot.MIN_MAX_CAPACITY, slotCapacity);
 
-        changeToGive = new DenominationMap();
         credit = new DenominationMap();
-
-        changeStock = new DenominationMap();
-        payments = new DenominationMap();
+        moneyStock = new DenominationMap();
 
         currentSummary = new Summary(slots);
     }
 
-    // Accessors //
+    /* */
 
-    public DenominationMap getChangeStock() {
-        return changeStock;
+    /**
+     * Returns the credit available for the machine to accept as payment to
+     * dispense items.
+     * @return the DenominationMap containing the denominations consisting the
+     * available credit.
+     */
+    public DenominationMap getCredit() {
+        return credit;
     }
-    
-    public Slot getSlot(int slotNo) {
+
+    /**
+     * Returns the name of the vending machine.
+     * @return the name of the vending machine.
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Returns the money stock that the machine has to both provide chnage
+     * and store income.
+     * @return the DenominationMap containing the denominations consisting the
+     * money stock.
+     */
+    public DenominationMap getMoneyStock() {
+        return moneyStock;
+    }
+
+    /**
+     * Returns the slot instance at the given slot number, if any.
+     * @param slotNo the 1-indexed number referring to a slot
+     * @return the slot instance at the given slot number if it exists null. 
+     * The type of the slot is the type associated with the vending machine.
+     */
+    public T getSlot(int slotNo) {
         return slots.get(slotNo - 1);
     }
 
-    public List<Slot> getSlots() {
+    /**
+     * Returns the array of slots which the vending machine has.
+     * @return the array of slot instances of vending machine.
+     */
+    public List<T> getSlots() {
         return slots;
     }
 
+    /**
+     * Returns the number of slots that the vending machine has.
+     * @return the number of slots that the vending machine has.
+     */
     public int getSlotCount() {
-        return slots.size();
+        return slotCount;
     }
 
+    /**
+     * Returns the item capacity per slot in the vending machine.
+     * @return the item capacity per slot in the vending machine.
+     */
     public int getSlotCapacity() {
-        return slots.get(0).getCapacity();
+        return slotCapacity;
     }
 
+    /**
+     * Returns the transaction summary of the vending machine since its last
+     * (re)stocking.
+     * @return the Summary object representing the item transaction summary
+     * since the last (re)stocking
+     */
     public Summary getSummary() {
         return currentSummary;
     }
 
-    // Vending Methods //
+    /* */
 
-    protected boolean computeChangeFor(double amount) {
-        // Generate a temporary empty denomination map containing all the
-        // valid denominations to facilitate the computation for change.
-        //
-        // This also results in the temporary maps below to have sorted
-        // keys in descending order, important in the change computation 
-        // process.
-        LinkedHashMap<Double,Integer> denominations = new LinkedHashMap<>();
-        for (double denom : DenominationMap.VALID_DENOMINATIONS) {
-            denominations.put(denom,0);
-        }
+    /**
+     * Adds a item stored in a particular slot to the machine item selection.
+     * @param slotNo the slot number (index + 1) of the slot containing the
+     * item.
+     */
+    public abstract void addSelection(int slotNo);
 
-        DenominationMap tempCredit = new DenominationMap(denominations);
-        DenominationMap tempChangeStock = new DenominationMap(denominations);
-        DenominationMap tempPayment = new DenominationMap(denominations);
-        DenominationMap tempChangeToGive = new DenominationMap(denominations);
+    /**
+     * Dispenses the selected items in a vending machine.
+     * @return a DispenseResult object containing information about the 
+     * dispensed item and transaction details.
+     */
+    public abstract DispenseResult dispenseSelection();
 
-        // Copy over the existing denominations from the credit map, marking
-        // denominations not in the map as well.
-        for (
-            Map.Entry<Double, Integer> denom : 
-                credit.getDenominations().entrySet()
-        ) {
-            double denomination = denom.getKey();
-            int quantity = denom.getValue();
-            tempCredit.add(denomination, quantity);
-        }
+    /* */
 
-        // Copy over the existing denominations from the stocked change map, 
-        // marking denominations not in the map as well.
-        for (
-            Map.Entry<Double, Integer> denom : changeStock.getDenominations().entrySet()
-        ) {
-            double denomination = denom.getKey();
-            int quantity = denom.getValue();
-            tempChangeStock.add(denomination, quantity);
-        }
+    /**
+     * Performs a transaction given the amount to pay, updating the machine's
+     * credit and money stock maps, then returning the change from the payment.
+     * @param paymentAmount The amount of money that should be paid
+     * @return The DenominationMap representing the change to be returned.
+     * @throws InsufficientCreditException if the user does not have sufficient
+     * credit to pay.
+     * @throws MissingChangeException if the vending machine cannot provide 
+     * exact change.
+     */
+    protected DenominationMap transact(double paymentAmount) {
+        DenominationMap tempCredit = new DenominationMap(credit);
+        DenominationMap payment = new DenominationMap();
 
-        // Match the item price based on the available denominations in the
-        // machine's credit map. Ready those denominations to act as the
-        // payment to the item as well.
-        double paymentMatchAmount = 
-            matchTransfer(amount, tempCredit, tempPayment, credit);
+        // Match paymentAmount at least from denominations in credit.
 
-        // Don't proceed if there is not enough credit in the first place.
-        if (paymentMatchAmount == -1) {
-            return false;
-        }
+        for (Denomination denom : tempCredit.getDenominations()) {
+            tempCredit.remove(denom, 1);
+            payment.add(denom, 1);
 
-        // Check if there is change and if the change can be provided.
-        double change = paymentMatchAmount - amount;
-        double changeMatchAmount =
-            matchTransfer(change, tempChangeStock, tempChangeToGive, changeStock);
-
-        // Unlike matching the payment, providing a change greater than needed
-        // is considered to be a case of insufficient denominations in the change
-        // stock.
-        if (changeMatchAmount == -1 || changeMatchAmount > change) {
-            return false;
-        }
-
-        // Given that the denominations in the credit map that will represent
-        // the payment are now known, transfer them from the credit map to the
-        // payments map.
-        for (
-            Map.Entry<Double, Integer> denom : 
-                tempPayment.getDenominations().entrySet()
-        ) {
-            double denomination = denom.getKey();
-            int value = denom.getValue();
-
-            credit.remove(denomination, value);
-            payments.add(denomination, value);
-        }
-
-        // Likewise, now that the denominations representing the change (if any)
-        // are known, reflect them in the corresponding maps.
-        for (
-            Map.Entry<Double, Integer> denom : 
-                tempChangeToGive.getDenominations().entrySet()
-        ) {
-            double denomination = denom.getKey();
-            int value = denom.getValue();
-
-            changeStock.remove(denomination, value);
-
-            // Don't store empty denominations back to the actual denomination 
-            // map.
-            if (value != 0) {
-                changeToGive.add(denomination,value);
+            if (payment.getTotal() >= paymentAmount) {
+                break;
             }
         }
 
-        return true;
-    }
-
-    public abstract DispenseResult dispenseSelected();
-
-    public void insertCredit(double denom, int quantity) {
-        credit.add(denom, quantity);
-    }
-
-    public abstract void resetSelection();
-
-    public DenominationMap returnCredit() {
-        return credit.collect();
-    }
-
-    public abstract void selectItem(int slotNo);
-
-    // Maintenance Methods //
-
-    public boolean addItem(
-        int slotNo, 
-        String name, 
-        double price, 
-        double calories,
-        String imagePath
-    ) {
-        Slot slot = slots.get(slotNo - 1);
-
-        if (slot.getSampleItem() != null) {
-            return false;
+        if (payment.getTotal() < paymentAmount) {
+            throw new InsufficientCreditException(credit.collect());
         }
 
-        slot.assignToItem(name, price, calories, imagePath);
-        return true;
-    }
+        double changeAmount = payment.getTotal() - paymentAmount;
 
-    public boolean removeItem(int slotNo) {
-        Slot slot = slots.get(slotNo - 1);
+        DenominationMap tempMoneyStock = new DenominationMap(moneyStock);
+        DenominationMap change = new DenominationMap();
 
-        if (slot.getSampleItem() == null) {
-            return false;
+        // Match changeAmount exactly from denominations in moneyStock.
+
+        for (Denomination denom : tempMoneyStock.getDenominations()) {
+            if (change.getTotal() + denom.getValue() > changeAmount) {
+                continue;
+            }
+
+            tempMoneyStock.remove(denom, 1);
+            change.add(denom, 1);
         }
 
-        slot.clearAssignment();
-        return true;
-    }
+        if (change.getTotal() != changeAmount) {
+            throw new MissingChangeException(credit.collect());
+        }
 
-    public void stockChange(double denom, int quantity) {
-        changeStock.add(denom, quantity);
-    }
+        // Remove the change money from moneyStock
 
-    public void stockItem(int slotNo, int quantity) {
-        Slot slot = slots.get(slotNo - 1);
-        slot.stockItem(quantity);
+        for (Denomination denom : change.getDenominations()) {
+            moneyStock.remove(denom, 1);
+        }
+
+        // Transfer user payment from credit to moneyStock.
+
+        for (Denomination denom : payment.getDenominations()) {
+            credit.remove(denom, 1);
+            moneyStock.add(denom, 1);
+        }
+
+        return change;
     }
 }

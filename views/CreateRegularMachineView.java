@@ -1,29 +1,25 @@
 package views;
 
-import java.awt.Container;
-
-import views.components.StockRegularItemsPanel;
+import views.components.SetupBody;
+import views.components.SetupRegularItemsPanel;
 import views.templates.CreateMachineView;
 
-public class CreateRegularMachineView extends CreateMachineView {
-    private StockRegularItemsPanel stockItemsPanel;
-
+/**
+ * This class represents the view for the regular vending machine creation 
+ * screen. It extends the CreateMachineView class with a specific type of 
+ * setup items panel for regular vending machines.
+ */
+public class CreateRegularMachineView extends CreateMachineView<SetupRegularItemsPanel> {
+    /**
+     * Constructs a new CreateRegularMachineView.
+     */
     public CreateRegularMachineView() {
         super("Create a Regular Vending Machine");
         
-        stockItemsPanel = new StockRegularItemsPanel();
+        setupItemsPanel = new SetupBody<>(new SetupRegularItemsPanel());
 
         setupPane.addTab("Basic Information", basicInfoPanel);
-        setupPane.addTab("Stock Items", stockItemsPanel);
-        setupPane.addTab("Stock Change", stockChangePanel);
-    }
-
-    @Override
-    public Container getContainer() {
-        return mainContainer;
-    }
-
-    public StockRegularItemsPanel getStockItemsPanel() {
-        return stockItemsPanel;
+        setupPane.addTab("Setup Items", setupItemsPanel);
+        setupPane.addTab("Manage Money", manageMoneyPanel);
     }
 }

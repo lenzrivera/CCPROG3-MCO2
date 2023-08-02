@@ -1,150 +1,213 @@
 package controllers;
 
 import controllers.templates.CreateMachineController;
+import model.Denomination;
 import model.Item;
 import model.RegularVendingMachine;
 import model.Slot;
-import model.VendingMachine;
 import model.VendingMachineModel;
 import states.MainMenuState;
 import views.CreateRegularMachineView;
-import views.components.StockItemsPanel;
-import views.templates.CreateMachineView;
+import views.components.BasicInfoPanel;
+import views.components.ManageMoneyPanel;
+import views.components.SetupItemsPanel;
 
-public class CreateRegularMachineController extends CreateMachineController {
-    private CreateRegularMachineView view;
-
+/**
+ * A controller class for managing the creation of a regular vending machine.
+ */
+public class CreateRegularMachineController 
+    extends CreateMachineController<CreateRegularMachineView> 
+{
+    /**
+     * The regular vending machine to create.
+     */
     private RegularVendingMachine machine;
-    
-    public CreateRegularMachineController(
-        VendingMachineModel m, 
-        CreateRegularMachineView v
-    ) {
-        super(m);
 
-        view = v;
+    /**
+     * Constructs a new CreateRegularMachineController with the provided 
+     * VendingMachineModel and CreateRegularMachineView.
+     * @param model the VendingMachineModel to be associated with the 
+     * controller
+     * @param view the CreateRegularMachineView to be associated with the 
+     * controller
+     */
+    public CreateRegularMachineController(
+        VendingMachineModel model, 
+        CreateRegularMachineView view
+    ) {
+        super(model, view);
+
         machine = null;
 
-        setConstants();
+        view.getBasicInfoPanel().getContent().setNameInput("Pizza VM");
+    }
 
-        /* 1 - BASIC INFORMATION */
+    /**
+     * Sets up the event listeners for the view.
+     */
+    @Override
+    protected void setListeners() {
+        view.setExitButtonListener(e -> {
+            // Exit without saving anything.
+            changeState(new MainMenuState());
+        });
 
-        view.getBasicInfoPanel().setNextButtonListener((
-            String name, 
-            int slotCount, 
-            int slotCapacity
-        ) -> {
-            if (name.isBlank()) {
+        /* BasicInfoPanel */
+
+        view.getBasicInfoPanel().setNextButtonListener(e -> {
+            BasicInfoPanel panel = view.getBasicInfoPanel().getContent();
+            
+            if (panel.getNameInput().isBlank()) {
                 view.showErrorDialog("Please enter a valid name.");
                 return;
             }
 
-            machine = new RegularVendingMachine(name, slotCount, slotCapacity);
+            machine = new RegularVendingMachine(
+                panel.getNameInput(),
+                panel.getSlotCount(),
+                panel.getSlotCapacity()
+            );
+
+            machine.getSlot(1).assignToItem(
+                new Item("100g Pepperoni", 494, "images/pepperoni.png"), 
+                100
+            );
+            machine.getSlot(2).assignToItem(
+                new Item("100g Ham", 145, "images/ham.png"), 
+                100
+            );
+            machine.getSlot(3).assignToItem(
+                new Item("100g Ground Pork", 200, "images/ground_pork.png"), 
+                100
+            );
+            machine.getSlot(4).assignToItem(
+                new Item("100g Sausage", 301, "images/sausage.png"), 
+                200
+            );
+            machine.getSlot(5).assignToItem(
+                new Item("50g Shrimp", 28, "images/shrimp.png"), 
+                150
+            );
+            machine.getSlot(6).assignToItem(
+                new Item("1 Slice Pineapple", 42, "images/pineapple.png"), 
+                50.25
+            );
+            machine.getSlot(7).assignToItem(
+                new Item("100g Bell Pepper", 20, "images/bell_pepper.png"), 
+                25
+            );
+            machine.getSlot(8).assignToItem(
+                new Item("100g Spinach", 23, "images/spinach.png"), 
+                50
+            );
+                
+            view.getSetItemsPanel()
+                .getContent()
+                .setMaxStock(panel.getSlotCapacity());
+
+            updateDenominationTable(machine.getMoneyStock());
+            updateSlotTable(machine.getSlots());
+
             view.getSetupPane().setActiveTab(1);
-
-            view.getStockItemsPanel().setMaxStock(slotCapacity);
-            view.getStockItemsPanel().setSlotCount(slotCount);
-            updateSlotTable(machine.getSlots());
         });
 
-        /* 2 - ITEM STOCK */ 
+        /* SetItemsPanel */
 
-        view.getStockItemsPanel().setItemAddListener((
-            int slotNo,
-            String name,
-            double price,
-            double calories,
-            String imagePath,
-            int stock
-        ) -> {
-            if (name.isBlank()) {
-                view.showErrorDialog("Please enter a valid item name.");
-                return;
-            }
-
-            for (Slot slot : machine.getSlots()) {
-                if (
-                    slot.getSampleItem() != null && 
-                    slot.getSampleItem().getName().equalsIgnoreCase(name)
-                ) {
-                    view.showErrorDialog("Please enter an unused item name.");
-                    return;
-                }
-            }
-
-            if (imagePath == null) {
-                view.showErrorDialog("Please select an item image.");
-                return;                
-            }
-
-            // In case an item is already in the slot.
-            machine.removeItem(slotNo);
-
-            machine.addItem(slotNo, name, price, calories, imagePath);
-            machine.stockItem(slotNo, stock);
-            
-            updateSlotTable(machine.getSlots());
-        });
-
-        view.getStockItemsPanel().setItemRemoveListener((int slotNo) -> {
-            if (!machine.removeItem(slotNo)) {
-                view.showErrorDialog("Cannot remove a non-existent item.");
-                return;
-            }
-
-            updateSlotTable(machine.getSlots());
-        });
-
-        view.getStockItemsPanel().setNextButtonListener(() -> {
+        view.getSetItemsPanel().setNextButtonListener(e -> {
+            machine.getSummary().reset(machine.getSlots());
             view.getSetupPane().setActiveTab(2);
         });
 
-        view.getStockItemsPanel().setSlotSelectListener((
-            int selectedSlotNo
-        ) -> {
-            StockItemsPanel itemsPanel = view.getStockItemsPanel();
+        view.getSetItemsPanel().getContent().setItemSetListener(e -> {
+            SetupItemsPanel panel = view.getSetItemsPanel().getContent();
 
+            if (!checkFieldValidity(machine)) {
+                return;
+            }
+
+            int slotNo = panel.getSelectedSlotNo();
+            String name = panel.getItemNameInput();
+            double price = panel.getPriceInput();
+            double calories = panel.getCaloriesInput();
+            String imagePath = panel.getImagePathInput();
+            int stock = panel.getStockInput();
+
+            // In case an item is already in the slot.
+            machine.getSlot(slotNo).clearAssignment();
+
+            Item sample = new Item(name, calories, imagePath);
+            machine.getSlot(slotNo).assignToItem(sample, price);
+            machine.getSlot(slotNo).stockItem(stock);
+            
+            updateSlotTable(machine.getSlots());  
+        });
+
+        view.getSetItemsPanel().getContent().getSlotTable().setRowSelectListener(
+            e 
+        -> {
+            SetupItemsPanel panel = view.getSetItemsPanel().getContent();
+
+            int selectedSlotNo = panel.getSelectedSlotNo();
             Slot selectedSlot = machine.getSlot(selectedSlotNo);
             Item sampleItem = selectedSlot.getSampleItem();
             
             if (sampleItem == null) {
-                itemsPanel.setNameInputValue("");
-                itemsPanel.setCaloriesInputValue(0.0);
-                itemsPanel.setPriceInputValue(0.0);
-                itemsPanel.setStockInputValue(0);
-                itemsPanel.setImagePathValue(null);
+                panel.setItemNameInput("");
+                panel.setCaloriesInput(0.0);
+                panel.setPriceInput(0.0);
+                panel.setStockInput(0);
+                panel.setImagePathInput(null);
             } else {
-                itemsPanel.setNameInputValue(sampleItem.getName());
-                itemsPanel.setCaloriesInputValue(sampleItem.getCalories());
-                itemsPanel.setPriceInputValue(selectedSlot.getUnitPrice());
-                itemsPanel.setStockInputValue(selectedSlot.getStock());
-                itemsPanel.setImagePathValue(sampleItem.getImagePath());
+                panel.setItemNameInput(sampleItem.getName());
+                panel.setCaloriesInput(sampleItem.getCalories());
+                panel.setPriceInput(selectedSlot.getUnitPrice());
+                panel.setStockInput(selectedSlot.getStock());
+                panel.setImagePathInput(sampleItem.getImagePath());
             }
         });
 
-        /* 3 - CHANGE STOCK */
+        view.getSetItemsPanel().getContent().setItemRemoveListener(e -> {
+            int slotNo = view.getSetItemsPanel().getContent().getSelectedSlotNo();
 
-        view.getStockChangePanel().setAddDenominationListener((
-            double denom, 
-            int quantity
-        ) -> {
-            machine.stockChange(denom, quantity);
-            updateDenominationTable(machine.getChangeStock());
+            if (machine.getSlot(slotNo).getSampleItem() == null) {
+                view.showErrorDialog("Cannot remove a non-existent item.");
+                return;
+            }
+            
+            machine.getSlot(slotNo).clearAssignment();
+            updateSlotTable(machine.getSlots());
         });
 
-        view.getStockChangePanel().setNextButtonListener(() -> {
+        /* StockMoneyPanel */
+
+        view.getManageMoneyPanel().setNextButtonListener(e -> {
             model.setVendingMachine(machine);
             changeState(new MainMenuState());
         });
-    }
 
-    @Override
-    protected VendingMachine getMachine() {
-        return machine;
-    }
+        view.getManageMoneyPanel().getContent().setCollectListener(e -> {
+            ManageMoneyPanel panel = view.getManageMoneyPanel().getContent();
 
-    @Override
-    protected CreateMachineView getView() {
-        return view;
+            double denom = panel.getSelectedDenom();
+            int quantity = panel.getSelectedQuantity();
+            
+            machine.getMoneyStock().remove(Denomination.toEnum(denom), quantity);
+            updateDenominationTable(machine.getMoneyStock()); 
+        });
+
+        view.getManageMoneyPanel().getContent().setCollectAllListener(e -> {
+            machine.getMoneyStock().collect();
+            updateDenominationTable(machine.getMoneyStock()); 
+        });
+
+        view.getManageMoneyPanel().getContent().setStockListener(e -> {
+            ManageMoneyPanel panel = view.getManageMoneyPanel().getContent();
+
+            double denom = panel.getSelectedDenom();
+            int quantity = panel.getSelectedQuantity();
+
+            machine.getMoneyStock().add(Denomination.toEnum(denom), quantity);
+            updateDenominationTable(machine.getMoneyStock());
+        });
     }
 }
