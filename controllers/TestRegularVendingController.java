@@ -90,7 +90,9 @@ public class TestRegularVendingController extends Controller {
                     DispenseResult result = machine.dispenseSelection();
                     
                     view.inputLog(result.getProcessMessages().get(0));
-                    view.inputLog("Change: P" + result.getChange().getTotal());
+                    view.inputLog(
+                        "Change: P" + result.getChange().getTotal() + "\n"
+                    );
 
                     if (result.getChange().getTotal() != 0) {
                         view.displayDenominations(
@@ -99,7 +101,7 @@ public class TestRegularVendingController extends Controller {
                         );
                     }
                 } catch (CreditException ex) {
-                    view.inputLog(ex.getMessage());
+                    view.inputLog(ex.getMessage() + "\n");
 
                     if (ex.getReturnedCredit().getTotal() != 0) {
                         view.displayDenominations(
