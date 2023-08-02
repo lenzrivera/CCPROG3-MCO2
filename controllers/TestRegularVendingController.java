@@ -76,7 +76,7 @@ public class TestRegularVendingController extends Controller {
                         itemCalories,
                         itemStock,
                         itemImage,
-                        true
+                        itemStock != 0
                     );     
                 }
             } catch (IOException e) {
@@ -84,7 +84,7 @@ public class TestRegularVendingController extends Controller {
             }
 
             final int finalSlotNo = slotNo;
-            view.setSlotSelectListener(slotNo, e -> {
+            view.getItemDisplay(slotNo).setSelectButtonListener(e -> {
                 try {
                     machine.addSelection(finalSlotNo);
                     DispenseResult result = machine.dispenseSelection();
@@ -109,6 +109,13 @@ public class TestRegularVendingController extends Controller {
                     }
                 }
 
+                view.getItemDisplay(finalSlotNo)
+                    .setStockValue(slotItem.getStock());
+
+                if (slotItem.getStock() == 0) {
+                    view.getItemDisplay(finalSlotNo).setButtonEnabled(false);
+                }
+
                 view.updateTotalCredit(machine.getCredit().getTotal());
             });
 
@@ -128,6 +135,10 @@ public class TestRegularVendingController extends Controller {
         });
 
         view.setReturnCreditButtonListener(e -> {
+            if (machine.getCredit().getTotal() == 0) {
+                return;
+            } 
+
             view.displayDenominations(
                 "Returned Credit:",    
                 machine.getCredit().collect().getQuantityMap()

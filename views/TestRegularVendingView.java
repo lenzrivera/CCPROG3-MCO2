@@ -182,6 +182,10 @@ public class TestRegularVendingView extends View {
 
     /* */
 
+    public ItemDisplay getItemDisplay(int slotNo) {
+        return itemDisplays.get(slotNo - 1);
+    }
+
     public double getSelectedDenom() {
         return (double) denomComboBox.getSelectedItem();
     }
@@ -227,11 +231,22 @@ public class TestRegularVendingView extends View {
         String heading, 
         Map<Denomination, Integer> denomMap
     ) {
+        JPanel display = new JPanel();
+        display.setLayout(new BoxLayout(display, BoxLayout.PAGE_AXIS));
+
+        JLabel headingLabel = new JLabel(heading);
+        display.add(headingLabel);
+
+        display.add(Box.createVerticalStrut(5));
+
         DisplayTable table = new DisplayTable(new String[] { 
             "Denomination", 
             "Quantity" 
         });
-        
+        table.setPreferredSize(new Dimension(300, 100));
+        table.setAlignmentX(0);
+        display.add(table);
+
         int i = 0;
         
         for (var entry : denomMap.entrySet()) {
@@ -243,9 +258,9 @@ public class TestRegularVendingView extends View {
     
         JOptionPane.showMessageDialog(
             mainContainer, 
-            table, 
+            display, 
             heading, 
-            JOptionPane.PLAIN_MESSAGE
+            JOptionPane.INFORMATION_MESSAGE
         );
     }
 
@@ -271,10 +286,6 @@ public class TestRegularVendingView extends View {
         returnCreditButton.addActionListener(listener);
     }
 
-    public void setSlotSelectListener(int slotNo, ActionListener listener) {    
-        itemDisplays.get(slotNo - 1).setSelectButtonListener(listener);
-    }
-    
     public void updateTotalCredit(double credit) {
         creditLabel.setText("Credit/Balance: P" + credit);
     }

@@ -9,10 +9,9 @@ import java.io.File;
 import java.io.IOException;
 
 public class ItemDisplay extends JPanel {
-    private JPanel mainPanel;
-
     private JLabel imageLabel;
 
+    private JPanel infoPanel;
     private JLabel itemNameLabel;
     private JLabel caloriesLabel;
     private JLabel priceLabel;
@@ -27,71 +26,50 @@ public class ItemDisplay extends JPanel {
         int itemStock,
         String imagePath
     ) throws IOException {
-        imageLabel = new JLabel();
-
-        mainPanel = new JPanel();
-        itemNameLabel = new JLabel();
-        caloriesLabel = new JLabel();
-        priceLabel = new JLabel();
-        stockLabel = new JLabel();
-
-        selectButton = new JButton();
-
-        setPreferredSize(new Dimension(250, 100));
         setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
+        setPreferredSize(new Dimension(250, 100));
 
-        Image image = ImageIO.read(new File(imagePath))
-                .getScaledInstance(100, 100, Image.SCALE_SMOOTH);
-        ImageIcon icon = new ImageIcon(image);
-
-        imageLabel.setIcon(icon);
-        imageLabel.setMaximumSize(new Dimension(100, 100));
-        imageLabel.setMinimumSize(new Dimension(100, 100));
-        imageLabel.setPreferredSize(new Dimension(100, 100));
-        
+        imageLabel = new JLabel(new ImageIcon(
+            ImageIO.read(new File(imagePath))
+                   .getScaledInstance(100, 100, Image.SCALE_SMOOTH) 
+        ));
         add(imageLabel);
-        add(
-            new Box.Filler(
-                new Dimension(5, 0),
-                new Dimension(5, 0),
-                new Dimension(5, 32767)
-            )
-        );
 
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
+        add(Box.createHorizontalStrut(5));
 
-        itemNameLabel.setText(itemName);
-        mainPanel.add(itemNameLabel);
+        infoPanel = new JPanel();
+        infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.PAGE_AXIS));
+        add(infoPanel);
 
-        caloriesLabel.setText(itemCalories + " Calories");
-        mainPanel.add(caloriesLabel);
+        itemNameLabel = new JLabel(itemName);
+        infoPanel.add(itemNameLabel);
 
-        priceLabel.setText("Php " + itemPrice);
-        mainPanel.add(priceLabel);
+        caloriesLabel = new JLabel(itemCalories + " Calories");
+        infoPanel.add(caloriesLabel);
 
-        stockLabel.setText("Stock: " + itemStock);
-        mainPanel.add(stockLabel);
+        priceLabel = new JLabel("P" + itemPrice);
+        infoPanel.add(priceLabel);
 
-        add(mainPanel);
-        add(
-            new Box.Filler(
-                new Dimension(0, 0),
-                new Dimension(0, 0),
-                new Dimension(32767, 0)
-            )
-        );
+        stockLabel = new JLabel("Stock: " + itemStock);
+        infoPanel.add(stockLabel);
 
-        selectButton.setText("Select");
+        add(Box.createHorizontalGlue());
+
+        selectButton = new JButton("Select");
         add(selectButton);
     }
 
-    public JButton getSelectButton() {
-        return selectButton;
-    }
+    /* */
 
     public void setButtonEnabled(boolean enabled) {
         selectButton.setEnabled(enabled);
     }
+
+    public void setStockValue(int stock) {
+        stockLabel.setText("Stock: " + stock);
+    }
+
+    /* */
 
     public void setSelectButtonListener(ActionListener listener) {
         selectButton.addActionListener(listener);
