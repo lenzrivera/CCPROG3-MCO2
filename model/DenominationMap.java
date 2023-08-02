@@ -34,7 +34,7 @@ public class DenominationMap {
      * @param denomMap the DenominationMap to copy.
      */
     public DenominationMap(DenominationMap denomMap) {
-        this.denominations = new TreeMap<>();
+        this.denominations = new TreeMap<>(Collections.reverseOrder());
 
         for (var entry : denomMap.denominations.entrySet()) {
             // Ensure that internal lists get fully cloned as well to prevent
