@@ -69,7 +69,7 @@ public class Summary {
 
         if (
             itemSummary == null ||
-            itemSummary.getStockDiff() + quantity > itemSummary.getCurrentStock() 
+            itemSummary.getStockDiff() + quantity > itemSummary.getInitialStock() 
         ) {
             throw new IllegalArgumentException();
         }
