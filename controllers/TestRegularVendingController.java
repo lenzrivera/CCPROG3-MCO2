@@ -2,7 +2,7 @@ package controllers;
 
 import model.*;
 import model.exceptions.CreditException;
-import states.MainMenuState;
+import states.TestMachineMenuState;
 import util.Controller;
 import views.TestRegularVendingView;
 
@@ -123,7 +123,7 @@ public class TestRegularVendingController extends Controller {
         }
 
         view.setExitButtonListener(e -> {
-            changeState(new MainMenuState());
+            changeState(new TestMachineMenuState());
         });
 
         view.setInputCreditButtonListener(e -> {
