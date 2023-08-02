@@ -416,6 +416,10 @@ public class SpecialVendingMachine extends VendingMachine<SpecialSlot> {
         }
 
         for (SpecialSlot slot : slots) {
+            if (slot.getSampleItem() == null) {
+                continue;
+            }
+
             String itemName = slot.getSampleItem().getName();
             
             if (preset.getItems().containsKey(itemName)) {
