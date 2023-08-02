@@ -107,6 +107,8 @@ public class ManageItemsPanel extends JPanel {
         gbc.insets.set(5, 5, 5, 5);
 
         gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        gbc.insets.set(5, 5, 15, 5);
 
         itemImage = new JLabel();
         itemImage.setHorizontalAlignment(SwingConstants.CENTER);
@@ -115,7 +117,7 @@ public class ManageItemsPanel extends JPanel {
         /* Set Price Panel */
 
         gbc.gridy = 1;
-        gbc.gridwidth = 2;
+        gbc.insets.set(5, 5, 5, 5);
 
         setPriceHeading = new JLabel("<html><u>Set Item Price</u></html>");
         inputPanel.add(setPriceHeading, gbc);
@@ -126,7 +128,7 @@ public class ManageItemsPanel extends JPanel {
         priceLabel = new JLabel("Price:");
         gbc.gridx = 0;
         inputPanel.add(priceLabel, gbc);
-
+        
         priceInput = new DoubleTextField(15);
         gbc.gridx = 1;
         inputPanel.add(priceInput, gbc);
