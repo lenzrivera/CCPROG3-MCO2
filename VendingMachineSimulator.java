@@ -5,7 +5,10 @@ import util.State;
 
 /**
  * This class is the main or driver class of the vending machine simulator. 
- * It stores the application model and handles state switching. 
+ * It stores the application model and handles state switching.
+ *
+ * @author Lenz Gio Rivera
+ * @author Acemere Villena
  */
 public class VendingMachineSimulator {
     /**
