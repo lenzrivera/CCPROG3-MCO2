@@ -2,15 +2,13 @@ package controllers;
 
 import model.*;
 import model.exceptions.MissingChangeException;
+import model.exceptions.CreditException;
 import model.exceptions.InsufficientCreditException;
 import model.exceptions.InsufficientStockException;
 import states.MainMenuState;
 import states.TestMachineMenuState;
 import util.Controller;
 import views.TestSpecialVendingView;
-import views.components.ItemDisplay;
-import views.components.PresetDisplay;
-import views.components.SpecialItemDisplay;
 
 import java.io.IOException;
 import java.util.List;
@@ -21,7 +19,11 @@ public class TestSpecialVendingController extends Controller {
     private VendingMachineModel model;
 
     private TestSpecialVendingView view;
-    public TestSpecialVendingController(VendingMachineModel model, TestSpecialVendingView view) {
+
+    public TestSpecialVendingController(
+        VendingMachineModel model, 
+        TestSpecialVendingView view
+    ) {
         this.model = model;
         this.view = view;
 
@@ -31,123 +33,124 @@ public class TestSpecialVendingController extends Controller {
 
     protected void setListeners() {
         SpecialVendingMachine machine =
-                (SpecialVendingMachine) model.getVendingMachine();
+            (SpecialVendingMachine) model.getVendingMachine();
 
-        /* loop all presets and set actionlistener */
+        // Presets initialization
 
         int presetNo = 1;
-        for (Preset presetItem : machine.getPresets()) {
-            PresetDisplay presetDisplay;
-            double price = 0.0;
-            double calories = 0.0;
-            try {
-                for (Map.Entry<String, Integer> preset : presetItem.getItems().entrySet()) {
-                    for (Slot slot : machine.getSlots()) {
-                        if (slot.getSampleItem().getName().equalsIgnoreCase(preset.getKey())) {
-                            price += slot.getUnitPrice();
-                            calories += slot.getSampleItem().getCalories();
-                        }
-                    }
-                }
-                presetDisplay = new PresetDisplay(presetItem.getName(), calories, price);
-            } catch (NullPointerException e) {
-                presetDisplay = new PresetDisplay("[Empty]",-1.0,-1.0);
-            }
 
-            // view.setPresetItems(presetDisplay);
+        for (Preset preset : machine.getPresets()) {
+            view.addPreset(
+                preset.getName(),
+                machine.getPresetPrice(presetNo),
+                machine.getPresetCalories(presetNo)
+            );
 
-            final int tempPresetNo = presetNo;
-            PresetDisplay finalPresetDisplay = presetDisplay;
-            presetDisplay.setSelectButtonListener(e -> {
-                try {
-                    if (finalPresetDisplay.getSelectButton().getName()
-                            .equalsIgnoreCase("Select")) {
+            view.getPresetDisplay(presetNo).setSelectButtonListener(e -> {
+                // Blank slate on each selection.
+                machine.deselectPreset();
 
-                        finalPresetDisplay.getSelectButton().setText("Deselect");
-                        ((SpecialVendingMachine) machine.getPresets()).addSelection(tempPresetNo);
-                    } else {
-                        finalPresetDisplay.getSelectButton().setText("Select");
-                        ((SpecialVendingMachine) model.getVendingMachine()).deselectPreset();
-                        view.inputLog("Deselected preset. Selected items has been reset.");
-                    }
-                } catch (InsufficientStockException ex) {
-                    view.inputLog("Insufficient item stock.");
+                if (!view.getPresetDisplay(presetNo).canBeSelected()) {
+                    // Preset is already deselected so there's no need to 
+                    // deselect again.
+                    
+                    updateItemsView();
+                    view.inputLog(
+                        "Deselected preset. Selected items have been reset."
+                    );
+                    view.setFinalizeEnabled(false);
+                } else {
+                    machine.selectPreset(presetNo);
+                    
+                    updateItemsView();
+                    view.setFinalizeEnabled(true);
                 }
             });
+
             presetNo++;
         }
+        updatePresetsView();
 
-        /* loop all slot items and set changelistener */
+        // Items initialization
 
         int slotNo = 1;
-        for (Slot slotItem : machine.getSlots()) {
-            SpecialItemDisplay specialItemDisplay;
+
+        for (SpecialSlot slot : machine.getSlots()) {
             try {
-                if (slotItem.getSampleItem() == null) {
-                    view.addSlot("[Empty]",
-                            0,
-                            0,
-                            0,
-                            "imags/outofstock.png",
-                            false
+                if (slot.getSampleItem() == null) {
+                    view.addSlot(
+                        "[Empty]",
+                        0,
+                        0,
+                        0,
+                        false,
+                        "images/outofstock.png"
                     );
                 } else {
-                    String itemName = slotItem.getSampleItem().getName();
-                    double itemPrice = slotItem.getUnitPrice();
-                    double itemCalories = slotItem.getSampleItem().getCalories();
-                    int itemStock = slotItem.getStock();
-                    String itemImage = slotItem.getSampleItem().getImagePath();
-
                     view.addSlot(
-                            itemName,
-                            itemPrice,
-                            itemCalories,
-                            itemStock,
-                            itemImage,
-                            true
-                    );
+                        slot.getSampleItem().getName(),
+                        slot.getUnitPrice(),
+                        slot.getSampleItem().getCalories(),
+                        slot.getStock(),
+                        slot.isStandalone(),
+                        slot.getSampleItem().getImagePath()
+                    );     
                 }
             } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            /*
-            try {
-                String itemName = slotItem.getSampleItem().getName();
-                double itemPrice = slotItem.getUnitPrice();
-                double itemCalories = slotItem.getSampleItem().getCalories();
-                int itemStock = slotItem.getStock();
-                specialItemDisplay = new SpecialItemDisplay(itemName,
-                        itemPrice,
-                        itemCalories,
-                        itemStock);
-            } catch (NullPointerException e) {
-                specialItemDisplay = new SpecialItemDisplay("[Empty]",
-                        -1.0,
-                        -1.0,
-                        -1);
-                specialItemDisplay.getSpinner().setEnabled(false);
+                view.showErrorDialog("Cannot load item image!");
             }
 
-            view.setSlotItems(specialItemDisplay);
+            final int finalSlotNo = slotNo;
 
-            final int tempSlotNo = slotNo;
-            specialItemDisplay.setSpinnerListener(e -> {
-                try {
-                    ((SpecialVendingMachine) machine.getSlots()).addSelection(tempSlotNo);
-                } catch (InsufficientStockException ex) {
-                    view.inputLog("Insufficient item stock.");
+            view.getItemDisplay(slotNo).setSelectButtonListener(e -> {
+                machine.addSelection(finalSlotNo);
+                DispenseResult result = machine.dispenseSelection();
+            
+                view.inputLog(result.getProcessMessages().get(0));
+                view.inputLog(
+                    "Change: P" + result.getChange().getTotal() + "\n"
+                );
+
+                // TODO: show flattened total
+
+                if (result.getChange().getTotal() != 0) {
+                    view.displayDenominations(
+                        "Returned Change:",
+                        result.getChange().getQuantityMap()
+                    );
                 }
+
+                updateItemsView();
+                updatePresetsView();
+                view.updateTotalCredit(machine.getCredit().getTotal());
             });
-            slotNo++;
-            */
+            view.getItemDisplay(slotNo).setSpinnerAddListener(e -> {
+                machine.addSelection(finalSlotNo);
+
+                updateItemsView();
+                view.updateTotalPayment(machine.getTotalPrice());
+                view.updateTotalCalories(machine.getTotalCalories());
+            });
+            view.getItemDisplay(slotNo).setSpinnerRemoveListener(e -> {
+                machine.addSelection(finalSlotNo);                
+                updateItemsView();                
+            });
+
+            slotNo += 1;   
         }
+        updateItemsView();
+
+        // Other buttons
 
         view.setExitButtonListener(e -> {
-            changeState(new MainMenuState());
+            changeState(new TestMachineMenuState());
         });
 
         view.setInputCreditButtonListener(e -> {
-            machine.getCredit().add(Denomination.toEnum(view.getSelectedDenom()),1);
+            machine.getCredit().add(
+                Denomination.toEnum(view.getSelectedDenom()),
+                1
+            );
             view.updateTotalCredit(machine.getCredit().getTotal());
         });
 
@@ -156,8 +159,10 @@ public class TestSpecialVendingController extends Controller {
                 return;
             }
 
+            // TODO: show flattened total
+
             view.displayDenominations("Returned Credit:",
-                    machine.getCredit().collect().getQuantityMap()
+                machine.getCredit().collect().getQuantityMap()
             );
             view.updateTotalCredit(machine.getCredit().getTotal());
         });
@@ -165,24 +170,94 @@ public class TestSpecialVendingController extends Controller {
         view.setFinalizeButtonListener(e -> {
             try {
                 DispenseResult result = machine.dispenseSelection();
-                // for()
-                // view.inputLog();
-            } catch (MissingChangeException ex) {
-                view.inputLog("Machine has insufficient change.");
-            } catch (InsufficientCreditException ex) {
-                view.inputLog("You have insufficient credit for the product.");
-            } catch (InsufficientStockException ex) {
-                view.inputLog("Machine has insufficient stock.");
+            
+                // Prepartion simulation
+
+                view.inputLog("Preparing order...");
+
+                for (String msg : result.getProcessMessages()) {
+                    view.inputLog("\t" + msg);
+                }
+            
+                view.inputLog("Done!\n");
+
+                // Dispensing
+
+                view.inputLog("Dispensed " + result.getName() + ".");
+                view.inputLog(
+                    "Change: P" + result.getChange().getTotal() + "\n"
+                );
+
+                if (result.getChange().getTotal() != 0) {
+                    // TODO: show flattened total
+                    view.displayDenominations(
+                        "Returned Change:",
+                        result.getChange().getQuantityMap()
+                    );
+                }
+
+                // Cleanup
+
+                updateItemsView();
+                updatePresetsView();
+
+                view.updateTotalCredit(machine.getCredit().getTotal());
+                view.updateTotalCalories(machine.getTotalCalories());
+                view.updateTotalPayment(machine.getTotalPrice());
+            } catch (CreditException ex) {
+                view.inputLog(ex.getMessage());
+
+                if (ex.getReturnedCredit().getTotal() != 0) {
+                    view.displayDenominations(
+                        "Returned Credit:",    
+                        ex.getReturnedCredit().getQuantityMap()
+                    );   
+                }
             }
         });
     }
 
-    private double getItemCalories(int slotNo) {
-        return model.getVendingMachine()
-                .getSlot(slotNo).getSampleItem().getCalories();
+    /* */
+
+    private void updateItemsView() {
+        SpecialVendingMachine machine =
+            (SpecialVendingMachine) model.getVendingMachine();
+
+        int slotNo = 1;
+        
+        for (SpecialSlot slot : machine.getSlots()) {
+            view.getItemDisplay(slotNo)
+                .setStockValue(slot.getStock());
+
+            view.getItemDisplay(slotNo)
+                .setSelectEnable(slot.getStock() == 0);
+            view.getItemDisplay(slotNo)
+                .setSpinnerVisible(machine.getSelectedPreset() != null);
+
+            if (machine.getSelectedSlots().containsKey(slot)) {
+                int selQty = machine.getSelectedSlots().get(slot);
+
+                view.getItemDisplay(slotNo).setSelectValue(selQty);
+                view.getItemDisplay(slotNo).setSpinnerMaximum(slot.getStock());
+            }
+
+            slotNo++;
+        }
     }
 
-    private double getItemPrice(int slotNo) {
-        return model.getVendingMachine().getSlot(slotNo).getUnitPrice();
+    private void updatePresetsView() {
+        SpecialVendingMachine machine =
+            (SpecialVendingMachine) model.getVendingMachine();
+
+        int presetNo = 1;
+
+        for (Preset preset : machine.getPresets()) {
+            view.getPresetDisplay(presetNo)
+                .setSelectEnable(machine.hasEnoughStockFor(presetNo));
+            view.getPresetDisplay(presetNo)
+                .setHighlightShow(machine.hasDeviatedFrom(presetNo));
+
+            presetNo++;
+        }
     }
 }
