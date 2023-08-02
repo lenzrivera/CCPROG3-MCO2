@@ -55,6 +55,15 @@ public class SpecialVendingMachine extends VendingMachine<SpecialSlot> {
     /* */
 
     /**
+     * Returns the map of current selected slots to their quantities to
+     * dispense. 
+     * @return the map of selected slots to their quantities to dispense
+     */
+    public Map<SpecialSlot, Integer> getSelectedSlots() {
+        return selectedSlots;
+    }
+
+    /**
      * Returns the list of available presets for the vending machine.
      * @return the list of presets in the vending machine.
      */
