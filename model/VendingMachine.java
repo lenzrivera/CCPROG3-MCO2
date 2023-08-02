@@ -209,7 +209,7 @@ public abstract class VendingMachine<T extends Slot> {
                 continue;
             }
 
-            tempMoneyStock.remove(denom, 1);
+            moneyStock.remove(denom, 1);
             change.add(denom, 1);
         }
 
