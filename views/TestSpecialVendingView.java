@@ -486,7 +486,7 @@ public class TestSpecialVendingView extends View {
         double presetPrice, 
         double presetCalories,
         String imagePath
-    ) throws IOException {
+    ) {
         PresetDisplay presetDisplay = new PresetDisplay(
             name,
             presetCalories,

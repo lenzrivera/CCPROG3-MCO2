@@ -58,16 +58,12 @@ public class TestSpecialVendingController extends Controller {
         int presetNo = 1;
 
         for (Preset preset : machine.getPresets()) {
-            try {
-                view.addPreset(
-                    preset.getName(),
-                    machine.getPresetPrice(presetNo),
-                    machine.getPresetCalories(presetNo),
-                    preset.getImagePath()
-                );
-            } catch (IOException e) {
-                view.showErrorDialog("Cannot load preset image!");
-            }
+            view.addPreset(
+                preset.getName(),
+                machine.getPresetPrice(presetNo),
+                machine.getPresetCalories(presetNo),
+                preset.getImagePath()
+            );
 
             final int finalPresetNo = presetNo;
             view.getPresetDisplay(presetNo).setSelectButtonListener(e -> {

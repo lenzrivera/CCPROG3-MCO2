@@ -67,14 +67,21 @@ public class ItemDisplay extends JPanel {
         double itemPrice,
         int itemStock,
         String imagePath
-    ) throws IOException {
+    ) {
         setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
         setPreferredSize(new Dimension(250, 100));
 
-        imageLabel = new JLabel(new ImageIcon(
-            ImageIO.read(new File(imagePath))
-                   .getScaledInstance(100, 100, Image.SCALE_SMOOTH) 
-        ));
+        try {
+            imageLabel = new JLabel(
+                new ImageIcon(
+                    ImageIO.read(new File(imagePath))
+                           .getScaledInstance(100, 100, Image.SCALE_SMOOTH) 
+                )
+            );
+        } catch (IOException e) {
+            imageLabel = new JLabel("[image not found]");
+        }
+        
         add(imageLabel);
 
         add(Box.createHorizontalStrut(5));

@@ -340,7 +340,7 @@ private JComboBox<Double> denomComboBox;
         int itemStock,
         String imagePath,
         boolean enabled
-    ) throws IOException {
+    ) {
         ItemDisplay itemDisplay = new ItemDisplay(
             name, 
             calories, 

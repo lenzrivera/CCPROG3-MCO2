@@ -60,20 +60,27 @@ public class PresetDisplay extends JPanel {
         double itemCalories,
         double itemPrice,
         String imagePath
-    ) throws IOException {
+    ) {
         mainPanel = new JPanel();
         itemNameLabel = new JLabel();
         caloriesLabel = new JLabel();
         priceLabel = new JLabel();
         selectButton = new JButton();
-
+        
         setPreferredSize(new Dimension(250, 100));
         setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
 
-        imageLabel = new JLabel(new ImageIcon(
-            ImageIO.read(new File(imagePath))
-                   .getScaledInstance(100, 100, Image.SCALE_SMOOTH) 
-        ));
+        try {
+            imageLabel = new JLabel(
+                new ImageIcon(
+                    ImageIO.read(new File(imagePath))
+                           .getScaledInstance(100, 100, Image.SCALE_SMOOTH) 
+                )
+            );
+        } catch (IOException e) {
+            imageLabel = new JLabel("[image not found]");
+        }
+        
         add(imageLabel);
 
         add(new Box.Filler(new Dimension(5, 0),

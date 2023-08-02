@@ -6,8 +6,6 @@ import states.TestMachineMenuState;
 import util.Controller;
 import views.TestRegularVendingView;
 
-import java.io.IOException;
-
 /**
  * A controller class for managing the testing of the vending features of 
  * a regular vending machine.
@@ -53,34 +51,30 @@ public class TestRegularVendingController extends Controller {
 
         int slotNo = 1;
         for (Slot slotItem : machine.getSlots()) {
-            try {
-                if (slotItem.getSampleItem() == null) {
-                    view.addSlot(
-                        "[Empty]",
-                        0,
-                        0,
-                        0,
-                        "images/outofstock.png",
-                        false
-                    );
-                } else {
-                    String itemName = slotItem.getSampleItem().getName();
-                    double itemPrice = slotItem.getUnitPrice();
-                    double itemCalories = slotItem.getSampleItem().getCalories();
-                    String itemImage = slotItem.getSampleItem().getImagePath();
-                    int itemStock = slotItem.getStock();
+            if (slotItem.getSampleItem() == null) {
+                view.addSlot(
+                    "[Empty]",
+                    0,
+                    0,
+                    0,
+                    "images/outofstock.png",
+                    false
+                );
+            } else {
+                String itemName = slotItem.getSampleItem().getName();
+                double itemPrice = slotItem.getUnitPrice();
+                double itemCalories = slotItem.getSampleItem().getCalories();
+                String itemImage = slotItem.getSampleItem().getImagePath();
+                int itemStock = slotItem.getStock();
 
-                    view.addSlot(
-                        itemName,
-                        itemPrice,
-                        itemCalories,
-                        itemStock,
-                        itemImage,
-                        itemStock != 0
-                    );     
-                }
-            } catch (IOException e) {
-                view.showErrorDialog("Cannot load item image!");
+                view.addSlot(
+                    itemName,
+                    itemPrice,
+                    itemCalories,
+                    itemStock,
+                    itemImage,
+                    itemStock != 0
+                );     
             }
 
             final int finalSlotNo = slotNo;
