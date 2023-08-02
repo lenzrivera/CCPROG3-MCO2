@@ -58,8 +58,6 @@ public class ItemDisplay extends JPanel {
      * @param itemPrice     price of the item.
      * @param itemStock     stock of the item.
      * @param imagePath     image path of the item.
-     * @throws IOException  If there is an error reading or loading 
-     *                      the image from the given imagePath.
      */
     public ItemDisplay(
         String itemName,

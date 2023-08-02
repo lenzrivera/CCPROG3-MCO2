@@ -52,8 +52,6 @@ public class PresetDisplay extends JPanel {
      * @param itemCalories calories of the item.
      * @param itemPrice    price of the item.
      * @param imagePath    image path of the item.
-     * @throws IOException If there is an error while reading the image 
-     *                      from the specified file path.
      */
     public PresetDisplay(
         String itemName,

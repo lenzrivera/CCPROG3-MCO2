@@ -478,8 +478,6 @@ public class TestSpecialVendingView extends View {
      * @param presetCalories The total calorie count of the preset to be displayed.
      * @param imagePath      The file path or resource path to the image representing 
      *                       the preset.
-     * @throws IOException   If there is an error reading the image file from the provided 
-     *                       file path.
      */
     public void addPreset(
         String name, 

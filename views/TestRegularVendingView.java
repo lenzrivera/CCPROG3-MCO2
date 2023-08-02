@@ -8,7 +8,6 @@ import util.View;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -330,8 +329,6 @@ private JComboBox<Double> denomComboBox;
      * @param itemStock    stock of the item.
      * @param imagePath    image path of the item.
      * @param enabled      A boolean value.
-     * @throws IOException If an error occurs while reading the image 
-     *                     file from the provided imagePath.
      */
     public void addSlot(
         String name,
