@@ -89,7 +89,7 @@ public class Summary {
         stockChanges.clear();
         
         for (Slot slot : currentSlots) {
-            if (slot.getStock() == 0) {
+            if (slot.getSampleItem() == null) {
                 continue;
             }
 

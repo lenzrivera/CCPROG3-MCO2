@@ -91,6 +91,7 @@ public class TestMaintenanceController extends Controller {
 
             try {
                 selectedSlot.stockItem(qtyToAdd);
+                machine.getSummary().reset(machine.getSlots());
                 updateSummaryView();
 
                 view.getManageItemsPanel()
@@ -131,6 +132,7 @@ public class TestMaintenanceController extends Controller {
             for (int i = 0; i < qtyToRemove; i++) {
                 selectedSlot.dispenseItem();
             }
+            machine.getSummary().reset(machine.getSlots());
             updateSummaryView();
 
             view.getManageItemsPanel()
@@ -262,7 +264,6 @@ public class TestMaintenanceController extends Controller {
      */
     private void updateSummaryView() {
         VendingMachine<? extends Slot> machine = model.getVendingMachine();
-        machine.getSummary().reset(machine.getSlots());
 
         int i = 0;
         SummaryViewPanel panel = view.getSummaryViewPanel();
