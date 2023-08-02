@@ -126,7 +126,7 @@ public class SpecialVendingMachine extends VendingMachine<SpecialSlot> {
         SpecialSlot slot = getSlot(slotNo);
 
         if (slot.getStock() == 0) {
-            throw new InsufficientStockException(slot);
+            throw new InsufficientStockException(credit.collect());
         }
 
         if (selectedPreset == null) {
@@ -305,7 +305,7 @@ public class SpecialVendingMachine extends VendingMachine<SpecialSlot> {
                 ) {
                     if (itemSlot.getStock() < itemQuantity) {
                         selectedSlots.clear();
-                        throw new InsufficientStockException(itemSlot);
+                        throw new InsufficientStockException(credit.collect());
                     }
 
                     selectedSlots.put(itemSlot, itemQuantity);

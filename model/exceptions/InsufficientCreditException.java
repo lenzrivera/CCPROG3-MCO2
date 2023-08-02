@@ -7,7 +7,16 @@ import model.DenominationMap;
  * a transaction.
  */
 public class InsufficientCreditException extends CreditException {
+    /**
+     * Constructs a new InsufficientCreditException instance.
+     * @param returnedCredit the credit to return to the user
+     */
     public InsufficientCreditException(DenominationMap returnedCredit) {
         super(returnedCredit);
+    }
+
+    @Override
+    public String getMessage() {
+        return "There is insufficient credit inserted.";
     }
 }

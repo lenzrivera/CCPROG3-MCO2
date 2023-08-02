@@ -43,7 +43,7 @@ public class RegularVendingMachine extends VendingMachine<Slot> {
         Slot slot = getSlot(slotNo);
 
         if (slot.getStock() == 0) {
-            throw new InsufficientStockException(slot);
+            throw new InsufficientStockException(credit.collect());
         }
 
         selectedSlot = slot;
