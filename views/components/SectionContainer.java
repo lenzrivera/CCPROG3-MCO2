@@ -64,6 +64,14 @@ public class SectionContainer extends JPanel {
     }
 
     /**
+     * Sets the heading text of the section.
+     * @param heading the heading text
+     */
+    public void setHeading(String heading) {
+        this.heading.setText(heading);
+    }
+
+    /**
      * Adds a listener for the exit button.
      * @param listener The listener for the exit button
      */
