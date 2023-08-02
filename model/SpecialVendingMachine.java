@@ -236,17 +236,16 @@ public class SpecialVendingMachine extends VendingMachine<SpecialSlot> {
             operations.add(itemSlot.getOperation().getProcessMessage(itemName));
 
             currentSummary.addTransaction(
-                    itemName,
-                    qtyToDispense,
-                    itemSlot.getUnitPrice()
+                itemName,
+                qtyToDispense,
+                itemSlot.getUnitPrice()
             );
         }
 
         operations.add(
-                selectedPreset.getOperation()
-                        .getProcessMessage(selectedPreset.getName())
+            selectedPreset.getOperation()
+                .getProcessMessage(selectedPreset.getName())
         );
-        operations.add("Done!");
 
         // Determine result name
 
