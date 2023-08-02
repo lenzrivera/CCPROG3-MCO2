@@ -6,16 +6,20 @@ import javax.swing.event.ChangeListener;
 
 import model.Denomination;
 import util.View;
-import views.components.SectionContainer;
-import views.components.ItemDisplay;
-import views.components.SpecialItemDisplay;
+import views.components.*;
 
 import java.awt.*;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class TestSpecialVendingView extends View {
     private SectionContainer mainContainer;
+
+    private List<SpecialItemDisplay> specialItemDisplays;
+    private List<PresetDisplay> presetDisplays;
+
     private JPanel itemsPanel;
     private JPanel leftSidePanel;
     private JPanel logPanel;
@@ -40,13 +44,13 @@ public class TestSpecialVendingView extends View {
     private JTextArea logTextArea;
     private JTextArea dialogTextArea;
     private JDialog returnDenomDialog;
-    private double credit;
-    private double payment;
-    private double calories;
     private JComboBox<Double> denomComboBox;
 
     public TestSpecialVendingView() {
-        mainContainer = new SectionContainer("Test Special Vending Features");
+        mainContainer = new SectionContainer("");
+
+        specialItemDisplays = new ArrayList<>();
+
         GridBagConstraints gridBagConstraints;
         mainPanel = new JPanel();
         leftSidePanel = new JPanel();
@@ -165,7 +169,7 @@ public class TestSpecialVendingView extends View {
 
         leftSideOptionsPanel.setLayout(new GridBagLayout());
 
-        creditLabel.setText("Credit/Balance: " + credit);
+        creditLabel.setText("Credit/Balance: P" + 0.0);
         gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -174,7 +178,7 @@ public class TestSpecialVendingView extends View {
         gridBagConstraints.weightx = 0.1;
         leftSideOptionsPanel.add(creditLabel, gridBagConstraints);
 
-        paymentLabel.setText("Total Payment: " + payment);
+        paymentLabel.setText("Total Payment: P" + 0.0);
         gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -184,7 +188,7 @@ public class TestSpecialVendingView extends View {
         gridBagConstraints.insets = new Insets(20, 0, 0, 0);
         leftSideOptionsPanel.add(paymentLabel, gridBagConstraints);
 
-        caloriesLabel.setText("Total Calories: " + calories);
+        caloriesLabel.setText("Total Calories: " + 0.0);
         gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
@@ -257,20 +261,107 @@ public class TestSpecialVendingView extends View {
         return mainContainer;
     }
 
+    /* */
+
+    public PresetDisplay getPresetDisplay(int slotNo) {
+        return presetDisplays.get(slotNo - 1);
+    }
+
+    public SpecialItemDisplay getItemDisplay(int slotNo) {
+        return specialItemDisplays.get(slotNo - 1);
+    }
+
+    public double getSelectedDenom() {
+        return (double) denomComboBox.getSelectedItem();
+    }
+
+    public void setHeading(String heading) {
+        mainContainer.setHeading(heading);
+    }
+
+    public void setDenominations(List<Double> denominations) {
+        DefaultComboBoxModel<Double> model = new DefaultComboBoxModel<>();
+        model.addAll(denominations);
+
+        denomComboBox.setModel(model);
+        denomComboBox.setSelectedIndex(0);
+    }
+
+    /* */
+
+    public void addSlot(
+            String name,
+            double price,
+            double calories,
+            int itemStock,
+            String imagePath,
+            boolean enabled
+    ) throws IOException {
+        SpecialItemDisplay specialItemDisplay = new SpecialItemDisplay(
+                name,
+                calories,
+                price,
+                itemStock,
+                imagePath
+        );
+
+        specialItemDisplay.setSpinnerEnabled(true);
+
+        itemsPanel.add(specialItemDisplay);
+        itemsPanel.add(Box.createVerticalStrut(10));
+
+        specialItemDisplays.add(specialItemDisplay);
+    }
+
+    public void displayDenominations(
+            String heading,
+            Map<Denomination, Integer> denomMap
+    ) {
+        JPanel display = new JPanel();
+        display.setLayout(new BoxLayout(display, BoxLayout.PAGE_AXIS));
+
+        JLabel headingLabel = new JLabel(heading);
+        display.add(headingLabel);
+
+        display.add(Box.createVerticalStrut(5));
+
+        DisplayTable table = new DisplayTable(new String[] {
+                "Denomination",
+                "Quantity"
+        });
+        table.setPreferredSize(new Dimension(300, 100));
+        table.setAlignmentX(0);
+        display.add(table);
+
+        int i = 0;
+
+        for (var entry : denomMap.entrySet()) {
+            table.setCell(0, i, entry.getKey().getValue());
+            table.setCell(1, i, entry.getValue());
+
+            i += 1;
+        }
+
+        JOptionPane.showMessageDialog(
+                mainContainer,
+                display,
+                heading,
+                JOptionPane.INFORMATION_MESSAGE
+        );
+    }
+
+    public void inputLog(String text) {
+        if (logTextArea.getText().isEmpty()) {
+            logTextArea.setText(text);
+        } else {
+            logTextArea.setText(logTextArea.getText() + "\n" + text);
+        }
+    }
+
+    /* */
+
     public void setExitButtonListener(ActionListener listener) {
         mainContainer.setExitButtonListener(listener);
-    }
-
-    public void setPresetItems(SpecialItemDisplay specialItem) {
-        presetsPanel.add(specialItem);
-    }
-
-    public void setSlotItems(ItemDisplay item) {
-        itemsPanel.add(item);
-    }
-
-    public void setBackButtonListener(ActionListener listener) {
-        backButton.addActionListener(listener);
     }
 
     public void setInputCreditButtonListener(ActionListener listener) {
@@ -285,22 +376,6 @@ public class TestSpecialVendingView extends View {
         finalizeButton.addActionListener(listener);
     }
 
-    public void setDenominations(List<Double> denominations) {
-        DefaultComboBoxModel<Double> model = new DefaultComboBoxModel<>();
-        model.addAll(denominations);
-
-        denomComboBox.setModel(model);
-        denomComboBox.setSelectedIndex(0);
-    }
-
-    public void inputLog(String text) {
-        if (logTextArea.getText().isEmpty()) {
-            logTextArea.setText(text);
-        } else {
-            logTextArea.setText(logTextArea.getText() + "\n" + text);
-        }
-    }
-
     public void updateTotalCredit(double credit) {
         creditLabel.setText("Credit/Balance: P" + credit);
     }
@@ -311,17 +386,5 @@ public class TestSpecialVendingView extends View {
 
     public void updateTotalCalories(double calories) {
         caloriesLabel.setText("Total Calories: " + calories);
-    }
-
-    public void displayDenominations(Map<Denomination,Integer> denom) {
-        dialogTextArea.setText("You received the following denominations: \n\n\n");
-        for (Map.Entry<Denomination,Integer> entry : denom.entrySet()) {
-            dialogTextArea.setText(dialogTextArea.getText() + entry.getValue() + " - " +entry.getKey() + "\n\n");
-        }
-        returnDenomDialog.setVisible(true);
-    }
-
-    public double getSelectedDenom() {
-        return (double) denomComboBox.getSelectedItem();
     }
 }
