@@ -62,12 +62,20 @@ public class SpecialVendingMachine extends VendingMachine<SpecialSlot> {
         return presets;
     }
 
-    // TODO: javadoc, uml
+    /**
+     * Returns the currently selected preset in the machine.
+     * @return the selected preset
+     */
     public Preset getSelectedPreset() {
         return selectedPreset;
     }
 
-    // TODO: javadoc, uml
+    /**
+     * Determines the price that selecting a preset would entail.
+     * @param presetNo the number (index - 1) of the preset whose price
+     * will be determined
+     * @return the computed preset price
+     */
     public double getPresetPrice(int presetNo) {
         double total = 0.0;
 
@@ -85,7 +93,12 @@ public class SpecialVendingMachine extends VendingMachine<SpecialSlot> {
         return total;
     }
 
-    // TODO: javadoc, uml
+    /**
+     * Determines the total calories that the items in a preset have.
+     * @param presetNo the number (index - 1) of the preset whose calories
+     * will be determined
+     * @return the computed preset calories
+     */
     public double getPresetCalories(int presetNo) {
         double total = 0.0;
 
@@ -118,7 +131,12 @@ public class SpecialVendingMachine extends VendingMachine<SpecialSlot> {
         return false;
     }
 
-    // TODO: javadoc, uml
+    /**
+     * Determines whether the currently selected items has deviated from the
+     * items in the selected preset
+     * @param presetNo the number (index - 1) of the preset 
+     * @return true is there is a deviation, false otherwise
+     */
     public boolean hasDeviatedFrom(int presetNo) {
         for (var entry : selectedSlots.entrySet()) {
             SpecialSlot itemSlot = entry.getKey();
@@ -138,7 +156,11 @@ public class SpecialVendingMachine extends VendingMachine<SpecialSlot> {
         return false;
     }
 
-    // TODO: javadoc, uml
+    /**
+     * Determines whether there is enough item stock to select a preset.
+     * @param presetNo the number (index - 1) of the preset
+     * @return true is there is enough stock, false otherwise
+     */
     public boolean hasEnoughStockFor(int presetNo) {
         for (var entry : presets.get(presetNo).getItems().entrySet()) {
             String itemName = entry.getKey();
