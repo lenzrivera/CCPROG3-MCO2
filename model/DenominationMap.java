@@ -34,7 +34,16 @@ public class DenominationMap {
      * @param denomMap the DenominationMap to copy.
      */
     public DenominationMap(DenominationMap denomMap) {
-        this.denominations = new TreeMap<>(denomMap.denominations);
+        this.denominations = new TreeMap<>();
+
+        for (var entry : denomMap.denominations.entrySet()) {
+            // Ensure that internal lists get fully cloned as well to prevent
+            // unintentional by-reference changes.
+            this.denominations.put(
+                entry.getKey(), 
+                new ArrayList<>(entry.getValue())
+            );
+        }
     }
 
     /**
