@@ -157,7 +157,7 @@ public class TestMaintenanceController extends Controller {
 
             double newPrice = view.getManageItemsPanel().getPriceInput();
 
-            if (Denomination.isValidPrice(newPrice)) {
+            if (!Denomination.isValidPrice(newPrice)) {
                 view.showErrorDialog("Please enter a valid price.");
                 return;                
             }
