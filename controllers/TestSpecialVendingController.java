@@ -254,8 +254,11 @@ public class TestSpecialVendingController extends Controller {
         for (Preset preset : machine.getPresets()) {
             view.getPresetDisplay(presetNo)
                 .setSelectEnable(machine.hasEnoughStockFor(presetNo));
-            view.getPresetDisplay(presetNo)
-                .setHighlightShow(machine.hasDeviatedFrom(presetNo));
+
+            if (machine.getSelectedPreset() == preset) {
+                view.getPresetDisplay(presetNo)
+                    .setHighlightShow(machine.hasDeviatedFrom(presetNo));
+            }
 
             presetNo++;
         }
