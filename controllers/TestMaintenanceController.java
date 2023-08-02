@@ -66,6 +66,7 @@ public class TestMaintenanceController extends Controller {
         VendingMachine<? extends Slot> machine = model.getVendingMachine();
 
         view.setExitButtonListener(e -> {
+            machine.getCredit().collect();
             changeState(new TestMachineMenuState());
         });
 
