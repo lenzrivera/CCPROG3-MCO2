@@ -62,6 +62,47 @@ public class SpecialVendingMachine extends VendingMachine<SpecialSlot> {
         return presets;
     }
 
+    // TODO: javadoc, uml
+    public Preset getSelectedPreset() {
+        return selectedPreset;
+    }
+
+    // TODO: javadoc, uml
+    public double getPresetPrice(int presetNo) {
+        double total = 0.0;
+
+        for (var entry : presets.get(presetNo - 1).getItems().entrySet()) {
+            String itemName = entry.getKey();
+            int quantity = entry.getValue();
+            
+            total += slots.stream()
+                .filter(s -> 
+                    s.getSampleItem().getName().equalsIgnoreCase(itemName))
+                .findFirst().get()
+                .getUnitPrice() * quantity;
+        }
+
+        return total;
+    }
+
+    // TODO: javadoc, uml
+    public double getPresetCalories(int presetNo) {
+        double total = 0.0;
+
+        for (var entry : presets.get(presetNo - 1).getItems().entrySet()) {
+            String itemName = entry.getKey();
+            int quantity = entry.getValue();
+            
+            total += slots.stream()
+                .filter(s -> 
+                    s.getSampleItem().getName().equalsIgnoreCase(itemName))
+                .findFirst().get()
+                .getSampleItem().getCalories() * quantity;
+        }
+
+        return total;
+    }
+
     /**
      * Checks if a preset with the given name exists in the vending machine.
      * @param name the name of the preset to check.
@@ -75,6 +116,47 @@ public class SpecialVendingMachine extends VendingMachine<SpecialSlot> {
         }
 
         return false;
+    }
+
+    // TODO: javadoc, uml
+    public boolean hasDeviatedFrom(int presetNo) {
+        for (var entry : selectedSlots.entrySet()) {
+            SpecialSlot itemSlot = entry.getKey();
+
+            String itemName = itemSlot.getSampleItem().getName();
+            int itemQuantity = entry.getValue();
+
+            // If the selected preset has been deviated from:
+            if (
+                !selectedPreset.getItems().containsKey(itemName) ||
+                selectedPreset.getItems().get(itemName) != itemQuantity
+            ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    // TODO: javadoc, uml
+    public boolean hasEnoughStockFor(int presetNo) {
+        for (var entry : presets.get(presetNo).getItems().entrySet()) {
+            String itemName = entry.getKey();
+            int itemQuantity = entry.getValue();
+
+            for (SpecialSlot itemSlot : slots) {
+                if (
+                    itemSlot.getSampleItem() != null &&
+                    itemSlot.getSampleItem().getName().equalsIgnoreCase(itemName)
+                ) {
+                    if (itemSlot.getStock() < itemQuantity) {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -251,22 +333,11 @@ public class SpecialVendingMachine extends VendingMachine<SpecialSlot> {
 
         String resultName = itemsToDispense.get(0).getName();
 
-        if (selectedPreset != null) {
-            for (var entry : selectedSlots.entrySet()) {
-                SpecialSlot itemSlot = entry.getKey();
-
-                String itemName = itemSlot.getSampleItem().getName();
-                int itemQuantity = entry.getValue();
-
-                // If the selected preset has been deviated from:
-                if (
-                        !selectedPreset.getItems().containsKey(itemName) ||
-                                selectedPreset.getItems().get(itemName) != itemQuantity
-                ) {
-                    resultName += " (Customized)";
-                    break;
-                }
-            }
+        if (
+            selectedPreset != null && 
+            hasDeviatedFrom(presets.indexOf(selectedPreset))
+        ) {
+            resultName += " (Customized)";
         }
 
         // Clear and return
@@ -275,12 +346,12 @@ public class SpecialVendingMachine extends VendingMachine<SpecialSlot> {
         selectedSlots.clear();
 
         return new DispenseResult(
-                resultName,
-                itemsToDispense,
-                operations,
-                change,
-                getTotalCalories(),
-                totalPayment
+            resultName,
+            itemsToDispense,
+            operations,
+            change,
+            getTotalCalories(),
+            totalPayment
         );
     }
 
@@ -293,23 +364,16 @@ public class SpecialVendingMachine extends VendingMachine<SpecialSlot> {
     public void selectPreset(int presetNo) {
         Preset preset = presets.get(presetNo - 1);
 
-        for (var entry : preset.getItems().entrySet()) {
-            String itemName = entry.getKey();
-            int itemQuantity = entry.getValue();
+        if (!hasEnoughStockFor(presetNo)) {
+            selectedSlots.clear();
+            throw new InsufficientStockException(credit.collect());
+        }
 
-            for (SpecialSlot itemSlot : slots) {
-                if (
-                    itemSlot.getSampleItem() != null &&
-                    itemSlot.getSampleItem().getName().equalsIgnoreCase(itemName)
-                ) {
-                    if (itemSlot.getStock() < itemQuantity) {
-                        selectedSlots.clear();
-                        throw new InsufficientStockException(credit.collect());
-                    }
-
-                    selectedSlots.put(itemSlot, itemQuantity);
-                    break;
-                }
+        for (SpecialSlot slot : slots) {
+            String itemName = slot.getSampleItem().getName();
+            
+            if (preset.getItems().containsKey(itemName)) {
+                selectedSlots.put(slot, preset.getItems().get(itemName));
             }
         }
 
