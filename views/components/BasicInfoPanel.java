@@ -129,6 +129,14 @@ public class BasicInfoPanel extends JPanel {
     }
 
     /**
+     * Sets the value of the slot count input field.
+     * @param count the count to set in the count input field.
+     */
+    public void setSlotCount(int count) {
+        slotCountInput.setValue(count);
+    }
+
+    /**
      * Gets the slot capacity entered in the slot capacity input field.
      * @return the slot capacity.
      */

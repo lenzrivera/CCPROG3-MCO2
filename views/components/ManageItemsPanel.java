@@ -233,6 +233,8 @@ public class ManageItemsPanel extends JPanel {
     /**
      * Sets the label text for the item stock quantity.
      * @param stock the current item stock quantity.
+     * @param maxCapacity the maximum allowed capacity in 
+     *                    the slot.
      */
     public void setStockLabelText(int stock, int maxCapacity) {
         stockLabel.setText("Stock: " + stock + " / " + maxCapacity);

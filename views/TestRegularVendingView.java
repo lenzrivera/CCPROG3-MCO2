@@ -13,26 +13,108 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The TestRegularVendingView class represents a test view for the 
+ * RegularVendingMachine application. This class extends the View 
+ * class and serves as a graphical user interface (GUI) representation 
+ * of the RegularVendingMachine application.
+ */
 public class TestRegularVendingView extends View {
-    private SectionContainer mainContainer;
+/**
+ * The main container for the vending machine user interface.
+ */
+private SectionContainer mainContainer;
 
-    private List<ItemDisplay> itemDisplays;
+/**
+ * A list that stores the ItemDisplay components representing items available 
+ * in the vending machine.
+ */
+private List<ItemDisplay> itemDisplays;
 
-    private JPanel mainPanel;
-    private JPanel itemsPanel;
-    private JPanel rightSidePanel;
-    private JPanel upperRightSidePanel;
-    private JPanel lowerRightSidePanel;
-    private JButton inputCreditButton;
-    private JButton returnCreditButton;
-    private JLabel creditLabel;
-    private JScrollPane logScrollPane;
-    private JScrollPane itemsScrollPane;
-    private JScrollPane dialogScrollPane;
-    private JTextArea dialogTextArea;
-    private JTextArea logTextArea;
-    private JComboBox<Double> denomComboBox;
+/**
+ * The main panel of the vending machine user interface.
+ */
+private JPanel mainPanel;
 
+/**
+ * The panel that holds the item displays in the vending machine 
+ * user interface.
+ */
+private JPanel itemsPanel;
+
+/**
+ * The right-side panel in the vending machine user interface.
+ */
+private JPanel rightSidePanel;
+
+/**
+ * The upper right-side panel in the vending machine user interface.
+ */
+private JPanel upperRightSidePanel;
+
+/**
+ * The lower right-side panel in the vending machine user interface.
+
+ */
+private JPanel lowerRightSidePanel;
+
+/**
+ * The button used for adding credit to the vending machine.
+ */
+private JButton inputCreditButton;
+
+/**
+ * The button used for returning credit from the vending machine.
+ */
+private JButton returnCreditButton;
+
+/**
+ * The label that displays the current credit balance in the 
+ * vending machine.
+ */
+private JLabel creditLabel;
+
+/**
+ * The scroll pane that contains the log text area in the vending machine 
+ * user interface.
+ */
+private JScrollPane logScrollPane;
+
+/**
+ * The scroll pane that contains the item displays in the vending machine 
+ * user interface.
+ */
+private JScrollPane itemsScrollPane;
+
+/**
+ * The scroll pane that contains the dialog text area in the vending 
+ * machine user interface.
+
+ */
+private JScrollPane dialogScrollPane;
+
+/**
+ * The text area used to display dialog messages in the vending machine 
+ * user interface.
+
+ */
+private JTextArea dialogTextArea;
+
+/**
+ * The text area used to display log messages in the vending machine 
+ * user interface.
+ */
+private JTextArea logTextArea;
+
+/**
+ * The combo box used to select denominations (e.g., coins or bills) 
+ * for adding credit.
+ */
+private JComboBox<Double> denomComboBox;
+
+    /**
+     * Constructs a regular vending machine view for the interface.
+     */
     public TestRegularVendingView() {
         mainContainer = new SectionContainer("");
 
@@ -53,6 +135,8 @@ public class TestRegularVendingView extends View {
         logTextArea = new JTextArea();
         denomComboBox = new JComboBox<>();
 
+        /* Set dialog window */
+
         dialogTextArea.setEditable(false);
         dialogTextArea.setColumns(20);
         dialogTextArea.setLineWrap(true);
@@ -60,9 +144,13 @@ public class TestRegularVendingView extends View {
         dialogTextArea.setWrapStyleWord(true);
         dialogScrollPane.setViewportView(dialogTextArea);
 
+        /* Set main panel */
+
         mainPanel.setBorder(BorderFactory.createTitledBorder("Test Vending Features"));
         mainPanel.setPreferredSize(new Dimension(850, 525));
         mainPanel.setLayout(new GridLayout(1, 2));
+
+        /* Set items panel */
 
         itemsScrollPane.setBorder(BorderFactory.createTitledBorder("Items"));
         itemsScrollPane.setPreferredSize(new Dimension(250, 250));
@@ -74,6 +162,8 @@ public class TestRegularVendingView extends View {
 
         rightSidePanel.setPreferredSize(new Dimension(250, 250));
         rightSidePanel.setLayout(new GridLayout(2, 1));
+
+        /* Set log panel */
 
         upperRightSidePanel.setBorder(BorderFactory.createTitledBorder("Log"));
 
@@ -111,6 +201,8 @@ public class TestRegularVendingView extends View {
         );
 
         rightSidePanel.add(upperRightSidePanel);
+
+        /* Set options panel */
 
         lowerRightSidePanel.setBorder(BorderFactory.createTitledBorder("Options"));
 
@@ -182,18 +274,44 @@ public class TestRegularVendingView extends View {
 
     /* */
 
+
+    /**
+     * Retrieves the ItemDisplay corresponding to the specified slot number.
+     * @param slotNo The slot number for which to retrieve the corresponding 
+     *               ItemDisplay.
+     * @return The ItemDisplay component representing the item at the specified 
+     *         slot number.
+     * @throws IndexOutOfBoundsException If the slot number is invalid.
+     */
     public ItemDisplay getItemDisplay(int slotNo) {
         return itemDisplays.get(slotNo - 1);
     }
 
+    /**
+     * Retrieves the selected denomination value from the denominations 
+     * combo box.
+     * @return The selected denomination value as a double.
+     */
     public double getSelectedDenom() {
         return (double) denomComboBox.getSelectedItem();
     }
 
+    /**
+     * Sets the heading of the main container in the vending machine user 
+     * interface.
+     * @param heading The new heading or title to be set for the main 
+     *                container.
+     */
     public void setHeading(String heading) {
         mainContainer.setHeading(heading);
     }
 
+    /**
+     * Sets the denominations available in the denominations combo box.
+     * @param denominations The list of Double values representing the 
+     *                      available denominations to be displayed in 
+     *                      the combo box.
+     */
     public void setDenominations(List<Double> denominations) {
         DefaultComboBoxModel<Double> model = new DefaultComboBoxModel<>();
         model.addAll(denominations);
@@ -204,6 +322,17 @@ public class TestRegularVendingView extends View {
 
     /* */
 
+    /**
+     * Adds a new item slot to the vending machine user interface.
+     * @param name         name of the item.
+     * @param price        price of the item.
+     * @param calories     calories of the item.
+     * @param itemStock    stock of the item.
+     * @param imagePath    image path of the item.
+     * @param enabled      A boolean value.
+     * @throws IOException If an error occurs while reading the image 
+     *                     file from the provided imagePath.
+     */
     public void addSlot(
         String name,
         double price,
@@ -219,7 +348,7 @@ public class TestRegularVendingView extends View {
             itemStock,
             imagePath
         );
-        itemDisplay.setButtonEnabled(enabled);
+        itemDisplay.setSelectEnable(enabled);
 
         itemsPanel.add(itemDisplay);
         itemsPanel.add(Box.createVerticalStrut(10));
@@ -227,6 +356,15 @@ public class TestRegularVendingView extends View {
         itemDisplays.add(itemDisplay);
     }
 
+
+    /**
+     * Displays a dialog with the denominations and their quantities in the 
+     * vending machine.
+     * @param heading  The heading or title to be displayed at the top of 
+     *                 the dialog.
+     * @param denomMap The Map containing the denominations 
+     *                 (represented by Denomination) 
+     */
     public void displayDenominations(
         String heading, 
         Map<Denomination, Integer> denomMap
@@ -264,6 +402,10 @@ public class TestRegularVendingView extends View {
         );
     }
 
+    /**
+     * Appends text to the log text area.
+     * @param text The text to be added to the log text area.
+     */
     public void inputLog(String text) {
         if (logTextArea.getText().isEmpty()) {
             logTextArea.setText(text);
@@ -274,18 +416,44 @@ public class TestRegularVendingView extends View {
 
     /* */
 
+    /**
+     * Sets the exit button listener for the vending machine user interface.
+     * @param listener The ActionListener to be set for the exit button.
+     *                 It defines the actions to be performed when the 
+     *                 exit button is clicked.
+     */
     public void setExitButtonListener(ActionListener listener) {
         mainContainer.setExitButtonListener(listener);
     }
 
+    /**
+     * Sets the input credit button listener for the vending machine user 
+     * interface.
+     * @param listener The ActionListener to be set for the input credit 
+     *                 button.
+     */
     public void setInputCreditButtonListener(ActionListener listener) {
+        // Set the provided ActionListener for the input credit button
         inputCreditButton.addActionListener(listener);
     }
 
+    /**
+     * Sets the return credit button listener for the vending machine 
+     * user interface.
+     * @param listener The ActionListener to be set for the return 
+     * credit button.
+     */
     public void setReturnCreditButtonListener(ActionListener listener) {
+        // Set the provided ActionListener for the return credit button
         returnCreditButton.addActionListener(listener);
     }
 
+    /**
+     * Updates the total credit balance displayed in the vending machine 
+     * user interface.
+     * @param credit The new credit balance to be displayed in the vending 
+     * machine user interface.
+     */
     public void updateTotalCredit(double credit) {
         creditLabel.setText("Credit/Balance: P" + credit);
     }

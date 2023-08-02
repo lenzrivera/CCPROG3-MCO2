@@ -15,4 +15,10 @@ public class RemoveLastBaseException extends SlotException {
     public RemoveLastBaseException(Slot forSlot) {
         super(forSlot);
     }
+
+    @Override
+    public String getMessage() {
+        String itemName = getForSlot().getSampleItem().getName();
+        return "Cannot remove the last instance of " + itemName + ".";
+    }
 }

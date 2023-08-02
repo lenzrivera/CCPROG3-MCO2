@@ -33,6 +33,7 @@ public class DisplayTable extends JScrollPane {
 
         table = new JTable(tableModel);
         table.getTableHeader().setReorderingAllowed(false);
+        table.setDefaultEditor(Object.class, null);
 
         setViewportView(table);
     }

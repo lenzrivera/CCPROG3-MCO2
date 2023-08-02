@@ -15,4 +15,9 @@ public class SelectedNonStandaloneException extends SlotException {
     public SelectedNonStandaloneException(Slot forSlot) {
         super(forSlot);
     }
+
+    @Override
+    public String getMessage() {
+        return "Cannot select " + getForSlot().getSampleItem().getName() + ".";
+    }
 }

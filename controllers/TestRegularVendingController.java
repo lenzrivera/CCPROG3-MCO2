@@ -101,7 +101,7 @@ public class TestRegularVendingController extends Controller {
                         );
                     }
                 } catch (CreditException ex) {
-                    view.inputLog(ex.getMessage() + "\n");
+                    view.inputLog(ex.getMessage());
 
                     if (ex.getReturnedCredit().getTotal() != 0) {
                         view.displayDenominations(
@@ -115,7 +115,7 @@ public class TestRegularVendingController extends Controller {
                     .setStockValue(slotItem.getStock());
 
                 if (slotItem.getStock() == 0) {
-                    view.getItemDisplay(finalSlotNo).setButtonEnabled(false);
+                    view.getItemDisplay(finalSlotNo).setSelectEnable(false);
                 }
 
                 view.updateTotalCredit(machine.getCredit().getTotal());
@@ -125,6 +125,7 @@ public class TestRegularVendingController extends Controller {
         }
 
         view.setExitButtonListener(e -> {
+            machine.getCredit().collect();
             changeState(new TestMachineMenuState());
         });
 

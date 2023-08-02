@@ -50,6 +50,7 @@ public class CreateSpecialMachineController
         machine = null;
 
         view.getBasicInfoPanel().getContent().setNameInput("Pizza VM");
+        view.getBasicInfoPanel().getContent().setSlotCount(9);
     }
 
     /**
@@ -101,56 +102,56 @@ public class CreateSpecialMachineController
                 true,
                 Operation.PREPARE
             );
-            machine.getSlot(1).assignToItem(
+            machine.getSlot(2).assignToItem(
                 new Item("Pepperoni", 494, "images/pepperoni.png"), 
                 100,
                 false,
                 true,
-                Operation.PREPARE
+                Operation.TOP
             );
-            machine.getSlot(2).assignToItem(
+            machine.getSlot(3).assignToItem(
                 new Item("Ham", 145, "images/ham.png"), 
                 100,
                 false,
                 true,
                 Operation.TOP
             ); 
-            machine.getSlot(3).assignToItem(
+            machine.getSlot(4).assignToItem(
                 new Item("Ground Pork", 200, "images/ground_pork.png"), 
                 100,
                 false,
                 true,
                 Operation.TOP
             ); 
-            machine.getSlot(4).assignToItem(
+            machine.getSlot(5).assignToItem(
                 new Item("Pineapple", 84, "images/pineapple.png"), 
                 50.25,
                 false,
                 true,
                 Operation.TOP
             ); 
-            machine.getSlot(5).assignToItem(
+            machine.getSlot(6).assignToItem(
                 new Item("Olives", 80, "images/olives.png"), 
                 75,
                 false,
                 false,
                 Operation.TOP
             ); 
-            machine.getSlot(6).assignToItem(
+            machine.getSlot(7).assignToItem(
                 new Item("Bell Peppers", 20, "images/bell_pepper.png"), 
                 35,
                 false,
                 true,
                 Operation.TOP
             ); 
-            machine.getSlot(7).assignToItem(
+            machine.getSlot(8).assignToItem(
                 new Item("Pizza Sauce", 104, "images/pizza_sauce.png"), 
                 50,
                 false,
                 false,
                 Operation.SPREAD
             ); 
-            machine.getSlot(8).assignToItem(
+            machine.getSlot(9).assignToItem(
                 new Item("Cheese", 325, "images/cheese.png"), 
                 50,
                 false,
@@ -163,7 +164,7 @@ public class CreateSpecialMachineController
                     "Plain Pizza",
                     Map.of(
                         "Dough", 1,
-                        "Tomato Sauce", 1,
+                        "Pizza Sauce", 1,
                         "Cheese", 2
                     ),
                     Operation.HEAT, 
@@ -175,7 +176,7 @@ public class CreateSpecialMachineController
                     "Pepperoni Pizza",
                     Map.of(
                         "Dough", 1,
-                        "Tomato Sauce", 1,
+                        "Pizza Sauce", 1,
                         "Cheese", 2,
                         "Pepperoni", 2
                     ),
@@ -188,7 +189,7 @@ public class CreateSpecialMachineController
                     "Hawaiian Pizza",
                     Map.of(
                         "Dough", 1,
-                        "Tomato Sauce", 1,
+                        "Pizza Sauce", 1,
                         "Cheese", 2,
                         "Ham", 2,
                         "Pineapple", 2
@@ -202,7 +203,7 @@ public class CreateSpecialMachineController
                     "Garden Fresh Pizza",
                     Map.of(
                         "Dough", 1,
-                        "Tomato Sauce", 1,
+                        "Pizza Sauce", 1,
                         "Cheese", 2,
                         "Ground Pork", 2,
                         "Bell Peppers", 2,
@@ -257,7 +258,7 @@ public class CreateSpecialMachineController
             int stock = panel.getStockInput();
         
             // In case an item is already in the slot.
-            machine.getSlot(slotNo).clearAssignment();;
+            machine.getSlot(slotNo).clearAssignment();
 
             Item sample = new Item(name, calories, imagePath);
             machine.getSlot(slotNo).assignToItem(

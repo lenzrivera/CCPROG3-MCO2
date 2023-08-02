@@ -1,25 +1,39 @@
 package controllers;
 
 import model.*;
-import model.exceptions.MissingChangeException;
 import model.exceptions.CreditException;
-import model.exceptions.InsufficientCreditException;
-import model.exceptions.InsufficientStockException;
-import states.MainMenuState;
+import model.exceptions.SelectedNonStandaloneException;
+import model.exceptions.SlotException;
 import states.TestMachineMenuState;
 import util.Controller;
 import views.TestSpecialVendingView;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
+/**
+ * A controller class for managing the testing of the vending features of 
+ * a special vending machine.
+ */
 public class TestSpecialVendingController extends Controller {
+    /**
+     * The VendingMachineModel for the whole simulator.
+     */
     private VendingMachineModel model;
 
+    /**
+     * The view associated with the controller, particularly 
+     * TestSpecialVendingView.
+     */
     private TestSpecialVendingView view;
 
+    /**
+     * Constructs a new TestSpecialVendingController with the provided 
+     * VendingMachineModel and TestSpecialVendingView.
+     * @param model The VendingMachineModel to be associated with the 
+     * controller.
+     * @param view The TestSpecialVendingView to be associated with the 
+     * controller.
+     */
     public TestSpecialVendingController(
         VendingMachineModel model, 
         TestSpecialVendingView view
@@ -27,10 +41,14 @@ public class TestSpecialVendingController extends Controller {
         this.model = model;
         this.view = view;
 
+        view.setHeading(model.getVendingMachine().getName());
         view.setDenominations(Denomination.getDoubleValues());
         setListeners();
     }
 
+    /**
+     * Sets up the event listeners for the view.
+     */
     protected void setListeners() {
         SpecialVendingMachine machine =
             (SpecialVendingMachine) model.getVendingMachine();
@@ -40,31 +58,34 @@ public class TestSpecialVendingController extends Controller {
         int presetNo = 1;
 
         for (Preset preset : machine.getPresets()) {
-            view.addPreset(
-                preset.getName(),
-                machine.getPresetPrice(presetNo),
-                machine.getPresetCalories(presetNo)
-            );
+            try {
+                view.addPreset(
+                    preset.getName(),
+                    machine.getPresetPrice(presetNo),
+                    machine.getPresetCalories(presetNo),
+                    preset.getImagePath()
+                );
+            } catch (IOException e) {
+                view.showErrorDialog("Cannot load preset image!");
+            }
 
+            final int finalPresetNo = presetNo;
             view.getPresetDisplay(presetNo).setSelectButtonListener(e -> {
                 // Blank slate on each selection.
                 machine.deselectPreset();
 
-                if (!view.getPresetDisplay(presetNo).canBeSelected()) {
+                if (!view.getPresetDisplay(finalPresetNo).canBeSelected()) {
                     // Preset is already deselected so there's no need to 
                     // deselect again.
-                    
-                    updateItemsView();
                     view.inputLog(
                         "Deselected preset. Selected items have been reset."
                     );
-                    view.setFinalizeEnabled(false);
                 } else {
-                    machine.selectPreset(presetNo);
-                    
-                    updateItemsView();
-                    view.setFinalizeEnabled(true);
+                    machine.selectPreset(finalPresetNo);
                 }
+
+                updateItemsView();
+                updatePresetsView();
             });
 
             presetNo++;
@@ -83,8 +104,8 @@ public class TestSpecialVendingController extends Controller {
                         0,
                         0,
                         0,
-                        false,
-                        "images/outofstock.png"
+                        "images/outofstock.png",
+                        false
                     );
                 } else {
                     view.addSlot(
@@ -92,9 +113,9 @@ public class TestSpecialVendingController extends Controller {
                         slot.getUnitPrice(),
                         slot.getSampleItem().getCalories(),
                         slot.getStock(),
-                        slot.isStandalone(),
-                        slot.getSampleItem().getImagePath()
-                    );     
+                        slot.getSampleItem().getImagePath(),
+                        slot.isStandalone()
+                    );
                 }
             } catch (IOException e) {
                 view.showErrorDialog("Cannot load item image!");
@@ -103,37 +124,63 @@ public class TestSpecialVendingController extends Controller {
             final int finalSlotNo = slotNo;
 
             view.getItemDisplay(slotNo).setSelectButtonListener(e -> {
-                machine.addSelection(finalSlotNo);
-                DispenseResult result = machine.dispenseSelection();
-            
-                view.inputLog(result.getProcessMessages().get(0));
-                view.inputLog(
-                    "Change: P" + result.getChange().getTotal() + "\n"
-                );
-
-                // TODO: show flattened total
-
-                if (result.getChange().getTotal() != 0) {
-                    view.displayDenominations(
-                        "Returned Change:",
-                        result.getChange().getQuantityMap()
+                try {
+                    machine.addSelection(finalSlotNo);
+                    DispenseResult result = machine.dispenseSelection();
+                
+                    view.inputLog("Dispensed " + result.getName() + ".");
+                    view.inputLog(
+                        "Change: P" + result.getChange().getTotal() + "\n"
                     );
+
+                    if (result.getChange().getTotal() != 0) {
+                        view.displayDenominations(
+                            "Returned Change:",
+                            result.getChange().getQuantityMap()
+                        );
+                    }
+
+                    updateItemsView();
+                    updatePresetsView();
+                } catch (CreditException ex) {
+                    view.inputLog(ex.getMessage());
+
+                    if (ex.getReturnedCredit().getTotal() != 0) {
+                        view.displayDenominations(
+                            "Returned Credit:",    
+                            ex.getReturnedCredit().getQuantityMap()
+                        );   
+                    }
+                } catch (SelectedNonStandaloneException ex) {
+                    view.inputLog(ex.getMessage());
                 }
 
-                updateItemsView();
-                updatePresetsView();
                 view.updateTotalCredit(machine.getCredit().getTotal());
             });
-            view.getItemDisplay(slotNo).setSpinnerAddListener(e -> {
-                machine.addSelection(finalSlotNo);
 
-                updateItemsView();
-                view.updateTotalPayment(machine.getTotalPrice());
-                view.updateTotalCalories(machine.getTotalCalories());
-            });
-            view.getItemDisplay(slotNo).setSpinnerRemoveListener(e -> {
-                machine.addSelection(finalSlotNo);                
-                updateItemsView();                
+            view.getItemDisplay(slotNo).setSpinnerChangeListener(e -> {
+                Integer qtySelected = machine.getSelectedSlots().get(slot);
+                
+                try {
+                    // If selection reduced:
+                    if (
+                        qtySelected != null &&
+                        view.getItemDisplay(finalSlotNo)
+                            .getSpinnerValue() < qtySelected
+                    ) {
+                        machine.removeSelection(finalSlotNo);                
+                    } else {
+                        machine.addSelection(finalSlotNo);
+                    }
+
+                    updateItemsView();
+                    updatePresetsView();
+                    view.updateTotalPayment(machine.getTotalPrice());
+                    view.updateTotalCalories(machine.getTotalCalories());
+                } catch (SlotException ex) {
+                    view.inputLog(ex.getMessage());
+                    view.getItemDisplay(finalSlotNo).setSpinnerValue(qtySelected);
+                }
             });
 
             slotNo += 1;   
@@ -143,6 +190,9 @@ public class TestSpecialVendingController extends Controller {
         // Other buttons
 
         view.setExitButtonListener(e -> {
+            machine.getCredit().collect();
+            machine.deselectPreset();
+            
             changeState(new TestMachineMenuState());
         });
 
@@ -159,8 +209,6 @@ public class TestSpecialVendingController extends Controller {
                 return;
             }
 
-            // TODO: show flattened total
-
             view.displayDenominations("Returned Credit:",
                 machine.getCredit().collect().getQuantityMap()
             );
@@ -176,7 +224,7 @@ public class TestSpecialVendingController extends Controller {
                 view.inputLog("Preparing order...");
 
                 for (String msg : result.getProcessMessages()) {
-                    view.inputLog("\t" + msg);
+                    view.inputLog("    " + msg);
                 }
             
                 view.inputLog("Done!\n");
@@ -189,7 +237,6 @@ public class TestSpecialVendingController extends Controller {
                 );
 
                 if (result.getChange().getTotal() != 0) {
-                    // TODO: show flattened total
                     view.displayDenominations(
                         "Returned Change:",
                         result.getChange().getQuantityMap()
@@ -212,6 +259,8 @@ public class TestSpecialVendingController extends Controller {
                         "Returned Credit:",    
                         ex.getReturnedCredit().getQuantityMap()
                     );   
+
+                    view.updateTotalCredit(machine.getCredit().getTotal());
                 }
             }
         });
@@ -219,6 +268,10 @@ public class TestSpecialVendingController extends Controller {
 
     /* */
 
+    /**
+     * Updates the view for the items in the vending machine 
+     * user interface.
+     */
     private void updateItemsView() {
         SpecialVendingMachine machine =
             (SpecialVendingMachine) model.getVendingMachine();
@@ -230,21 +283,35 @@ public class TestSpecialVendingController extends Controller {
                 .setStockValue(slot.getStock());
 
             view.getItemDisplay(slotNo)
-                .setSelectEnable(slot.getStock() == 0);
+                .setSelectEnable(
+                    slot.getStock() != 0 &&
+                    (machine.getSelectedPreset() != null || 
+                     slot.isStandalone())
+                );
             view.getItemDisplay(slotNo)
                 .setSpinnerVisible(machine.getSelectedPreset() != null);
 
             if (machine.getSelectedSlots().containsKey(slot)) {
                 int selQty = machine.getSelectedSlots().get(slot);
 
-                view.getItemDisplay(slotNo).setSelectValue(selQty);
-                view.getItemDisplay(slotNo).setSpinnerMaximum(slot.getStock());
+                view.getItemDisplay(slotNo).setSpinnerValue(selQty);
+                view.getItemDisplay(slotNo).setSpinnerMaximum(
+                    (slot.isBase() && slot.getStock() > 0) ? 1 : slot.getStock()
+                );
             }
 
             slotNo++;
         }
+
+        view.updateTotalCalories(machine.getTotalCalories());
+        view.updateTotalPayment(machine.getTotalPrice());
     }
 
+
+    /**
+     * Updates the view for the presets in the vending machine 
+     * user interface.
+     */
     private void updatePresetsView() {
         SpecialVendingMachine machine =
             (SpecialVendingMachine) model.getVendingMachine();
@@ -253,14 +320,26 @@ public class TestSpecialVendingController extends Controller {
 
         for (Preset preset : machine.getPresets()) {
             view.getPresetDisplay(presetNo)
-                .setSelectEnable(machine.hasEnoughStockFor(presetNo));
+                .setSelectEnable(
+                    machine.hasEnoughStockFor(presetNo) &&
+                    machine.getSelectedPreset() == null || 
+                    machine.getSelectedPreset() == preset
+                );
 
-            if (machine.getSelectedPreset() == preset) {
-                view.getPresetDisplay(presetNo)
-                    .setHighlightShow(machine.hasDeviatedFrom(presetNo));
-            }
+            view.getPresetDisplay(presetNo)
+                .setSelectState(
+                    machine.getSelectedPreset() == preset
+                );
+
+            view.getPresetDisplay(presetNo)
+                .setHighlightShow(
+                    machine.getSelectedPreset() == preset &&
+                    machine.hasDeviatedFrom(presetNo)
+                );
 
             presetNo++;
         }
+
+        view.setFinalizeEnabled(machine.getSelectedPreset() != null);
     }
 }

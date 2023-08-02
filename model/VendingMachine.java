@@ -108,7 +108,7 @@ public abstract class VendingMachine<T extends Slot> {
 
     /**
      * Returns the slot instance at the given slot number, if any.
-     * @param slotNumber the 1-indexed number referring to a slot
+     * @param slotNo the 1-indexed number referring to a slot
      * @return the slot instance at the given slot number if it exists null. 
      * The type of the slot is the type associated with the vending machine.
      */
@@ -209,12 +209,18 @@ public abstract class VendingMachine<T extends Slot> {
                 continue;
             }
 
-            moneyStock.remove(denom, 1);
+            tempMoneyStock.remove(denom, 1);
             change.add(denom, 1);
         }
 
         if (change.getTotal() != changeAmount) {
             throw new MissingChangeException(credit.collect());
+        }
+
+        // Remove the change money from moneyStock
+
+        for (Denomination denom : change.getDenominations()) {
+            moneyStock.remove(denom, 1);
         }
 
         // Transfer user payment from credit to moneyStock.

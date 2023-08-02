@@ -147,6 +147,10 @@ public class SpecialVendingMachine extends VendingMachine<SpecialSlot> {
      * @return true is there is a deviation, false otherwise
      */
     public boolean hasDeviatedFrom(int presetNo) {
+        if (selectedPreset.getItems().size() != selectedSlots.size()) {
+            return true;
+        }
+
         for (var entry : selectedSlots.entrySet()) {
             SpecialSlot itemSlot = entry.getKey();
 
@@ -171,7 +175,7 @@ public class SpecialVendingMachine extends VendingMachine<SpecialSlot> {
      * @return true is there is enough stock, false otherwise
      */
     public boolean hasEnoughStockFor(int presetNo) {
-        for (var entry : presets.get(presetNo).getItems().entrySet()) {
+        for (var entry : presets.get(presetNo - 1).getItems().entrySet()) {
             String itemName = entry.getKey();
             int itemQuantity = entry.getValue();
 
@@ -336,7 +340,14 @@ public class SpecialVendingMachine extends VendingMachine<SpecialSlot> {
         List<Item> itemsToDispense = new ArrayList<>();
         List<String> operations = new ArrayList<>();
 
-        for (var entry : selectedSlots.entrySet()) {
+        List<Map.Entry<SpecialSlot, Integer>> selectionByOperation = 
+            new ArrayList<>(selectedSlots.entrySet());
+        selectionByOperation.sort((a, b) -> 
+            a.getKey().getOperation().getPrecedence() - 
+                b.getKey().getOperation().getPrecedence()
+        );
+
+        for (var entry : selectionByOperation) {
             SpecialSlot itemSlot = entry.getKey();
             int qtyToDispense = entry.getValue();
 
@@ -355,20 +366,24 @@ public class SpecialVendingMachine extends VendingMachine<SpecialSlot> {
             );
         }
 
-        operations.add(
-            selectedPreset.getOperation()
-                .getProcessMessage(selectedPreset.getName())
-        );
-
         // Determine result name
 
-        String resultName = itemsToDispense.get(0).getName();
+        String resultName;
 
-        if (
-            selectedPreset != null && 
-            hasDeviatedFrom(presets.indexOf(selectedPreset))
-        ) {
-            resultName += " (Customized)";
+        if (selectedPreset == null) {
+            resultName = itemsToDispense.get(0).getName();
+        } else {
+            resultName = selectedPreset.getName();
+
+            if (hasDeviatedFrom(presets.indexOf(selectedPreset))) {
+                resultName += " (Customized)";
+            }
+        }
+
+        if (selectedPreset != null) {
+            operations.add(
+                selectedPreset.getOperation().getProcessMessage(resultName)
+            );
         }
 
         // Clear and return

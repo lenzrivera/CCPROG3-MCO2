@@ -16,6 +16,10 @@ public class ItemSummary {
      */
     private int stockDiff;
 
+    /**
+     * Constructs a new ItemSummary from a given initialStock.
+     * @param initialStock the initial stock of an item since the last restock
+     */
     public ItemSummary(int initialStock) {
         this.initialStock = initialStock;
         stockDiff = 0;

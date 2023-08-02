@@ -15,4 +15,10 @@ public class DuplicateBaseException extends SlotException {
     public DuplicateBaseException(Slot forSlot) {
         super(forSlot);
     }
+
+    @Override
+    public String getMessage() {
+        String itemName = getForSlot().getSampleItem().getName();
+        return "Cannot select >1 of " + itemName + ".";
+    }
 }

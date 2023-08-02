@@ -8,27 +8,49 @@ public enum Operation {
     /**
      * The item should be cooked.
      */
-    COOK,
+    COOK(3),
 
     /**
      * The item should be heated.
      */
-    HEAT,
+    HEAT(4),
 
     /**
      * The item should be "prepared" in a general sense.
      */
-    PREPARE,
+    PREPARE(0),
     
     /**
      * The item should be spread.
      */
-    SPREAD,
+    SPREAD(1),
 
     /**
      * The item should be topped.
      */
-    TOP;
+    TOP(2);
+
+    /**
+     * The precedence of the operation
+     */
+    private int precedence;
+
+    /**
+     * Assigns the values associated with an Operation.
+     * @param precedence the precedence of an operation
+     */
+    private Operation(int precedence) {
+        this.precedence = precedence;
+    }
+
+    /**
+     * Returns the precedence of an operation, smaller values indicating
+     * that they should be performed earlier.
+     * @return the operation precedence
+     */
+    public int getPrecedence() {
+        return precedence;
+    }
 
     /**
      * Get the process message for the operation and the given item name.
