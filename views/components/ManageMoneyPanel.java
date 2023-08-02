@@ -146,14 +146,6 @@ public class ManageMoneyPanel extends JPanel {
     /* */
 
     /**
-     * Gets the DisplayTable component for denominations and their quantities.
-     * @return the DisplayTable for denominations and quantities.
-     */
-    public DisplayTable getDenomTable() {
-        return denomTable;
-    }
-
-    /**
      * Sets the denominations available for selection in the combo box.
      * @param denominations the list of denominations available.
      */
@@ -179,6 +171,31 @@ public class ManageMoneyPanel extends JPanel {
      */
     public int getSelectedQuantity() {
         return (int) quantityInput.getValue();
+    }
+
+    /**
+     * Clears all cells in the denomination table.
+     */
+    public void clearTableCells() {
+        denomTable.clearCells();
+    }
+
+    /**
+     * Sets the denomination value in a cell in the denominations column.
+     * @param rowIndex the row index of the cell
+     * @param value the value to set
+     */
+    public void setDenomCell(int rowIndex, double value) {
+        denomTable.setCell(0, rowIndex, value);
+    }
+
+    /**
+     * Sets the quantity value in a cell in the quantities column.
+     * @param rowIndex the row index of the cell
+     * @param value the value to set
+     */
+    public void setQuantityCell(int rowIndex, int value) {
+        denomTable.setCell(1, rowIndex, value);
     }
 
     /* */

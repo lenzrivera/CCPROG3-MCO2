@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
+import javax.swing.event.ListSelectionListener;
 
 /**
  * This class represents the panel for managing vending machine items. It
@@ -191,19 +192,19 @@ public class ManageItemsPanel extends JPanel {
     }
 
     /**
-     * Gets the DisplayTable component for displaying the item slots.
-     * @return the DisplayTable component.
-     */
-    public DisplayTable getSlotTable() {
-        return slotTable;
-    }
-
-    /**
      * Gets the price input value from the text field.
      * @return the price input value.
      */
     public double getPriceInput() {
         return (double) priceInput.getValue();
+    }
+
+    /**
+     * Gets the selected row index in the slot table.
+     * @return the selected row index
+     */
+    public int getSelectedRowIndex() {
+        return slotTable.getSelectedRowIndex();
     }
 
     /**
@@ -235,6 +236,24 @@ public class ManageItemsPanel extends JPanel {
         stockLabel.setText("Stock: " + stock + " / " + maxCapacity);
     }
 
+    /**
+     * Sets the slot number value for a cell in the slots column.
+     * @param rowIndex the row index of the cell
+     * @param value the slot number
+     */
+    public void setSlotNoCell(int rowIndex, int value) {
+        slotTable.setCell(0, rowIndex, value);
+    }
+
+    /**
+     * Sets the item name value for a cell in the items column.
+     * @param rowIndex the row index of the cell
+     * @param value the item name
+     */
+    public void setItemNameCell(int rowIndex, String value) {
+        slotTable.setCell(1, rowIndex, value);  
+    }
+
     /* */
 
     /**
@@ -259,5 +278,13 @@ public class ManageItemsPanel extends JPanel {
      */
     public void setPriceEditListener(ActionListener listener) {
         setPriceButton.addActionListener(listener);
+    }
+
+    /**
+     * Adds a listener for row selection in the slot table.
+     * @param listener the listener for the table
+     */
+    public void setRowSelectListener(ListSelectionListener listener) {
+        slotTable.setRowSelectListener(listener);
     }
 }

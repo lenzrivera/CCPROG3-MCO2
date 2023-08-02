@@ -73,7 +73,6 @@ public class TestMaintenanceController extends Controller {
 
         view.getManageItemsPanel().setItemAddListener(e -> {
             int slotNo = view.getManageItemsPanel()
-                             .getSlotTable()
                              .getSelectedRowIndex() + 1;
 
             // If for whatever reason no items have been set to the machine.
@@ -106,7 +105,6 @@ public class TestMaintenanceController extends Controller {
 
         view.getManageItemsPanel().setItemRemoveListener(e -> {
             int slotNo = view.getManageItemsPanel()
-                             .getSlotTable()
                              .getSelectedRowIndex() + 1;
 
             // If for whatever reason no items have been set to the machine.
@@ -144,7 +142,6 @@ public class TestMaintenanceController extends Controller {
 
         view.getManageItemsPanel().setPriceEditListener(e -> {
             int slotNo = view.getManageItemsPanel()
-                             .getSlotTable()
                              .getSelectedRowIndex() + 1;
             
             Slot selectedSlot = machine.getSlot(slotNo);
@@ -166,9 +163,8 @@ public class TestMaintenanceController extends Controller {
             selectedSlot.setUnitPrice(newPrice);
         });
 
-        view.getManageItemsPanel().getSlotTable().setRowSelectListener(e -> {
+        view.getManageItemsPanel().setRowSelectListener(e -> {
             int slotNo = view.getManageItemsPanel()
-                             .getSlotTable()
                              .getSelectedRowIndex() + 1;
             
             Slot selectedSlot = machine.getSlot(slotNo);
@@ -235,8 +231,8 @@ public class TestMaintenanceController extends Controller {
                 ? "[empty]" 
                 : slots.get(i).getSampleItem().getName();
 
-            panel.getSlotTable().setCell(0, i, i + 1);
-            panel.getSlotTable().setCell(1, i, name);
+            panel.setSlotNoCell(i, i + 1);
+            panel.setItemNameCell(i, name);
         }
     }
 
@@ -247,17 +243,15 @@ public class TestMaintenanceController extends Controller {
      * the vending machine.
      */
     private void updateDenominationTable(DenominationMap denomMap) {
-        view.getManageMoneyPanel().getDenomTable().clearCells();
+        view.getManageMoneyPanel().clearTableCells();
 
         int i = 0;
 
         for (var entry : denomMap.getQuantityMap().entrySet()) {
             view.getManageMoneyPanel()
-                .getDenomTable()
-                .setCell(0, i, entry.getKey().getValue());
+                .setDenomCell(i, entry.getKey().getValue());
             view.getManageMoneyPanel()
-                .getDenomTable()
-                .setCell(0, i, entry.getValue());
+                .setQuantityCell(i, entry.getValue());
             
             i += 1;
         }
